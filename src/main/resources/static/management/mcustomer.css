@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.btn {
+    padding: 6px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-edit {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.btn-delete {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.btn-register {
+    float: right;
+    margin-bottom: 10px;
+    background-color: white;
+    color: black;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.search-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+input[type="text"] {
+    width: 50%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn-search {
+    background-color: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+}

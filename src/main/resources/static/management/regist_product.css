@@ -1,0 +1,74 @@
+.btn-register {
+  float: right;
+  margin-bottom: 10px;
+  background-color: white;
+  color: black;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+.input-group {
+  position: relative;
+}
+
+.required {
+  color: red;
+  font-size: 14px;
+  display: none;
+}
+
+input {
+  width: 500px;
+  height: 36px;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+input[type="text"] {
+  font-size: 14px;
+}
+
+input[type="text"].error {
+  font-size: 14px;
+  width: 500px;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.button-group {
+  margin-top: 100px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.btn-submit {
+  background-color: #007bff;
+  color: white;
+  margin-left: 400px;
+}
+
+.btn-cancel {
+  background-color: #ccc;
+  margin-right: 400px;
+}
