@@ -25,8 +25,8 @@ public class BoardComment {
     @ManyToOne
     private Board board;
 
-    @ManyToOne
-    private List<User> users = new ArrayList<>();
+//    @ManyToOne
+//    private List<User> users = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private BoardType boardType;

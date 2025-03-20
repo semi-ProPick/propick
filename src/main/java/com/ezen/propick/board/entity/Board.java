@@ -49,8 +49,8 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardImage> images = new ArrayList<>();
 
-    @ManyToOne(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<User> users = new ArrayList<>();
+//    @ManyToOne(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<User> users = new ArrayList<>();
 }
 
 
