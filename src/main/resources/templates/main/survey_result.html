@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="/css/survey.css" type="text/css" />
+<link rel="stylesheet" href="css/header.css" type="text/css" />
+<title>설문 결과</title>
+</head>
+<body>
+    <div id="header"></div>
+    <div id="wrap">
+        <div id="section_wrap1">
+            <div id="section1_content">
+                <img
+                    src="/images/warning2.png"
+                    alt="Warning"
+                    id="section1_img" />
+                <div id="section1_text">
+                    <p>본 결과는 의사의 처방을 대신하지 않습니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="section_result">
+            <div class="close_btn3"></div>
+            <h1>
+                000님의 <br />
+                프로틴 추천 결과
+            </h1>
+            <div class="user_info_box">
+                <p>성별: 여성 | 나이: 20세 | BMI: 50세(비만)</p>
+            </div>
+
+            <div class="recommendation">
+                <h1>당신에게 맞는 단백질 플랜</h1>
+                <div class="chart_container">
+                    <!-- 건강상태 데이터 분석 부분 -->
+                    <div class="health_conditions">
+                        <img
+                            src="/images/health_conditions.png"
+                            alt="Health Conditions Chart"
+                            class="health_conditions_img" />
+                        <ul>
+                            <li class="list-title">[건강 팁]</li>
+                            <li>
+                                • 신장 부담 위험 → 단백질 섭취량을 줄이는
+                                것이 좋습니다!
+                            </li>
+                            <li>
+                                • 소화불량 → WPC 피하고 WPI 선택하는 것이
+                                좋습니다!
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 데이터 유형 적합도 데이터 분석 부분 -->
+                    <div class="protein_type">
+                        <img
+                            src="/images/protein_type.png"
+                            alt="Protein Type Chart"
+                            class="protein_type_img" />
+                        <ul>
+                            <li class="list-title">[추천 단백질 유형]</li>
+                            <li>• WPI(60%)</li>
+                            <li>• WPH(30%)</li>
+                        </ul>
+                    </div>
+
+                    <!-- 단백질 섭취취 타이밍 데이터 분석 부분 -->
+                    <div class="protein_intake">
+                        <img
+                            src="/images/protein_intake.png"
+                            alt="Protein Intake Chart"
+                            class="protein_intake_img" />
+                        <ul>
+                            <li class="list-title">[프로틴 섭취량]</li>
+                            <li>• 하루112g</li>
+                        </ul>
+                        <ul>
+                            <li class="list-title">[프로틴 섭취 타이밍]</li>
+                            <li>• 운동 후 30g</li>
+                            <li>• 취침 전 20g</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="line" />
+
+            <div class="protein_list">
+                <h2>추천 프로틴</h2>
+                <div class="protein_items">
+                    <div class="protein_item">마이프로틴</div>
+                    <div class="protein_item">마이프로틴</div>
+                    <div class="protein_item">마이프로틴</div>
+                </div>
+            </div>
+        
+
+        <div id="favorite_button">
+            <button>추천 제품 즐겨찾기 담기</button>
+        </div>
+    </div>
+
+    <div class="popup_bg">
+        <div class="survey_end_wrap">
+            <p>추천에 만족하셨나요?</p>
+            <span>설문을 종료하면 프로핏스토어로 이동합니다:)</span>
+            <div class="star_rating">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+            <div class="btn_wrap">
+                <div class="keep_btn">설문 계속 보기</div>
+                <div class="end_btn">설문 평가 후 종료</div>
+            </div>
+        </div>
+    </div>
+  </body>
+  <script src="/js/header.js" ></script>
+  <script src="/js/survey.js" ></script>
+</html>
+

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin/event_regist</title>
+    <link
+      href="vendor/fontawesome-free/css/all.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet"
+    />
+    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
+    <link href="css/common.css" rel="stylesheet" />
+  </head>
+
+  <body id="page-top">
+    <div id="wrapper">
+      <!-- 사이드바 -->
+      <div id="sidebar"></div>
+
+      <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+          <!-- 해더 -->
+          <div id="header"></div>
+          <div
+            class="d-sm-flex align-items-center justify-content-between mb-4"
+          ></div>
+          <!-- 내용 -->
+          <div class="container-fluid">
+            <h2 class="h3 mb-2 text-gray-800">이벤트 팝업 수정</h2>
+
+            <div class="card-body">
+              <div class="content-wrap">
+                <p>제목</p>
+                <input type="text" name="title" placeholder="제목을 입력하세요">
+              </div>
+              <div class="content-wrap">
+                <p>상태</p>
+                <label><input type="radio" name="status" value="progress" id="progress"> 진행중</label>
+                <label><input type="radio" name="status" value="done" id="done"> 종료</label>
+              </div>
+              <div class="content-wrap">
+                <p>시작 날짜</p>
+                <input type="date" name="start_date" id="start_date">
+              </div>
+              <div class="content-wrap">
+                <p>종료 날짜</p>
+                <input type="date" name="end_date" id="end_date">
+              </div>
+              <div class="content-wrap">
+                <p>맞춤형 여부</p>
+                <label><input type="radio" name="" value="normal" id="normal"> 일반</label>
+                <label><input type="radio" name="" value="custom" id="custom"> 맞춤형</label>
+              </div>
+              <div class="content-wrap">
+                <p>노출 대상</p>
+                <label><input type="checkbox" name="" value="new_user" id="new_user"> 신규가입자</label>
+                <label><input type="checkbox" name="" value="exist_user" id="exist_user">기존가입자</label>
+                <label><input type="checkbox" name="" value="age10to20" id="age10to20"> 10~20대</label>
+                <label><input type="checkbox" name="" value="age30to40" id="age30to40"> 30~40대</label>
+                <label><input type="checkbox" name="" value="age40to50" id="age40to50"> 40~50대</label>
+              </div>
+              <div class="content-wrap">
+                <p>협업 브랜드</p>
+                <label><input type="checkbox" name="" value="" id="brand_power">파워쉐이크</label>
+                <label><input type="checkbox" name="" value="" id="brand_mytein">마이프로틴</label>
+                <label><input type="checkbox" name="" value="" id="brand_3to500">삼대오백</label>
+                <label><input type="checkbox" name="" value="" id="brand_propic">프로핏</label>
+                <label><input type="checkbox" name="" value="" id="brand_protein">더단백</label>
+              </div>
+              <div class="content-wrap">
+                <p>내용</p>
+                <textarea name="content" rows="4" placeholder="내용을 입력하세요"></textarea>
+              </div>
+              <div class="content-wrap">
+               
+                <input type="file" name="file" accept=".jpg, .png, .pdf, .docx">
+
+                
+                <button type="submit" id="regist_file">등록</button>
+              </div>
+              <button type="submit" id="modify">수정</button>
+            </div>
+            </div>
+          </div>
+            <!-- 푸터 -->
+          <div id="footer"></div>
+        </div>
+      </div>
+    </div>
+    <div id="logout_modal"></div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script>
+      fetch("/header.html")
+        .then((res) => res.text())
+        .then((data) => (document.getElementById("header").innerHTML = data));
+
+      fetch("/sidebar.html")
+        .then((res) => res.text())
+        .then((data) => (document.getElementById("sidebar").innerHTML = data));
+
+      fetch("/footer.html")
+        .then((res) => res.text())
+        .then((data) => (document.getElementById("footer").innerHTML = data));
+      fetch("/logoutModal.html")
+        .then((res) => res.text())
+        .then(
+          (data) => (document.getElementById("logout_modal").innerHTML = data)
+        );
+    </script>
+
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+  </body>
+</html>

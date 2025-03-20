@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/main.css" type="text/css" />
+    <link rel="stylesheet" href="/css/header.css" type="text/css" />
+    <title>상품</title>
+  </head>
+  <body>
+    <div id="header"></div>
+    <div id="wrap">
+      <div class="search_wrap">
+        <p>전체상품</p>
+        <div class="search">
+          <input type="text" class="seach_input" placeholder="검색" />
+          <div class="search_icon">
+            <img src="/images/search.png" alt="" />
+          </div>
+        </div>
+        <div class="category_list">
+          <p>카테고리</p>
+          <ul>
+            <li class="category_menu active">전체보기</li>
+            <li class="category_menu">연령대</li>
+            <li class="category_menu">건강고민</li>
+            <li class="category_menu">인기상품</li>
+            <li class="category_menu">비건</li>
+          </ul>
+        </div>
+        <div class="category_wrap">
+          <p>어떤 프로틴이 필요하세요?</p>
+          <ul>
+            <li class="active">
+              <img src="/images/diet.png" alt="" />
+              <span>다이어트</span>
+            </li>
+            <li>
+              <img src="/images/volume.png" alt="" />
+              <span>증량</span>
+            </li>
+            <li>
+              <img src="/images/digest.png" alt="" />
+              <span>소화</span>
+            </li>
+            <li>
+              <img src="/images/ldl.png" alt="" />
+              <span>콜레스테롤</span>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <img src="/images/cheap.png" alt="" />
+              <span>저렴한</span>
+            </li>
+            <li>
+              <img src="/images/whey.png" alt="" />
+              <span>유청</span>
+            </li>
+            <li>
+              <img src="/images/casein.png" alt="" />
+              <span>카제인</span>
+            </li>
+            <li>
+              <img src="/images/plant.png" alt="" />
+              <span>식물성</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="recomment_wrap">
+        <img src="/images/mark.png" alt="" />
+        <p>내 몸에 꼭 맞는 프로틴 추천받기</p>
+        <img src="/images/mark.png" alt="" />
+      </div>
+      <div class="survey_wrap">
+        <div class="survey_btn">
+          <a href="/survey_start.html">설문조사 하러가기</a>
+        </div>
+      </div>
+      <!-- 카테고리별 상품 보여지는 -->
+      <div class="products_wrap">
+        <p>인기 프로틴 <span class="footer_point">TOP 10</span></p>
+        <ul class="product_category">
+          <li class="product_cate active">전체</li>
+          <li class="product_cate" id="age_category">연령별</li>
+          <li class="product_cate">건강고민별</li>
+          <li class="product_cate">비건</li>
+          <li class="product_cate">다이어트</li>
+          <li class="product_cate">할인</li>
+        </ul>
+        <ul class="age_list">
+          <li class="age_cate active">10~20대</li>
+          <li class="age_cate">30대</li>
+          <li class="age_cate">40대</li>
+          <li class="age_cate">50대</li>
+          <li class="age_cate">60대</li>
+        </ul>
+        <div class="products_list">
+          <ul class="rank_product">
+            <a href="/product_detail.html" target="_blank">
+              <li>
+                <img src="/images/rank1.png" alt="" />
+                <p>마이프로틴</p>
+              </li>
+            </a>
+            <li>
+              <img src="/images/rank2.png" alt="" />
+              <p>상품명</p>
+            </li>
+            <li>
+              <img src="/images/rank3.png" alt="" />
+              <p>상품명</p>
+            </li>
+          </ul>
+          <ul class="others_product">
+            <li>
+              <img src="" alt="" />
+              <p>프로틴</p>
+            </li>
+            <li>
+              <img src="" alt="" />
+              <p>프로틴</p>
+            </li>
+            <li>
+              <img src="" alt="" />
+              <p>프로틴</p>
+            </li>
+            <li>
+              <img src="" alt="" />
+              <p>프로틴</p>
+            </li>
+            <li>
+              <img src="" alt="" />
+              <p>프로틴</p>
+            </li>
+            <li>
+              <img src="" alt="" />
+              <p>프로틴</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="search_results_wrap">
+        <ul class="search_results">
+          <li></li>
+        </ul>
+        <div class="pagination"></div>
+      </div>
+    </div>
+  </body>
+  <script src="/js/header.js" defer></script>
+  <script src="/js/product.js"></script>
+</html>
