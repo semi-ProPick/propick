@@ -1,0 +1,104 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+* {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+body {
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+a {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.user_icon img {
+  max-width: 25px;
+  margin-top: 5px;
+}
+
+.container {
+  margin-top: 120px;
+  text-align: center;
+}
+
+.title {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.find-id {
+  margin: 20px auto;
+  width: 80%;
+  max-width: 400px;
+}
+
+.find-id h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.find-id .description {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 15px;
+}
+
+.find-id input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.find-id button {
+  width: 100%;
+  padding: 10px;
+  background: #ff5c35;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.find-id button:hover {
+  background: #ff5c35;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn.gray {
+  background: #dcdcdc;
+  color: black;
+}
+
+.btn.orange {
+  background: #ff5c35;
+  color: white;
+}
+.page2 {
+  display: none;
+}
+.page3 {
+  display: none;
+}

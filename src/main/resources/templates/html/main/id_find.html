@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>아이디 찾기</title>
+    <link rel="stylesheet" href="/css/id_pwd_find.css" type="text/css" />
+    <link rel="stylesheet" href="/css/header.css" type="text/css" />
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="1" id="page1">
+      <main class="container">
+        <h2 class="title">프로픽</h2>
+        <section class="find-id">
+          <h3>아이디 찾기</h3>
+          <p class="description">
+            가입하신 이메일이나 전화번호를 입력하시면 아이디를 찾아드립니다.
+          </p>
+          <input
+            type="text"
+            id="userInput"
+            placeholder="가입하신 이메일이나 전화번호를 입력하세요."
+          />
+          <button onclick="findId()">아이디 찾기</button>
+        </section>
+      </main>
+    </div>
+    <div class="2" id="page2">
+      <main class="container">
+        <h2 class="title">프로픽</h2>
+
+        <section class="success-message">
+          <h3>아이디 찾기에 성공하였습니다.</h3>
+          <hr />
+          <p class="label">아이디</p>
+          <p class="masked-email">o******@gmail.com</p>
+
+          <div class="button-group">
+            <button class="btn gray" onclick="findPassword()">
+              비밀번호 찾기
+            </button>
+            <button class="btn orange" onclick="goToLogin()">로그인</button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+  <script src="/js/header.js" defer></script>
+</html>
