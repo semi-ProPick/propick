@@ -41,8 +41,10 @@ a {
 .img_box {
   width: 60%;
   height: 100%;
-  align-items: left;
-  background-image: url("/images/image 50.png");
+  /*align-items: left;*/
+  display: flex;
+  align-items: flex-start;
+  background-image: url("static/css/imges/main/image 50.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -67,7 +69,7 @@ a {
   width: 100%;
 }
 
-#group {
+.group {
   color: #ff5c35;
 }
 
@@ -81,7 +83,7 @@ a {
   width: 70%;
 }
 
-#lptext {
+.lptext {
   margin-bottom: 10px;
 }
 
@@ -125,6 +127,7 @@ a {
 }
 
 #error_message1 {
+
   display: none;
   color: #ff5c35;
   font-size: 12px;
@@ -261,7 +264,7 @@ a {
   text-decoration: underline;
 }
 
-#agree-gap {
+.agree-gap {
   display: flex;
   align-items: center;
   width: 100%;
