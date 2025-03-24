@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,4 +36,8 @@ public class MemberDTO {
 
     @NotBlank(message = "성별은 필수 입력 값입니다.")
     private Gender userGender;
+
+    @NotBlank(message = "생년월일은 필수 입력 값입니다.")
+    @Pattern(regexp = "^[0-9]+$", message = "연락처는 숫자만 입력 가능합니다.")
+    private Date userBirth;
 }

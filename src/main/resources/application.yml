@@ -11,3 +11,16 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+logging:
+  level:
+    org.springframework: DEBUG
+    com.ezen.propick: DEBUG
+
+  # Thymeleaf 설정 추가
+  thymeleaf:
+    prefix: classpath:/templates/main/  # main 폴더를 포함한 경로 설정
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
