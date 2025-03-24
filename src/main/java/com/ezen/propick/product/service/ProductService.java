@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -12,4 +13,3 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 }
-

@@ -9,13 +9,14 @@
     <link rel="stylesheet" href="css/header.css" type="text/css" />
 </head>
 <body>
+<form th:action="/user/signUp" th:object="${MemberDTO}" method="get">
     <div id="header"></div>
     <div id="pageoutside">
         <div id="pageinside">
             <h2 class="title">회원가입</h2>
             <div class="username_box">
                 <p>이름</p>
-                <input class="insert" id="insert_name" type="text" placeholder="이름을 입력해주세요.">
+                <input class="insert" id="insert_nam e" type="text" placeholder="이름을 입력해주세요.">
                 <p id="error_message1"></p>
             </div>
 
@@ -67,13 +68,13 @@
                     </label><br>
                 </div>
                 
-               <div id="agree-gap">   
+               <div class="agree-gap">
                 <label>
                     <input class="check" type="checkbox"> 만14세 이상입니다. <br>
                 </label>
                 </div>
                 
-                <div id="agree-gap">
+                <div class="agree-gap">
                     <label>
                         <input class="check" type="checkbox"> 이용약관 동의
                     </label>
@@ -95,7 +96,7 @@
                     <p class="content" >주저리 주저리</p>
                 </div>
 
-                <div id="agree-gap">    
+                <div class="agree-gap">
                     <label>
                         <input class="check" type="checkbox"> 마케팅 수신 동의 
                     </label>
@@ -113,6 +114,7 @@
             </div>
         </div>
     </div>
+</form>
     <script src="js/new-join-us.js"></script>
     <script src="/js/header.js" defer></script>
 </body>
