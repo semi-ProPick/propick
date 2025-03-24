@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Q&A게시판-문의글쓰기</title>
-    <link rel="stylesheet" href="/css/boardcm.css">
-    <link rel="stylesheet" href="css/header.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/boardcm.css">
+    <link rel="stylesheet" href="css/main/header.css" type="text/css" />
 </head>
 <body>
     <div id="header"></div>
-    <input type="text" class="title-box" placeholder="제목을 입력하세요"></input>
+    <form action="/main/q&a_write" method="post">
+        <input name="title" type="text" class="title-box" placeholder="제목을 입력하세요"></input>
     <div class="separator"></div>
-    <textarea class="content-box" placeholder="내용을 입력하십시요"></textarea>
+    <textarea name="contents" class="content-box" placeholder="내용을 입력하십시요"></textarea>
     <div class="upload-section">
         <div class="upload-box">
             <img src="upload-icon.png" alt="">
@@ -20,9 +21,10 @@
     </div>
     <div class="separator1"></div>
     <div class="button-container">
-        <button>문의하기</button>
+        <button type="submit">문의하기</button>
         <button class="cancel-btn">취소</button>
     </div>
+    </form>
     <div id="uploadModal" class="modal">
         <div class="modal-content">
             문의 되었습니다<br><br>

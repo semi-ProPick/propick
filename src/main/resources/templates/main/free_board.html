@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://http://www.thymelesf.org">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/board.css" />
-    <link rel="stylesheet" href="css/header.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/board.css" />
+    <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
     <title>자유게시판</title>
   </head>
   <body>
-    <div id="header"></div>
+    <div id="header">
+
+    </div>
     <div class="Container2">
       <h2 class="faq-title">자유게시판</h2>
       <table class="table2">
@@ -23,6 +25,26 @@
           </tr>
         </thead>
         <tbody>
+        <tr th:each="userPostBoard : ${list}">
+          <td th:text="${userPostBoard.id}">번호</td>
+          <td>
+            <a th:text="${userPostBoard.title}" th:href="@{/main/Free_boardcm{id=${board.id}}">제목</a>
+          </td>
+          <td th:text="${userPostBoard.contents}">내용</td>
+          <td th:text="${#temporals.format(userPostBoard.created_at, 'yyyy-MM-dd HH:mm:ss')}">작성일</td>
+          <td th:text="${#temporals.format(userPostBoard.updated_at, 'yyyy-MM-dd HH:mm:ss')}">수정일</td>
+        </tr>
+
+        <tr>
+          <td>회원정보</td>
+          <td>
+            회원정보 변경은 어디서 하나요?
+            <div class="user-id">작성자: user123</div>
+          </td>
+          <td>16:42</td>
+          <td>15</td>
+          <td>15</td>
+        </tr>
           <tr>
             <td>회원정보</td>
             <td>
@@ -128,7 +150,7 @@
       <footer>
         <div class="write-btn-container">
           <button class="write-btn">
-            <a href="/free_write.html">글쓰기</a>
+            <a href="/main/free_write">글쓰기</a>
           </button>
         </div>
         <div class="pagination">

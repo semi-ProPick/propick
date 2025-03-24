@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @Entity
@@ -23,11 +21,22 @@ public class BoardComment {
     private LocalDateTime comment_created_at = LocalDateTime.now();
 
     @ManyToOne
-    private Board board;
+    @JoinColumn(name = "board_id", nullable = false)
+    private UserPostBoard board;
+
+    @ManyToOne
+    @JoinColumn(name = "f_n_a_id", nullable = false)
+    private FnaBoard fnaBoard;
+
+    @ManyToOne
+    @JoinColumn(name = "q_n_a_id", nullable = false)
+    private QnaBoard qnaBoard;
+
+    @ManyToOne
+    @JoinColumn(name = "notice_id", nullable = false)
+    private Notice notice;
 
 //    @ManyToOne
 //    private List<User> users = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    private BoardType boardType;
 }

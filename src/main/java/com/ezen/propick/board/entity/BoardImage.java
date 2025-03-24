@@ -18,10 +18,23 @@ public class BoardImage {
     private String img_name;
 
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    @JoinColumn(name = "board_id", nullable = false)  // FK 설정
+    private UserPostBoard board;
 
-    @Enumerated(EnumType.STRING)
-    private BoardType boardType;
+    @ManyToOne
+    @JoinColumn(name = "f_n_a_id", nullable = false)
+    private FnaBoard fnaBoard;
+
+    @ManyToOne
+    @JoinColumn(name = "q_n_a_id", nullable = false)
+    private QnaBoard qnaBoard;
+
+    @ManyToOne
+    @JoinColumn(name = "notice_id", nullable = false)
+    private Notice notice;
+
+//    @ManyToOne
+//    @JoinColumn(name = "board_id", nullable = false)
+//    private UserPostBoard userPostBoard;
 
 }

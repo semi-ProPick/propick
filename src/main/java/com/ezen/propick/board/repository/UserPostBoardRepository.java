@@ -1,9 +1,9 @@
 package com.ezen.propick.board.repository;
 
-import com.ezen.propick.board.entity.Board;
+import com.ezen.propick.board.entity.UserPostBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BoardRepository extends JpaRepository<Board, Long> {
+public interface UserPostBoardRepository extends JpaRepository<UserPostBoard, Integer> {
 }
