@@ -39,12 +39,13 @@ public class User {
     private Role userRole;
 
 
-    public User(String userId, String userPwd, String userName, String userPhone, Gender userGender, Date userBirth) {
+    public User(String userId, String userPwd, String userName, String userPhone, Gender userGender, Date userBirth, Role userRole) {
         this.userId = userId;
         this.userPwd = userPwd;
         this.userName = userName;
         this.userPhone = userPhone;
         this.userGender = userGender;
         this.userBirth = userBirth;
+        this.userRole = Role.USER;
     }
 }

@@ -2,28 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>회원가입</title>
+    <title>test</title>
     <link rel="stylesheet" href="/css/main/login_join.css" type="text/css" />
     <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
 </head>
 <body>
-<div th:replace="~{main/mainHeader}"></div>
-<form id="joinForm" action="@{/user/join}" th:object="${MemberDTO}" method="post">
 <div id="pageoutside">
     <div id="header"></div>
     <div id="pageinside">
         <h2 class="title">회원가입</h2>
         <div class="username_box">
-            <label for="insert_name"><p>이름</p></label>
-            <input class="insert" id="insert_name" type="text" th:field="*{userName}" placeholder="이름을 입력해주세요.">
+            <p>이름</p>
+            <input class="insert" id="insert_name" type="text" placeholder="이름을 입력해주세요.">
             <p id="error_message1"></p>
         </div>
+
         <div class="userphone_box">
-            <label for="insert_phone"><p>연락처</p></label>
+            <p >연락처</p>
             <div id="user_phone">
-                <input class="insert" id="insert_phone"  type="text" th:field="*{userPhone}" placeholder="연락처(‘-’제외)를 입력해주세요.">
+                <input class="insert" id="insert_phone"  type="text" placeholder="연락처(‘-’제외)를 입력해주세요.">
             </div>
             <p id="error_message2"></p>
         </div>
@@ -31,14 +28,14 @@
 
 
         <div class="useridpwd_box">
-            <label for="insert_id"><p>아이디</p></label>
-            <input class="insert1" id="insert_id" type="text" th:field="*{userId}" placeholder="아이디를 입력해주세요.">
+            <p>아이디</p>
+            <input class="insert1" id="insert_id" type="text" placeholder="아이디를 입력해주세요.">
             <p id="error_message3"></p>
-            <label for="insert_pwd"><p>비밀번호</p></label>
-            <input class="insert1" id="insert_pwd" type="text" th:field="*{userPwd}" placeholder="비밀번호를 입력해주세요.">
+            <p>비밀번호</p>
+            <input class="insert1" id="insert_pwd" type="text" placeholder="비밀번호를 입력해주세요.">
             <p id="error_message4"></p>
-            <label for="insert_confirm_pwd"><p>비밀번호 확인</p></label>
-            <input class="insert1" id="insert_confirm_pwd" type="text" th:field="*{userPwd}" placeholder="비밀번호를 다시 입력해주세요.">
+            <p>비밀번호 확인</p>
+            <input class="insert1" id="insert_confirm_pwd" type="text" placeholder="비밀번호를 다시 입력해주세요.">
             <p id="error_message5"></p>
         </div>
 
@@ -56,8 +53,8 @@
         </div>
 
         <div id="userbirth_box">
-            <label for="insert_birth"><p>생년월일</p></label>
-            <input class="insert" id="insert_birth" type="text" th:field="*{userBirth}" placeholder="생년월일을 입력해주세요. ex.990101">
+            <p>생년월일</p>
+            <input class="insert" id="insert_birth" type="text" placeholder="생년월일을 입력해주세요. ex.990101">
             <p id="error_message6"></p>
         </div>
 
@@ -78,7 +75,7 @@
                 <label>
                     <input class="check" type="checkbox"> 이용약관 동의
                 </label>
-                <button type="button" class="view"  id="view1">전문보기</button>
+                <button class="view"  id="view1">전문보기</button>
             </div>
 
             <div id="terms_content1">
@@ -89,18 +86,18 @@
                 <label>
                     <input class="check" type="checkbox"> 개인정보 처리 방침 동의
                 </label>
-                <button type="button" class="view" id="view2">전문보기</button>
+                <button class="view" id="view2">전문보기</button>
             </div>
 
             <div id="terms_content2">
                 <p class="content" >주저리 주저리</p>
             </div>
 
-            <div class="agree-gap">
+            <div id="agree-gap">
                 <label>
                     <input class="check" type="checkbox"> 마케팅 수신 동의
                 </label>
-                <button type="button" class="view" id="view3">전문보기</button>
+                <button class="view" id="view3">전문보기</button>
             </div>
 
             <div id="terms_content3">
@@ -110,13 +107,12 @@
         </div>
     </div>
     <div class="joinus_box">
-        <button type="button" id="joinus" onclick="validateForm()">회원 가입</button>
+        <button id="joinus" onclick="validateForm()">회원 가입</button>
     </div>
 </div>
 </div>
-</form>
 
-    <script src="/js/main/new-join-us.js"></script>
-    <script src="/js/main/header.js" defer></script>
+<script src="/js/main/new-join-us.js"></script>
+<script src="/js/main/header.js" defer></script>
 </body>
 </html>

@@ -16,17 +16,22 @@ function validateForm(){
 
 
         let koreanRegex = /^[가-힣]+$/;
+        let numberRegex1 = /^[0-9]{10,11}$/;
         let numberRegex = /^[0-9]{6}$/;
         let engNum =  /^[a-zA-Z0-9]*$/;
         let pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~@#$!%*?&])[a-zA-Z\d~@#$!%*?&]{8,}$/;
+
+    let valid = true;
 
     // 이름 유효성 검사
     if(user_name.trim() === ""){
         error_name.style.display = "block";
         error_name.textContent = "이름을 입려해주세요.";
+        valid=false;
     }else if(!koreanRegex.test(user_name)){
         error_name.style.display="block";
         error_name.textContent = "이름을 제대로 입력해주세요.";
+        valid=false;
     } else {
         error_name.style.display = "none";
     }
@@ -35,9 +40,11 @@ function validateForm(){
     if(user_phone.trim() === ""){
         error_phone.style.display = "block";
         error_phone.textContent = "연락처를 입력해주세요.";
-    } else if(!numberRegex.test(user_phone)){
+        valid=false;
+    } else if(!numberRegex1.test(user_phone)){
         error_phone.style.display="block";
-        error_phone.textContent = "숫자만 입력가능합니다.";
+        error_phone.textContent = "연락처를 다시 확인해주세요.";
+        valid=false;
     } else {
         error_phone.style.display = "none";
     }
@@ -46,9 +53,11 @@ function validateForm(){
     if(user_id.trim() === ""){
         error_id.style.display ="block";
         error_id.textContent ="ID를 입력해주세요."
+        valid=false;
     } else if(!engNum.test(user_id)){
         error_id.style.display="block";
         error_id.textContent="영어와 숫자만 가능합니다.";
+        valid=false;
     } else{
         error_id.style.display="none";
     }
@@ -57,9 +66,11 @@ function validateForm(){
     if(user_pwd.trim() === ""){
         error_pwd.style.display ="block";
         error_pwd.textContent ="PWD를 입력하세요.";
+        valid=false;
     } else if(!pattern.test(user_pwd)){
         error_pwd.style.display="block";
-        error_pwd.textContent="영어, 특수문자, 숫자를 포함시켜주세요.";
+        error_pwd.textContent="영어, 특수문자, 숫자를 포함시키고 8자리 이상으로 입력하세요.";
+        valid=false;
     } else{
         error_pwd.style.display="none";
     }
@@ -68,12 +79,15 @@ function validateForm(){
     if(user_confirm_pwd.trim() === ""){
         error_confirm.style.display="block";
         error_confirm.textContent="PWD를 한번 더 입력해주세요.";
+        valid=false;
     } else if(user_pwd.trim() !== user_confirm_pwd.trim()){
         error_confirm.style.display="blcok";
         error_confirm.textContent = "PWD와 일치하게 입력해주세요.";
+        valid=false;
     } else if(!pattern.test(user_confirm_pwd)){
         error_confirm.style.display="block";
         error_confirm.textContent="PWD와 일치하게 입력해주세요.";
+        valid=false;
     } else{
         error_confirm.style.display="none";
     }
@@ -82,11 +96,17 @@ function validateForm(){
     if(user_birth.trim() === ""){
         error_birth.style.display="block";
         error_birth.textContent="생년월일을 입력해주세요.";
+        valid=false;
     }else if(!numberRegex.test(user_birth)){
         error_birth.style.display="block";
         error_birth.textContent="6자리 숫자로 입력해주세요.";
+        valid=false;
     } else {
         error_birth.style.display="none";
+    }
+
+    if (valid) {
+        document.getElementById("joinForm").submit();  // 폼을 실제로 제출
     }
 }
 

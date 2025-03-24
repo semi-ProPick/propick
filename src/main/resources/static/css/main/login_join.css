@@ -44,7 +44,7 @@ a {
   /*align-items: left;*/
   display: flex;
   align-items: flex-start;
-  background-image: url("static/css/imges/main/image 50.png");
+  background-image: url("../../images/main/image50.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -207,6 +207,7 @@ a {
   height: 61px;
   color: #959595;
   margin-bottom: 10px;
+  padding-left: 10px;
 }
 
 .request {
