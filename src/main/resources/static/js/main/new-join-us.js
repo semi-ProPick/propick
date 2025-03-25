@@ -107,6 +107,9 @@ function validateForm(){
 
     if (valid) {
         document.getElementById("joinForm").submit();  // 폼을 실제로 제출
+        // setTimeout(function() {
+        //     window.location.href = "/user/login";  // 리디렉션
+        // }, 1000);  // 1초 지연 후 리디렉션
     }
 }
 

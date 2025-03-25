@@ -1,18 +1,19 @@
 package com.ezen.propick.user.controller;
 
+import com.ezen.propick.user.dto.LoginDTO;
 import com.ezen.propick.user.dto.MemberDTO;
 import com.ezen.propick.user.service.UserService;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,12 +35,18 @@ public class UserController {
         return"/main/login";
     }
 
+    @GetMapping("/main")
+    public String main(){
+        return "/main/main";
+    }
+
     @PostMapping("/join")
-    public String create(MemberDTO memberDTO) {
-        // userService의 save 또는 create 메서드 호출
-        userService.createMember(memberDTO);  // 또는 userService.create(memberDTO);
-        // 회원가입 후 홈페이지로 리다이렉트
-        return "redirect:/main/login";
+    public String join(MemberDTO memberDTO) {
+        // 회원가입 처리
+        userService.createMember(memberDTO);
+
+        // 회원가입 후 로그인 페이지로 리다이렉트
+        return "redirect:/";  // 로그인 페이지로 리다이렉트
     }
 
 

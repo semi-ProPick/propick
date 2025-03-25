@@ -3,6 +3,7 @@ package com.ezen.propick.user.entity;
 import com.ezen.propick.user.enumpackage.Gender;
 import com.ezen.propick.user.enumpackage.Role;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user")
 public class User {
     @Id //pk설정
@@ -46,6 +48,6 @@ public class User {
         this.userPhone = userPhone;
         this.userGender = userGender;
         this.userBirth = userBirth;
-        this.userRole = Role.USER;
+        this.userRole = Role.User;
     }
 }
