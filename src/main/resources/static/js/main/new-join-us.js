@@ -17,7 +17,7 @@ function validateForm(){
 
         let koreanRegex = /^[가-힣]+$/;
         let numberRegex1 = /^[0-9]{10,11}$/;
-        let numberRegex = /^[0-9]{6}$/;
+        let numberRegex = /^[0-9]{2}\/[0-9]{2}\/[0-9]{2}$/;
         let engNum =  /^[a-zA-Z0-9]*$/;
         let pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~@#$!%*?&])[a-zA-Z\d~@#$!%*?&]{8,}$/;
 
@@ -99,7 +99,7 @@ function validateForm(){
         valid=false;
     }else if(!numberRegex.test(user_birth)){
         error_birth.style.display="block";
-        error_birth.textContent="6자리 숫자로 입력해주세요.";
+        error_birth.textContent="00/00/00 양식으로 적어주세요.";
         valid=false;
     } else {
         error_birth.style.display="none";

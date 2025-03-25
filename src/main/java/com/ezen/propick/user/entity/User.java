@@ -38,16 +38,6 @@ public class User {
     private Date userBirth;
     @Column(name = "user_role", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role userRole;
+    private Role userRole = Role.User;
 
-
-    public User(String userId, String userPwd, String userName, String userPhone, Gender userGender, Date userBirth, Role userRole) {
-        this.userId = userId;
-        this.userPwd = userPwd;
-        this.userName = userName;
-        this.userPhone = userPhone;
-        this.userGender = userGender;
-        this.userBirth = userBirth;
-        this.userRole = Role.User;
-    }
 }

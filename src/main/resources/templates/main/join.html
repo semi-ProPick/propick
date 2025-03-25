@@ -47,10 +47,10 @@
             <p>성별</p>
             <div>
                 <label>
-                    <input class="radiogender" type="radio" name="gender" value="male" checked="checkbox" > 남성
+                    <input class="radiogender" type="radio" name="userGender" value="Male" th:checked="*{userGender == 'Male'}"> 남성
                 </label>
                 <label>
-                    <input class="radiogender" type="radio" name="gender" value="female"> 여성
+                    <input class="radiogender" type="radio" name="userGender" value="Female" th:checked="*{userGender == 'Female'}"> 여성
                 </label>
             </div>
         </div>
@@ -110,7 +110,8 @@
         </div>
     </div>
     <div class="joinus_box">
-        <button type="submit" id="joinus" >회원 가입</button>
+        <button type="button" id="joinus"  onclick="validateForm()" >회원 가입</button>
+<!--        <button type="submit" id="joinus" >회원 가입</button>-->
 <!--        onclick="validateForm()"-->
     </div>
 </div>
