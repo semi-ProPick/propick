@@ -15,7 +15,6 @@ function addComment() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-
     const likeButton = document.getElementById("like-button");
 
     likeButton.addEventListener("click", function () {

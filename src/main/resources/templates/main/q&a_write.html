@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/main/header.css" type="text/css" />
 </head>
 <body>
-    <div id="header"></div>
+    <div id="header"> <div th:replace="~{main/mainHeader}"></div></div>
     <form action="/main/q&a_write" method="post">
         <input name="title" type="text" class="title-box" placeholder="제목을 입력하세요"></input>
     <div class="separator"></div>

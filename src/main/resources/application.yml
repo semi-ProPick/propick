@@ -1,9 +1,27 @@
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/ppdb
+#    username: propick
+#    password: propick
+#  jpa:
+#    show-sql: true
+#    database: mysql
+#    generate-ddl: false
+#    properties:
+#      hibernate:
+#        format_sql: true
+#
+#  web:
+#    resources:
+#      static-locations: classpath:/static/, classpath:/public/
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ppdb
-    username: propick
-    password: propick
+    url: jdbc:mysql://localhost:3306/testdb
+    username: test
+    password: test
   jpa:
     show-sql: true
     database: mysql

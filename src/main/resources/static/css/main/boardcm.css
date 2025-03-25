@@ -100,17 +100,22 @@ a {
   height: 100px;
   background: #f3f3f3;
   display: flex;
-  justify-content: left;
-  align-items: center;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center;     /* 수직 가운데 정렬 */
   border-radius: 5px;
   cursor: pointer;
   margin-left: 10px;
-  text-align: left;
+  text-align: center; /* 텍스트를 가운데 정렬 */
 }
 
 .upload-box img {
-  width: 24px;
-  height: 24px;
+  width: 35px;
+  height: 35px;
+}
+
+.upload-box1 img {
+  width: 200px;
+  height: 200px;
 }
 
 .button-container {

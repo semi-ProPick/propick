@@ -9,29 +9,29 @@
 </head>
 <body>
     <div id="header"></div>
-    <input type="text" class="title-box">
-        <h1 th:text="${userPostBoard.title}">추천 잘해주는 거 같아요.</h1>
-    </input>
+        <h1 class="title-box" th:text="${userPostBoard.title}">추천 잘해주는 거 같아요.</h1>
+
     <div class="separator"></div>
-    <textarea th:text="${userPostBoard.contents}" class="content-box" placeholder="여러 보충제를 먹어봤지만 소화가 잘 안되가지고.. 고민이 많았어요ㅠㅠ
+    <p th:utext="${userPostBoard.contents}" class="content-box"> 여러 보충제를 먹어봤지만 소화가 잘 안되가지고.. 고민이 많았어요ㅠㅠ
 설문지 작성해서 저한테 맞는 보충제를 픽해서 알려주니까 1:1 맞춤인 느낌?
 받아서 먹어보니까 전보다 소화도 잘되고 단백질까지 챙겨서
 헬스인인 저한테는 너무나 만족스러운 구매였습니다.!
-보충제 뭐사야할지 고민이라면 설문 통해서 구매하는거 완전 추천!!"></textarea>
+보충제 뭐사야할지 고민이라면 설문 통해서 구매하는거 완전 추천!!</p>
     <div class="upload-section">
-        <div class="upload-box">
-            <img src="/main/upload-icon" alt="">
-            <span>사진 (0/5)</span>
+        <div class="upload-box1">
+            <img th:src="@{/user_post_files/{filename}(filename=${userPostBoard.filename})}" alt="Uploaded Image"/>
+
         </div>
     </div>
     <div class="separator1"></div>
     <div class="button-container">
         <span class="like-button" id="like-button">👍</span>
-        <button>댓글쓰기</button>
+        <button>댓글쓰기</button> &nbsp;&nbsp;&nbsp;
+        <button><a th:href="@{/main/board_delete(id=${userPostBoard.id})}">삭제</a></button>
     </div>
     <div class="comment-section" id="comment-section">
     </div>
 </body>
-<script src="/js/free_boardcm.js"></script>
-<script src="/js/header.js" defer></script>
+<script src="/js/main/free_boardcm.js"></script>
+<script src="/js/main/header.js" defer></script>
 </html>
