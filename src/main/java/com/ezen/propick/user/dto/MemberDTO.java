@@ -35,11 +35,11 @@ public class MemberDTO {
     @Pattern(regexp = "^[0-9]+$", message = "연락처는 숫자만 입력 가능합니다.")
     private String userPhone;
 
-    @NotNull(message = "성별은 필수 입력 값입니다.")
+//    @NotBlank(message = "성별은 필수 입력 값입니다.")
     private Gender userGender;
 
-    @NotNull(message = "생년월일은 필수 입력 값입니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    @NotBlank(message = "생년월일은 필수 입력 값입니다.")
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
     private Date userBirth;
 }
 

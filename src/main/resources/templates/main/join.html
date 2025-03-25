@@ -10,7 +10,7 @@
 </head>
 <body>
 <div th:replace="~{main/mainHeader}"></div>
-<form id="joinForm" action="@{/user/join}" th:object="${MemberDTO}" method="post">
+<form id="joinForm" action="/user/join" th:object="${MemberDTO}" method="post">
 <div id="pageoutside">
     <div id="header"></div>
     <div id="pageinside">
@@ -47,7 +47,7 @@
             <p>성별</p>
             <div>
                 <label>
-                    <input class="radiogender" type="radio" name="gender" value="male" checked="checkbox"> 남성
+                    <input class="radiogender" type="radio" name="gender" value="male" checked="checkbox" > 남성
                 </label>
                 <label>
                     <input class="radiogender" type="radio" name="gender" value="female"> 여성
@@ -110,7 +110,8 @@
         </div>
     </div>
     <div class="joinus_box">
-        <button type="button" id="joinus" onclick="validateForm()">회원 가입</button>
+        <button type="submit" id="joinus" >회원 가입</button>
+<!--        onclick="validateForm()"-->
     </div>
 </div>
 </div>

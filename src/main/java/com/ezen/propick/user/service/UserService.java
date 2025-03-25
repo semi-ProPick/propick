@@ -16,11 +16,12 @@ public class UserService {
 
     public void createMember(MemberDTO memberDTO) {
         memberDTO.setUserId(memberDTO.getUserId());
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); 빈으로 등록하는게 더 효율적이다.
         memberDTO.setUserPwd(passwordEncoder.encode(memberDTO.getUserPwd()));
         memberDTO.setUserName(memberDTO.getUserName());
         memberDTO.setUserPhone(memberDTO.getUserPhone());
         memberDTO.setUserGender(memberDTO.getUserGender());
+        memberDTO.setUserBirth(memberDTO.getUserBirth());
+
 
         User user = new User();
         user.setUserId(memberDTO.getUserId());
@@ -28,6 +29,7 @@ public class UserService {
         user.setUserName(memberDTO.getUserName());
         user.setUserPhone(memberDTO.getUserPhone());
         user.setUserGender(memberDTO.getUserGender());
+        user.setUserBirth(memberDTO.getUserBirth());
 
         this.userRepository.save(user);
     }
