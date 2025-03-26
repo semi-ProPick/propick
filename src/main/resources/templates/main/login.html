@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>로그인</title>
-<link rel="stylesheet" href="/css/main/login_join.css" type="text/css" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>로그인</title>
+    <link rel="stylesheet" href="/css/main/login_join.css" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="pageoutside">
-        <div id="inside">
-            <div class="img_box">
-                <div id="img"></div>
+<div class="pageoutside">
+    <div id="inside">
+        <div class="img_box">
+            <div id="img"></div>
+        </div>
+        <div id="notimg_box">
+            <div class="slogan_box">
+                <h2 id="title">propick</h2>
+                <p>건강한 나를 위한 <br>
+                    <span class="group">[</span>맞춤 프로틴<span class="group">]</span> 프로픽
+                </p>
             </div>
-            <div id="notimg_box">
-                <div class="slogan_box">
-                    <h2 id="title">propick</h2>
-                    <p>건강한 나를 위한 <br>
-                        <span class="group">[</span>맞춤 프로틴<span class="group">]</span> 프로픽
-                    </p>
-                </div>
-    
-                <div class="login_id_pwd_box">
-                    <p class="lptext">Login</p>
-                    <input class="insert" id="insert_id" type="text" placeholder="아이디를 입력해주세요.">
-                    <p id="error_message1"></p>
-                    <p class="lptext">Password</p>
-                    <input class="insert" id="insert_pwd" type="password" placeholder="비밀번호를 입력해주세요.">
-                    <p id="error_message2"></p>
-                </div>
-    
-                <div class="login_box">
-                    <button id="welecome" onclick="validateForm()">로그인</button>
-                </div>
-    
-                <div class="findorjoin_box">
-                    <button class="foj" id="line"><a href="/id_find.html">아이디 찾기</a></button>
-                    <button class="foj" id="line1"><a href="/password_find.html">비밀번호 찾기</a></button>
-                    <button class="foj"><a href="/join.html">회원가입</a></button>
-                </div>
+
+            <div class="login_id_pwd_box">
+                <p class="lptext">Login</p>
+                <input class="insert" id="insert_id" type="text" placeholder="아이디를 입력해주세요.">
+                <p id="error_message1"></p>
+                <p class="lptext">Password</p>
+                <input class="insert" id="insert_pwd" type="password" placeholder="비밀번호를 입력해주세요.">
+                <p id="error_message2"></p>
+            </div>
+
+            <div class="login_box">
+                <button id="welecome" onclick="validateForm()">로그인</button>
+            </div>
+
+            <div class="findorjoin_box">
+                <button class="foj" id="line"><a href="/id_find.html">아이디 찾기</a></button>
+                <button class="foj" id="line1"><a href="/password_find.html">비밀번호 찾기</a></button>
+                <button class="foj"><a href="/join.html">회원가입</a></button>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="/js/main/new-login.js"></script>
+<script src="/js/main/new-login.js"></script>
 </body>
 </html>

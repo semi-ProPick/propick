@@ -20,7 +20,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) -> {
                     authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/**")).permitAll();
-    }).csrf(csrf -> csrf.disable());
+    }).csrf(csrf -> csrf.disable())
+                .formLogin(formLogin -> formLogin.loginPage("/user/login")
+                        .defaultSuccessUrl("/"));
 
 
         return http.build();

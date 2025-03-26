@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 종료 버튼 클릭 시 페이지 이동
   endBtn.addEventListener("click", function () {
-    window.location = "/Propick/main.html";
+    window.location = "../../../templates/main/main.html";
   });
 
   // 계속 설문하기 버튼 클릭 시 팝업 닫기
