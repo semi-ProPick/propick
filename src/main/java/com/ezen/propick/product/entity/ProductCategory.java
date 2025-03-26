@@ -1,6 +1,7 @@
 package com.ezen.propick.product.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "product_category")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductCategory {
 
     @Id
@@ -26,4 +26,8 @@ public class ProductCategory {
     @JoinColumn(name = "category_id",nullable = false)
     private Category category;
 
+    public ProductCategory(Product product, Category category) {
+        this.product = product;
+        this.category = category;
+    }
 }

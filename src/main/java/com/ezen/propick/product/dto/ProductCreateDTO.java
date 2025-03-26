@@ -33,13 +33,25 @@ public class ProductCreateDTO {
     @DecimalMin(value = "0.01", message = "가격은 0보다 커야 합니다.")
     private BigDecimal productPrice;  // 제품 가격
 
-    @NotEmpty(message = "적어도 하나의 카테고리를 선택해야 합니다.")
-    private List<CategoryDTO> categoryIds;  // 카테고리 리스트
+//    @NotEmpty(message = "적어도 하나의 카테고리를 선택해야 합니다.")
+//    private List<CategoryDTO> categoryIds;  // 카테고리 리스트
+//
+//    @NotEmpty(message = "최소 하나의 이미지가 필요합니다.")
+//    private List<ProductImageDTO> productImages;  // 제품 이미지
+//
+//    @NotEmpty(message = "성분 이름은 필수 항목입니다.")
+//    private List<String> ingredientNames;  // 성분 이름 리스트
 
-    @NotEmpty(message = "최소 하나의 이미지 URL이 필요합니다.")
-    private List<ProductImageDTO> productImages;  // 제품 이미지
+    @NotEmpty(message = "적어도 하나의 카테고리를 선택해야 합니다.")
+    private List<Integer> categoryIds;  // 선택된 카테고리 ID 리스트
+
+    @NotEmpty(message = "최소 하나의 이미지가 필요합니다.")
+    private List<String> productImages;  // 이미지 URL 리스트
 
     @NotEmpty(message = "성분 이름은 필수 항목입니다.")
     private List<String> ingredientNames;  // 성분 이름 리스트
+
+    private Integer productId; // 추가
+    private Integer productInfoId; // 추가
 
 }

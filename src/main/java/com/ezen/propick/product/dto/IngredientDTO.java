@@ -1,21 +1,20 @@
 package com.ezen.propick.product.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class IngredientDTO {
 
+    private Integer ingredientId;   // 성분 아이디
     private String ingredientName;  // 성분명
-    private Integer proteinAmount;  // 성분량
-
-//    테이블에 추가해야하나?
-    private String unit;  // 단위(mg, g)
-    private String functionality; // 성분 기능 (예: "근육 성장", "면역력 향상")
-    private String source; // 성분 출처 (예: "식물성", "동물성")
-    private Double concentration; // 성분 농도 (예: 10.5%)
+    private Integer proteinAmount;  // 단백질 함량
+    private Integer servingSize;  // 1회 섭취량
+    private Integer calories;  // 칼로리, 에너지
 
 }

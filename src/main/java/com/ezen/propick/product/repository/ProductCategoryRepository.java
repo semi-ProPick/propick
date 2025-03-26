@@ -1,13 +1,12 @@
 package com.ezen.propick.product.repository;
 
+import com.ezen.propick.product.entity.Product;
 import com.ezen.propick.product.entity.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+@Repository
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Integer> {
-    // 상품과 카테고리 간의 관계를 관리하고, 조회만 하는 역할
+    // 상품과 카테고리 간의 관계 관리
 
-    // 카테고리 이름으로 조회
-    List<ProductCategory> findByCategoryName(String categoryName);
 }
