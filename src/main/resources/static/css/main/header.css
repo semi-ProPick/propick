@@ -93,14 +93,14 @@ html, body {
   background-color: #fff;
   transition: transform 0.3s ease;
   z-index: 30; */
-/* 
+/*
   position: fixed;
     top: 0;
-    left: -100%;  
-    width: 400px;  
+    left: -100%;
+    width: 400px;
     height: 100%;
-    background-color: #fff;  
-    transition: left 0.3s ease;  
+    background-color: #fff;
+    transition: left 0.3s ease;
     z-index: 9;  */
     display: none;
     position: fixed;

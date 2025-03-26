@@ -1,38 +1,44 @@
-<header class="header_wrap">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" th:href="@{/css/main/header.css}" type="text/css" />
+</head>
+<header id="header" class="header_wrap" th:fragment="header">
   <div class="menu_icon">
     <div></div>
   </div>
-  <div class="logo"><a href="/main.html">propick</a></div>
+  <div class="logo"><a th:href="@{/main}">propick</a></div>
   <div class="user_icon">
-    <a href="/mypage.html">
-      <img src="/images/user.png" alt="" />
+    <a th:href="@{/main/mypage}">
+      <img src="/images/main/user.png" alt="" />
     </a>
   </div>
   <div class="menu">
     <ul>
       <li>
-        <a href="#">맞춤 프로틴 추천<span id="hot">HOT</span></a>
+        <a th:href="@{/main/recommend}">맞춤 프로틴 추천<span id="hot">HOT</span></a>
       </li>
-      <li><a href="/product.html">전체 상품 보기</a></li>
-      <li><a href="/mypage.html">마이페이지</a></li>
-      <li><a href="/brandIntro.html">브랜드 스토리</a></li>
+      <li><a th:href="@{/main/product}">전체 상품 보기</a></li>
+      <li><a th:href="@{/main/mypage}">마이페이지</a></li>
+      <li><a th:href="@{/main/brandIntro}">브랜드 스토리</a></li>
       <li class="submenu">
         <a href="#">소식</a>
         <ul class="submenu_list">
-          <li><a href="/collabo.html">협업 브랜드</a></li>
-          <li><a href="/event.html">진행 이벤트</a></li>
+          <li><a th:href="@{/main/collabo}">협업 브랜드</a></li>
+          <li><a th:href="@{/main/event}">진행 이벤트</a></li>
         </ul>
       </li>
       <li class="submenu">
         <a href="#">게시판</a>
         <ul class="submenu_list">
-          <li><a href="/announcement.html">공지사항게시판</a></li>
-          <li><a href="/f&q_board.html">F&A 게시판</a></li>
-          <li><a href="/q&a_board.html">Q&A 게시판</a></li>
-          <li><a href="/free_board.html">자유게시판</a></li>
+          <li><a th:href="@{/main/announcement}">공지사항게시판</a></li>
+          <li><a th:href="@{/main/fqBoard}">F&A 게시판</a></li>
+          <li><a th:href="@{/main/qaBoard}">Q&A 게시판</a></li>
+          <li><a th:href="@{/main/freeBoard}">자유게시판</a></li>
         </ul>
       </li>
-      <li><a href="/login.html">회원가입</a></li>
+      <li><a th:href="@{/main/login}">회원가입</a></li>
     </ul>
   </div>
 </header>
+</html>

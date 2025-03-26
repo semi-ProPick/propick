@@ -1,53 +1,45 @@
 <!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/mypage.css" type="text/css" />
-    <link rel="stylesheet" href="css/header.css" type="text/css" />
-    <title>즐겨찾기</title>
-  </head>
-  <body>
-    <div id="header"></div>
-    <div class="big_container">
-      <div class="middle_container">
-        <div class="favorite_title">
-          <img
-            id="favorite_img"
-            src="images/favorite.png"
-            alt="즐겨찾기 이미지"
-          />
-          <p id="favorite_title_text">즐겨찾기</p>
-        </div>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/main/mypage.css" type="text/css" />
+  <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+  <title>즐겨찾기</title>
+</head>
+<body>
+<header id="header" class="header_wrap" th:replace="~{main/mainHeader}"></header>
+<div class="big_container">
+  <div class="middle_container">
+    <div class="favorite_title">
+      <img
+              id="favorite_img"
+              src="/images/main/favorite.png"
+              alt="즐겨찾기 이미지"
+      />
+      <p id="favorite_title_text">즐겨찾기</p>
+    </div>
 
-        <div class="small_title">
-          <p>즐겨찾는 상품</p>
-        </div>
+    <div class="small_title">
+      <p>즐겨찾는 상품</p>
+    </div>
 
-        <div class="my_favorite_product">
-          <div class="product_directory">
-            <div class="product" id="product_1">
-              <div class="favorite_star">
-                <img src="images/Star 1.png" alt="Star" />
-              </div>
-              <img src="images/다운로드 1.png" alt="마이프로틴" />
-              <p>임팩트 웨이 프로틴</p>
-            </div>
-
-            <div class="product" id="product_2">
-              <div class="favorite_star">
-                <img src="images/Star 1.png" alt="Star" />
-              </div>
-              <img src="images/다운로드 1.png" alt="마이프로틴" />
-              <p>임팩트 웨이 프로틴</p>
-            </div>
-            <div class="product" id=""></div>
-            <div class="product" id=""></div>
+    <div class="my_favorite_product">
+      <div class="product_directory">
+        <!-- 동적으로 북마크 리스트 렌더링 -->
+        <div class="product" th:each="bookmark : ${bookmarks}" th:id="'product_' + ${bookmark.bookmarkId}">
+          <div class="favorite_star">
+            <img src="/images/Star 1.png" alt="Star" />
           </div>
+          <img src="/images/다운로드 1.png" alt="마이프로틴" />
+          <!-- 북마크 데이터 출력 (예: productId) -->
+          <p th:text="${bookmark.productId}"></p>
         </div>
       </div>
     </div>
-  </body>
-  <script src="/js/header.js" defer></script>
+  </div>
+</div>
+</body>
+<script src="/js/main/header.js" defer></script>
 </html>
