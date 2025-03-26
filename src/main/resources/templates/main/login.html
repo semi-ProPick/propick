@@ -23,18 +23,19 @@
                     <span class="group">[</span>맞춤 프로틴<span class="group">]</span> 프로픽
                 </p>
             </div>
-
+            <form th:action="@{/user/login}" method="post">
             <div class="login_id_pwd_box">
-                <p class="lptext">Login</p>
+                <label for="insert_id"><p class="lptext">Login</p></label>
                 <input class="insert" id="insert_id" type="text" placeholder="아이디를 입력해주세요.">
                 <p id="error_message1"></p>
-                <p class="lptext">Password</p>
+                <label for="insert_pwd"><p class="lptext">Password</p></label>
                 <input class="insert" id="insert_pwd" type="password" placeholder="비밀번호를 입력해주세요.">
                 <p id="error_message2"></p>
             </div>
 
             <div class="login_box">
-                <button id="welecome" onclick="validateForm()">로그인</button>
+                <button type="submit" id="welecome" th:href="@{/}" >로그인</button>
+<!--                onclick="validateForm()"-->
             </div>
 
             <div class="findorjoin_box">
@@ -42,10 +43,11 @@
                 <button class="foj" id="line1"><a href="/password_find.html">비밀번호 찾기</a></button>
                 <button class="foj"><a href="/join.html">회원가입</a></button>
             </div>
+    </form>
+
         </div>
     </div>
 </div>
-
 <script src="/js/main/new-login.js"></script>
 </body>
 </html>
