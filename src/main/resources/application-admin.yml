@@ -1,0 +1,4 @@
+spring:
+  profiles: admin
+  server:
+    port: 8081

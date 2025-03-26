@@ -550,10 +550,15 @@ span {
   padding: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   border-radius: 15px;
+  height: 400px;
 }
 .txt_right_wrap {
   width: 65%;
   padding: 10px;
+}
+.product_detail ul li{
+  display: flex;
+  font-size: 25px;
 }
 .txt_info {
   display: flex;
@@ -568,12 +573,16 @@ span {
 .txt_info ul {
   display: flex;
   justify-content: space-between;
-  width: 520px;
+  width: 700px;
   margin-top: 20px;
-  font-size: 30px;
+  font-size: 20px;
+}
+.txt_info li {
+  display: flex;
 }
 .txt_info p {
-  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 30px;
 }
 .nutrition_facts {
   margin-top: 45px;

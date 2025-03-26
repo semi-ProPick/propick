@@ -11,18 +11,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  thymeleaf:
-    prefix: classpath:/templates/
-    suffix: .html
-    mode: HTML
-    encoding: UTF-8
-    cache: false
-  web:
-    resources:
-      static-locations: classpath:/static/
-  mime-mappings:
-    js: application/javascript
-  logging:
-    level:
-      root: DEBUG
-      org.springframework: DEBUG
