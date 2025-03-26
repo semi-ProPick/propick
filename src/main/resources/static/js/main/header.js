@@ -7,6 +7,7 @@ window.addEventListener("DOMContentLoaded", function () {
   console.log("📢 Header loaded:", headerContainer);
   addMenuEventListeners();
   initSubMenuToggle();
+  initPopupEvent(); // 팝업 이벤트 초기화 함수 추가
 });
 
 function addMenuEventListeners() {
@@ -44,5 +45,19 @@ function initSubMenuToggle() {
         subMenuList.classList.toggle("active");
       }
     });
+  });
+}
+
+// 팝업 이미지 클릭 이벤트 추가
+function initPopupEvent() {
+  const popupImage = document.querySelector(".popup-banner");
+  if (!popupImage) {
+    console.warn("🚨 .popup-banner 요소를 찾을 수 없습니다!");
+    return;
+  }
+
+  popupImage.addEventListener("click", function (event) {
+    event.stopPropagation(); // 이벤트 전파 방지 (팝업 닫기와 충돌 방지)
+    window.location.href = "/popup/event"; // /popup/event로 이동
   });
 }
