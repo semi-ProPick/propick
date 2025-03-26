@@ -1,6 +1,5 @@
 package com.ezen.propick.user.service;
 
-import com.ezen.propick.user.dto.LoginDTO;
 import com.ezen.propick.user.dto.MemberDTO;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.repository.UserRepository;
@@ -32,15 +31,6 @@ public class UserService {
         user.setUserBirth(memberDTO.getUserBirth());
 
         this.userRepository.save(user);
-    }
-
-    public void inqueryLoginInfo(LoginDTO loginDTO) {
-        loginDTO.setUserId(loginDTO.getUserId());
-        loginDTO.setUserPassword(loginDTO.getUserPassword());
-
-        User user = new User();
-        user.setUserId(loginDTO.getUserId());
-        user.setUserPwd(loginDTO.getUserPassword());
     }
 }
 
