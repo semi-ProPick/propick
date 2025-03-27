@@ -34,9 +34,6 @@ public class SurveyResponse{
     @JoinColumn(name = "user_no", nullable = false)
     private User userNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false)
-    private SurveyQuestions questionId;
 
     // 다중 선택 응답 리스트
     @OneToMany(mappedBy = "response", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

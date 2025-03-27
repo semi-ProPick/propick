@@ -21,6 +21,8 @@ public class SurveyResponseOption {
     @JoinColumn(name = "response_id", nullable = false)
     private SurveyResponse response;
 
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_id", nullable = false)
     private SurveyOptions option;
