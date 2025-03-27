@@ -1,21 +1,15 @@
 package com.ezen.propick.survey.dto.survey;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SurveyResponseRequestDTO {
-    private Integer surveyId;
-    private Integer userNo;
-    private List<AnswerDTO> responses;
-
-    @Setter
-    @Getter
-    public static class AnswerDTO {
-        private Integer questionId;
-        private Integer optionId;
-    }
+    private Integer surveyId; // 설문 ID
+    private List<AnswerDTO> answers; // 사용자의 응답 리스트
 }
