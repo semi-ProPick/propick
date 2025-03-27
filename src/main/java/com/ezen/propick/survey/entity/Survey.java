@@ -1,11 +1,14 @@
 package com.ezen.propick.survey.entity;
 
+import com.ezen.propick.survey.enumpackage.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,7 +31,7 @@ public class Survey {
 
     @CreatedDate //생성 시점에 자동으로 날짜 생성
     @Column(name ="survey_created_at", nullable = false)
-    private LocalDateTime surveyCreatedAt = LocalDateTime.now();
+    private LocalDateTime surveyCreatedAt;
 
     @Column(name = "survey_updated_at")
     private LocalDateTime surveyUpdatedAt;
@@ -37,13 +40,14 @@ public class Survey {
     @Column(name = "status", nullable = false)
     private Status surveyStatus = Status.DRAFT;
 
+    @OneToMany(mappedBy = "surveyId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SurveyQuestions> questions = new ArrayList<>();
+
     @PreUpdate
     public void preUpdate() {
         this.surveyUpdatedAt = LocalDateTime.now();
     }
 
-    public enum Status {
-        DRAFT, COMPLETED,DELETED
-    }
+
 
 }

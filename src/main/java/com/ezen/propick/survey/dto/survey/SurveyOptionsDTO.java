@@ -1,4 +1,4 @@
-package com.ezen.propick.survey.dto;
+package com.ezen.propick.survey.dto.survey;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -24,5 +24,6 @@ public class SurveyOptionsDTO {
     //parentOptionId가 null이어도 되는 경우 유효성 검사를 제거하는 것이 맞음
     //@PositiveOrZero(message = "상위 선택지 ID는 0 이상이어야 합니다.")
     private Integer parentOptionId;//NULL 허용해야함!!
+
     private List<SurveyOptionsDTO> childOptions;
 }

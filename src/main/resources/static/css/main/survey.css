@@ -27,12 +27,14 @@ a {
   margin-right: 30px;
 }
 .contents_wrap {
-  width: 1000px;
+  width: 800px;
   margin: auto;
   padding-top: 50px;
   display: none;
-  min-height: 100vh;
+  /*min-height: 80vh;*/
 }
+
+
 .contents_wrap.active {
   display: block;
 }
@@ -46,7 +48,7 @@ header {
   cursor: pointer;
   display: flex;
   align-items: center;
-  background-image: url(/images/before.png);
+  background-image: url(/images/main/before.png);
   background-size: contain;
   background-position: left center;
   background-repeat: no-repeat;
@@ -59,7 +61,7 @@ header {
 }
 .close_btn {
   cursor: pointer;
-  background-image: url(/images/close.png);
+  background-image: url(/images/main/close.png);
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -80,6 +82,7 @@ header {
 .header_line_first {
   margin-left: 0px;
 }
+
 /* 설문시작 */
 .rounded_div {
   width: 570px;
@@ -309,28 +312,6 @@ header {
   }
 }
 
-#basicinfo_page1 .next_wrap {
-  margin-top: 700px;
-}
-#basicinfo_page2 .next_wrap {
-  margin-top: 550px;
-}
-#basicinfo_page3,
-#basicinfo_page4,
-#basicinfo_page5 {
-  .next_wrap {
-    margin-top: 696px;
-  }
-}
-#basicinfo_page6 .next_wrap {
-  margin-top: 40px;
-}
-#basicinfo_page6 .next_wrap {
-  margin-top: 37px;
-}
-#basicinfo_page6 .progress-info {
-  margin-top: 532px;
-}
 
 /* 설문조사 프로틴 섭취 목적 */
 .title {
@@ -357,8 +338,9 @@ header {
   font-size: 20px;
 }
 .select_purpose_contents {
-  width: 100%;
+  width: 100%
 }
+
 .select_purpose_list {
   height: 60px;
   line-height: 60px;
@@ -371,6 +353,43 @@ header {
   margin-top: 50px;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.select_purpose_list.selected,
+.select_health_list.selected {
+  background-color: #ff5c35;
+  color: #fff;
+}
+.select_purpose_list,
+.select_health_list{
+    background-color: #fff;
+    color: #666;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+.question-title-with-img {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 가운데 정렬 */
+  justify-content: center;
+}
+
+.question-title-with-img img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 10px; /* 이미지와 텍스트 사이 간격 */
+}
+
+.question-title-with-img span {
+  font-size: 30px; /* 타이틀 글자 크기 조절 가능 */
+  font-weight: bold;
+  color: #333;
+}
+
+.select_purpose_list:hover,
+.select_health_list:hover {
+  background-color: #f4d8be; /* hover 시 배경 색상 */
+  color: #333; /* hover 시 글자 색상 */
 }
 .option.selected {
   border-color: #ff5c35;
@@ -395,7 +414,9 @@ header {
   text-align: center;
   margin: auto;
   color: #ff5c35;
-  margin-top: 500px;
+  margin-top: 150px;
+  /*margin-bottom: -100px;*/
+
 }
 .progress-info p {
   font-size: 20px;
@@ -437,6 +458,7 @@ header {
   margin-bottom: 30px;
   text-align: center;
 }
+
 .point_color {
   color: #ff5c35;
 }
@@ -447,6 +469,7 @@ header {
   padding: 5px;
   text-align: center;
   margin: auto;
+  font-size: 20px;
 }
 .contents_impo_title p {
   color: #ff5c35;
@@ -489,6 +512,12 @@ header {
   margin-top: 10px;
   margin-left: 30px;
 }
+.select_purpose_list,
+.select_health_list {
+  margin-bottom: 0px; /* 각 선택지 사이에 40px 간격을 두기 */
+}
+
+
 .next_wrap {
   width: 210px;
   height: 50px;
@@ -498,10 +527,13 @@ header {
   border-radius: 40px;
   color: #fff;
   text-align: center;
-  margin: auto;
-  margin-top: auto;
-  box-shadow: 0px 5px 5px 1px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  position: relative;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 150px;
+  z-index: 19;
+
 }
 .next_wrap p {
   font-size: 20px;
@@ -509,30 +541,36 @@ header {
 .next_wrap a {
   font-size: 20px;
 }
-
+.next_wrap:focus {
+  outline: none;
+}
 #warning {
   display: block;
 }
-
 .warning_message {
-  width: 440px;
-  display: flex;
+  position: relative;
+  bottom: 50px; /* 버튼과 수직 간격 맞추기 */
+  left: 50%;
+  transform: translateX(-150%);
+  width: auto;
+  max-width: 300px;
   background-color: #e6ac60;
   color: #fff;
-  padding: 15px 20px;
+  padding: 12px 20px;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 100;
   display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 .warning_message.show {
-  display: block;
-  width: 440px;
   display: flex;
-  background-color: #e6ac60;
-  color: #fff;
-  padding: 15px 20px;
-  margin-top: -70px;
 }
 .warning_message p {
   margin-left: 10px;
+  font-size: 20px
 }
 #concern_page3 .header_line_third {
   background-color: #ff5c35;
@@ -542,7 +580,7 @@ header {
 }
 #concern_page3 .contents_sub_title span {
   font-weight: 300;
-  font-size: 16px;
+  font-size: 20px;
 }
 #concern_page3 .contents_impo_title {
   margin-top: 610px;
@@ -573,7 +611,7 @@ header {
 }
 .close_btn3 {
   cursor: pointer;
-  background-image: url(/images/close.png);
+  background-image: url(/images/main/close.png);
   background-size: contain;
   background-position: right;
   background-repeat: no-repeat;
@@ -687,8 +725,8 @@ header {
 .health_conditions_img,
 .protein_type_img,
 .protein_intake_img {
-  max-width: 300px;
-  max-height: 300px;
+  max-width: 30px;
+  max-height: 30px;
   margin: 20px;
   display: flex;
 }

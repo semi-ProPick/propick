@@ -1,9 +1,12 @@
 package com.ezen.propick.survey.repository;
 
 import com.ezen.propick.survey.entity.SurveyResponse;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.List;
+
 
 @Repository
-public interface SurveyResponseRepository extends CrudRepository<SurveyResponse, Integer> {
+public interface SurveyResponseRepository extends JpaRepository<SurveyResponse, Integer> {
+
 }
