@@ -1,9 +1,14 @@
 package com.ezen.propick.survey.entity;
 
+import com.ezen.propick.product.entity.Product;
+import com.ezen.propick.survey.enumpackage.ProteinType;
+import com.ezen.propick.survey.enumpackage.RecommendationTiming;
+import com.ezen.propick.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,12 +37,12 @@ public class Recommendation {
     private User userNo;
 
     //float -> BigDeciaml 변경 정확한 소수 연산이 필요할때는 BigDecimal을 사용
-    @Column(name="recommendation_intake_amount", nullable = false)
+    @Column(name="recommendation_intake_amount", precision=10, scale=2, nullable = false)
     private BigDecimal recommendationIntakeAmount;
 
     @Column(name="recommendation_timing", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Timing recommendationTiming;
+    private RecommendationTiming recommendationTiming;
 
 
     @Column(name="recommendation_protein_type", nullable = false)
@@ -47,11 +52,9 @@ public class Recommendation {
     @Column(name="recommendation_warnings")
     private String recommendationWarning;
 
-    public enum Timing {
-        PostWorkout, BeforeBed, Morning
+
+    public void setRecommendationIntakeAmount(BigDecimal amount) {
+        this.recommendationIntakeAmount = amount.setScale(2, RoundingMode.HALF_UP);
     }
 
-    public enum ProteinType {
-        WPC, WPI, WPH, ISP, Casein
-    }
 }

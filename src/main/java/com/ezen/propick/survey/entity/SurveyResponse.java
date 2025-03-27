@@ -1,11 +1,15 @@
 package com.ezen.propick.survey.entity;
 
+import com.ezen.propick.survey.enumpackage.ResponseStatus;
+import com.ezen.propick.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,26 +38,23 @@ public class SurveyResponse{
     @JoinColumn(name = "question_id", nullable = false)
     private SurveyQuestions questionId;
 
-    @ManyToOne
-    @JoinColumn(name = "option_id")
-    private SurveyOptions optionId;
+    // 다중 선택 응답 리스트
+    @OneToMany(mappedBy = "response", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SurveyResponseOption> selectedOptions = new ArrayList<>();
 
-    // 양방향 1:1 관계 추가
-    //cascade = CascadeType.ALL 추가하여 SurveyResponse 삭제 시 Satisfaction도 삭제되도록 설정.
-    @OneToOne(mappedBy = "responseId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+    // 만족도와의 1:1 관계 (응답을 기준으로 만족도 평가)
+    @OneToOne(mappedBy = "response", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Satisfaction satisfaction;
-
 
     @CreatedDate
     @Column(name ="response_date", nullable = false)
-    private LocalDateTime responseDate = LocalDateTime.now();
+    private LocalDateTime responseDate;
 
 
     @Enumerated(EnumType.STRING)
     @Column(name="response_status", nullable = false)
     private ResponseStatus responseStatus = ResponseStatus.ACTIVE;
 
-    public enum ResponseStatus {
-        ACTIVE, DELETED
-    }
+
 }

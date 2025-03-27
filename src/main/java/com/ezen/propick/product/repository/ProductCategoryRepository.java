@@ -9,5 +9,5 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
     // 상품과 카테고리 간의 관계를 관리하고, 조회만 하는 역할
 
     // 카테고리 이름으로 조회
-    List<ProductCategory> findByCategoryName(String categoryName);
+    //List<ProductCategory> findByCategoryName(String categoryName);
 }

@@ -1,4 +1,4 @@
-package com.ezen.propick.survey.dto;
+package com.ezen.propick.survey.dto.recommendation;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -24,5 +24,7 @@ public class SatisfactionDTO {
     @Min(value = 1, message = "만족도 점수는 1 이상이어야 합니다.")
     @Max(value = 5, message = "만족도 점수는 5 이하여야 합니다.")
     private Integer satisfactionScore;
-    private LocalDateTime satisfactionCreatedAt;
+
+    @Builder.Default
+    private LocalDateTime satisfactionCreatedAt = LocalDateTime.now();
 }

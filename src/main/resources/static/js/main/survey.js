@@ -1,316 +1,355 @@
-// 기본정보 화면 전환
-const basicNextBtn1 = document.querySelector("#basicinfo_page1 .next_wrap");
-const basicNextBtn2 = document.querySelector("#basicinfo_page2 .next_wrap");
-const basicNextBtn3 = document.querySelector("#basicinfo_page3 .next_wrap");
-const basicNextBtn4 = document.querySelector("#basicinfo_page4 .next_wrap");
-const basicNextBtn5 = document.querySelector("#basicinfo_page5 .next_wrap");
-const basicNextBtn6 = document.querySelector("#basicinfo_page6 .next_wrap");
+// 🔒 유효성 검사 및 경고 표시
+function showWarning(message) {
+  const warningBox = document.querySelector(".warning_message");
+  const warningText = document.getElementById("warning");
+  warningText.innerText = message;
+  warningBox.classList.add("show");
+  warningBox.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function hideWarning() {
+  document.querySelector(".warning_message").classList.remove("show");
+}
 
-// 1페이지 -> 2페이지
-basicNextBtn1.addEventListener("click", () => {
-  document.getElementById("basicinfo_page1").classList.remove("active");
-  document.getElementById("basicinfo_page2").classList.add("active");
+// ✅ 각 단계별 Next 버튼 - 유효성 검사 포함
+document.querySelector("#basicinfo_page1 .next_wrap").addEventListener("click", () => {
+  const name = document.getElementById("nametext").value.trim();
+  if (name === "") return showWarning("답변을 입력해주세요.");
+  hideWarning();
+
+  // ✅ 입력한 이름을 user-name, user-name2 영역에 표시
+  document.querySelectorAll("#user-name, #user-name2").forEach(el => {
+    el.textContent = name;
+  });
+
+  nextPage("basicinfo_page1", "basicinfo_page2");
 });
 
-// 2페이지 -> 3페이지
-basicNextBtn2.addEventListener("click", () => {
-  document.getElementById("basicinfo_page2").classList.remove("active");
-  document.getElementById("basicinfo_page3").classList.add("active");
+
+document.querySelector("#basicinfo_page2 .next_wrap").addEventListener("click", () => {
+  const selected = document.querySelector("#basicinfo_page2 .select_purpose_list.selected");
+  if (!selected) return showWarning("성별을 선택해주세요.");
+  hideWarning();
+  nextPage("basicinfo_page2", "basicinfo_page3");
 });
 
-// 3번째 페이지 -> 4번째 페이지
-basicNextBtn3.addEventListener("click", () => {
-  document.getElementById("basicinfo_page3").classList.remove("active");
-  document.getElementById("basicinfo_page4").classList.add("active");
+document.querySelector("#basicinfo_page3 .next_wrap").addEventListener("click", () => {
+  const age = document.getElementById("agetext").value.trim();
+  if (!/^\d+$/.test(age)) return showWarning("숫자만 입력해주세요.");
+  const a = parseInt(age);
+  if (a < 10 || a > 110) return showWarning("10부터 110까지 입력 가능합니다.");
+  hideWarning();
+  nextPage("basicinfo_page3", "basicinfo_page4");
 });
 
-// 4번째 페이지 -> 5번째 페이지
-basicNextBtn4.addEventListener("click", () => {
-  document.getElementById("basicinfo_page4").classList.remove("active");
-  document.getElementById("basicinfo_page5").classList.add("active");
+document.querySelector("#basicinfo_page4 .next_wrap").addEventListener("click", () => {
+  const height = document.getElementById("heighttext").value.trim();
+  if (!/^\d+$/.test(height)) return showWarning("숫자만 입력해주세요.");
+  const h = parseInt(height);
+  if (h < 100 || h > 250) return showWarning("100부터 250까지 입력가능합니다.");
+  hideWarning();
+  nextPage("basicinfo_page4", "basicinfo_page5");
 });
 
-// 5번째 페이지 -> 6번째 페이지
-basicNextBtn5.addEventListener("click", () => {
-  document.getElementById("basicinfo_page5").classList.remove("active");
-  document.getElementById("basicinfo_page6").classList.add("active");
+document.querySelector("#basicinfo_page5 .next_wrap").addEventListener("click", () => {
+  const weight = document.getElementById("weighttext").value.trim();
+  if (!/^\d+$/.test(weight)) return showWarning("숫자만 입력해주세요.");
+  const w = parseInt(weight);
+  if (w < 30 || w > 190) return showWarning("30부터 190까지 입력가능합니다.");
+  hideWarning();
+  nextPage("basicinfo_page5", "basicinfo_page6");
 });
 
-// 6번째 페이지 -> 프로틴 섭취목적 화면
-basicNextBtn6.addEventListener("click", () => {
-  document.getElementById("basicinfo_page6").classList.remove("active");
-  document.getElementById("purpose_page1").classList.add("active");
+document.querySelector("#basicinfo_page6 .next_wrap").addEventListener("click", () => {
+  hideWarning();
+  nextPage("basicinfo_page6", "purpose_page1");
 });
 
-//프로틴 섭취목적 화면 전환
-const purposeNextBtn1 = document.querySelector("#purpose_page1 .next_wrap");
-const purposeNextBtn2 = document.querySelector("#purpose_page2 .next_wrap");
-const purposeNextBtn3 = document.querySelector("#purpose_page3 .next_wrap");
-
-// 1페이지 -> 2페이지
-purposeNextBtn1.addEventListener("click", () => {
-  document.getElementById("purpose_page1").classList.remove("active");
-  document.getElementById("purpose_page2").classList.add("active");
+document.querySelector("#purpose_page1 .next_wrap").addEventListener("click", () => {
+  const selected = document.querySelector("#purpose_page1 .select_purpose_list.selected");
+  if (!selected) return showWarning("섭취 목적을 선택해주세요.");
+  hideWarning();
+  nextPage("purpose_page1", "purpose_page2");
 });
 
-// 2페이지 -> 3페이지
-purposeNextBtn2.addEventListener("click", () => {
-  document.getElementById("purpose_page2").classList.remove("active");
-  document.getElementById("purpose_page3").classList.add("active");
+document.querySelector("#purpose_page2 .next_wrap").addEventListener("click", () => {
+  const selected = document.querySelector("#purpose_page2 .select_purpose_list.selected");
+  if (!selected) return showWarning("운동 빈도를 선택해주세요.");
+  hideWarning();
+  nextPage("purpose_page2", "purpose_page3");
 });
 
-// 3페이지 -> 건강고민 화면 전환
-purposeNextBtn3.addEventListener("click", () => {
-  document.getElementById("purpose_page3").classList.remove("active");
-  document.getElementById("concern_page1").classList.add("active");
+document.querySelector("#purpose_page3 .next_wrap").addEventListener("click", () => {
+  hideWarning();
+  nextPage("purpose_page3", "concern_page1");
 });
 
-// 건강고민 챕터 1
-const healthChoice = document.querySelectorAll(
-  "#concern_page1 .select_health_list"
-);
-const warningMessage = document.querySelector(".warning_message");
-const warning = document.getElementById("warning");
-const nextBtn = document.querySelector("#concern_page1 .next_wrap");
+// ✅ 선택 항목 토글 (성별, 목적, 운동 빈도 등)
+document.querySelectorAll(".select_purpose_list").forEach(item => {
+  item.addEventListener("click", () => {
+    const siblings = item.parentElement.querySelectorAll(".select_purpose_list");
+    siblings.forEach(el => el.classList.remove("selected"));
+    item.classList.add("selected");
+  });
+});
 
-let maxSelections = 3; // 최대 선택 가능한 항목 수
-
-let selectedItems = []; // 선택된 항목을 추적
-
-healthChoice.forEach((li) => {
-  li.addEventListener("click", () => {
-    // 항목이 이미 선택되었을 경우, 해제
-    if (li.classList.contains("select")) {
-      li.classList.remove("select");
-      selectedItems = selectedItems.filter((item) => item !== li); // 선택된 항목 배열에서 제거
+// ✅ 건강 고민 항목 최대 3개까지 선택 제한
+document.querySelectorAll('.select_health_list').forEach(item => {
+  item.addEventListener('click', () => {
+    const selectedItems = document.querySelectorAll('.select_health_list.selected');
+    if (item.classList.contains('selected')) {
+      item.classList.remove('selected');
     } else {
-      // 3개 이하만 선택하도록 제한
-      if (selectedItems.length < maxSelections) {
-        li.classList.add("select");
-        selectedItems.push(li); // 선택된 항목 배열에 추가
+      if (selectedItems.length >= 3) {
+        showWarning("최대 3개까지 선택할 수 있어요.");
+        return;
       }
-    }
-
-    // 3개 선택했을 때 경고창 띄우고 나머지 항목 비활성화
-    if (selectedItems.length === maxSelections) {
-      healthChoice.forEach((item) => {
-        if (!item.classList.contains("select")) {
-          item.classList.add("not_select");
-          item.style.pointerEvents = "none"; // 비활성화
-        }
-      });
-      warningMessage.classList.add("show");
-      warning.style.display = "block"; // 경고문구 보이기
-    } else {
-      // 선택된 항목이 3개 미만일 때 비활성화 상태 해제
-      healthChoice.forEach((item) => {
-        item.classList.remove("not_select");
-        item.style.pointerEvents = "auto"; // 활성화
-      });
-      warningMessage.classList.remove("show");
-      warning.style.display = "none"; // 경고문구 숨기기
+      item.classList.add('selected');
     }
   });
 });
 
-// "다음" 버튼 클릭 시 동작
-nextBtn.addEventListener("click", () => {
-  // 선택된 항목이 3개 이하일 때만 페이지 이동
-  if (selectedItems.length <= maxSelections) {
-    warningMessage.classList.remove("show");
-    warning.style.display = "none"; // 경고문구 보이기
-
-    document.getElementById("concern_page1").classList.remove("active");
-    document.getElementById("concern_page2").classList.add("active");
+// ✅ 이전 버튼
+const backMap = [
+  ["basicinfo_page2", "basicinfo_page1"],
+  ["basicinfo_page3", "basicinfo_page2"],
+  ["basicinfo_page4", "basicinfo_page3"],
+  ["basicinfo_page5", "basicinfo_page4"],
+  ["basicinfo_page6", "basicinfo_page5"],
+  ["purpose_page1", "basicinfo_page6"],
+  ["purpose_page2", "purpose_page1"],
+  ["purpose_page3", "purpose_page2"],
+  ["concern_page1", "purpose_page3"],
+  ["concern_page2", "concern_page1"],
+  ["concern_page3", "concern_page2"]
+];
+backMap.forEach(([from, to]) => {
+  const btn = document.querySelector(`#${from} .before_page`);
+  if (btn) {
+    btn.addEventListener("click", () => {
+      document.getElementById(from).classList.remove("active");
+      document.getElementById(to).classList.add("active");
+    });
   }
 });
 
-// 건강고민 챕터 2 (새로운 페이지로 이동한 후 항목 선택 가능하도록 설정)
-const healthChoice2 = document.querySelectorAll(
-  "#concern_page2 .select_health_list"
-);
-const nextBtn2 = document.querySelector("#concern_page2 .next_wrap");
-
-// 2페이지에서 항목을 선택할 수 있도록
-healthChoice2.forEach((li) => {
-  li.addEventListener("click", () => {
-    li.classList.toggle("select");
-    // 경고 메시지는 챕터 2에서 없으므로 경고창을 숨김
-    warningMessage.classList.remove("show");
-    warning.style.display = "none";
-  });
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    const currentPage = document.querySelector(".contents_wrap.active");
+    const nextButton = currentPage?.querySelector(".next_wrap");
+    if (nextButton) nextButton.click();
+  }
 });
 
-// page2 -> page3 "다음" 버튼 클릭 시 동작
-nextBtn2.addEventListener("click", () => {
-  const selectedItems2 = document.querySelectorAll("#concern_page2 .select");
+// ✅ 세부 질문 로직용 데이터
+const healthDetailQuestions = {
+  "소화, 장": {
+    title: `
+      <div class="question-title-with-img">
+        <img src="/images/main/bowel.png" alt="소화, 장" />
+        <span>소화 문제</span>
+      </div>
+    `,
+    description: "해당되는 소화 증상을 선택해주세요.",
+    options: [
+      "소화가 잘 안 돼요",
+      "유제품 섭취 후 소화불량이 있어요",
+      "설사가 자주 발생해요",
+      "변비가 자주 있어요"
+    ]
+  },
+  "피부 질환": {
+    title: `
+      <div class="question-title-with-img">
+        <img src="/images/main/skin_disease.png" alt="피부 질환" />
+        <span>피부 문제</span>
+      </div>
+    `,
+    description: "피부와 관련된 증상을 선택해주세요.",
+    options: [
+      "여드름이 자주 생겨요",
+      "피부에 발진이나 가려움증이 있어요",
+      "유제품 섭취 후 피부 반응이 있어요",
+      "콩 제품 섭취 후 피부 반응이 있어요",
+      "견과류나 첨가물에 알레르기가 있어요"
+    ]
+  },
+  "신장 부담": {
+    title: `
+      <div class="question-title-with-img">
+        <img src="/images/main/kidney.png" alt="신장 부담" />
+        <span>신장 건강</span>
+      </div>
+    `,
+    description: "신장과 관련된 증상을 선택해주세요.",
+    options: [
+      "신장 질환(신부전, 결석 등) 진단을 받은 적 있어요",
+      "소변량이 줄거나 부종이 자주 생겨요",
+      "소변에 거품이 많아요(단백뇨 의심)",
+      "나트륨 섭취를 제한하고 있어요"
+    ]
+  },
+  "수면 장애": {
+    title: `
+      <div class="question-title-with-img">
+        <img src="/images/main/sleep_disorder.png" alt="수면 장애" />
+        <span>수면 문제</span>
+      </div>
+    `,
+    description: "수면과 관련된 증상을 선택해주세요.",
+    options: [
+      "잠들기 어려워요",
+      "자주 깨거나 얕게 자요",
+      "저녁 늦게 먹으면 잠이 안 와요"
+    ]
+  },
+  "관절(골다공증)": {
+    title: `
+      <div class="question-title-with-img">
+        <img src="/images/main/joint.png" alt="관절 건강" />
+        <span>관절 및 뼈 건강</span>
+      </div>
+    `,
+    description: "관절이나 뼈 건강과 관련된 증상을 선택해주세요.",
+    options: [
+      "골다공증 또는 관절염 진단을 받은 적 있어요",
+      "관절 통증이 자주 있어요"
+    ]
+  },
+  "간": {
+    title: `
+      <div class="question-title-with-img">
+        <img src="/images/main/liver.png" alt="간 건강" />
+        <span>간 건강</span>
+      </div>
+    `,
+    description: "간 건강과 관련된 증상을 선택해주세요.",
+    options: [
+      "지방간, 간염 등 간 질환을 진단받은 적 있어요",
+      "피로감이 자주 느껴져요"
+    ]
+  },
+  "혈관, 혈액순환": {
+    title: `
+      <div class="question-title-with-img">
+        <img src="/images/main/blood.png" alt="혈관 건강" />
+        <span>혈관 및 혈액순환 문제</span>
+      </div>
+    `,
+    description: "혈관 및 혈액순환과 관련된 증상을 선택해주세요.",
+    options: [
+      "고혈압 또는 심혈관 질환 진단을 받은 적 있어요",
+      "손발이 차갑거나 혈액순환이 잘 안 돼요",
+      "콜레스테롤이나 중성지방 수치가 높아요"
+    ]
+  }
+};
 
-  document.getElementById("concern_page2").classList.remove("active");
-  document.getElementById("concern_page3").classList.add("active");
-});
+// ✅ 세부 질문 표시 흐름
+let selectedHealthConcerns = [];
+let currentDetailIndex = 0;
 
-// 상단 이전 누르면 이전 페이지 돌아가기
-const basicBeforeBtn = document.querySelector("#basicinfo_page1 .before_page");
-const basicBeforeBtn2 = document.querySelector("#basicinfo_page2 .before_page");
-const basicBeforeBtn3 = document.querySelector("#basicinfo_page3 .before_page");
-const basicBeforeBtn4 = document.querySelector("#basicinfo_page4 .before_page");
-const basicBeforeBtn5 = document.querySelector("#basicinfo_page5 .before_page");
-const basicBeforeBtn6 = document.querySelector("#basicinfo_page6 .before_page");
+function collectSelectedConcerns() {
+  const selected = document.querySelectorAll("#concern_page1 .select_health_list.selected p");
+  return Array.from(selected).map(el => el.innerText.trim());
+}
 
-const purposeBeforeBtn = document.querySelector("#purpose_page1 .before_page");
-const purposeBeforeBtn2 = document.querySelector("#purpose_page2 .before_page");
-const purposeBeforeBtn3 = document.querySelector("#purpose_page3 .before_page");
-
-const beforeBtn = document.querySelector("#concern_page1 .before_page");
-const beforeBtn2 = document.querySelector("#concern_page2 .before_page");
-const beforeBtn3 = document.querySelector("#concern_page3 .before_page");
-
-basicBeforeBtn.addEventListener("click", () => {
-  window.location = "/survey_start.html";
-});
-
-basicBeforeBtn2.addEventListener("click", () => {
-  document.getElementById("basicinfo_page1").classList.add("active");
-  document.getElementById("basicinfo_page2").classList.remove("active");
-});
-basicBeforeBtn3.addEventListener("click", () => {
-  document.getElementById("basicinfo_page2").classList.add("active");
-  document.getElementById("basicinfo_page3").classList.remove("active");
-});
-basicBeforeBtn4.addEventListener("click", () => {
-  document.getElementById("basicinfo_page3").classList.add("active");
-  document.getElementById("basicinfo_page4").classList.remove("active");
-});
-basicBeforeBtn5.addEventListener("click", () => {
-  document.getElementById("basicinfo_page4").classList.add("active");
-  document.getElementById("basicinfo_page5").classList.remove("active");
-});
-basicBeforeBtn6.addEventListener("click", () => {
-  document.getElementById("basicinfo_page5").classList.add("active");
-  document.getElementById("basicinfo_page6").classList.remove("active");
-});
-
-purposeBeforeBtn.addEventListener("click", () => {
-  document.getElementById("basicinfo_page6").classList.add("active");
-  document.getElementById("purpose_page1").classList.remove("active");
-});
-
-purposeBeforeBtn2.addEventListener("click", () => {
-  document.getElementById("purpose_page1").classList.add("active");
-  document.getElementById("purpose_page2").classList.remove("active");
-});
-
-purposeBeforeBtn3.addEventListener("click", () => {
-  document.getElementById("purpose_page2").classList.add("active");
-  document.getElementById("purpose_page3").classList.remove("active");
-});
-
-beforeBtn.addEventListener("click", () => {
-  document.getElementById("purpose_page3").classList.add("active");
-  document.getElementById("concern_page1").classList.remove("active");
-});
-
-beforeBtn2.addEventListener("click", () => {
-  document.getElementById("concern_page1").classList.add("active");
-  document.getElementById("concern_page2").classList.remove("active");
-});
-
-beforeBtn3.addEventListener("click", () => {
-  document.getElementById("concern_page2").classList.add("active");
-  document.getElementById("concern_page3").classList.remove("active");
-});
-
-// close 버튼 클릭시 
-document.addEventListener("DOMContentLoaded", function () {
-  // 요소 가져오기
-  const closeBtn = document.querySelector(".close_btn");
-  const closeBtn2 = document.querySelector(".close_btn2");
-  const popupBg = document.querySelector(".popup_bg");
-  const endBtn = document.querySelector(".end_btn");
-  const keepBtn = document.querySelector(".keep_btn");
-
-  // close 버튼 클릭 시 팝업 보이기/숨기기 (토글)
-  closeBtn.addEventListener("click", function () {
-    if (popupBg.classList.contains("active")) {
-      popupBg.classList.remove("active");
-    } else {
-      popupBg.classList.add("active");
-    }
-  });
-
-
-  // 종료 버튼 클릭 시 페이지 이동
-  endBtn.addEventListener("click", function () {
-    window.location = "/Propick/main.html";
-  });
-
-  // 계속 설문하기 버튼 클릭 시 팝업 닫기
-  keepBtn.addEventListener("click", function () {
-    popupBg.classList.remove("active");
-  });
-});
-
-// 설문 결과
-document.addEventListener("DOMContentLoaded", function () {
-  // 요소 가져오기
-  const closeBtn = document.querySelector(".close_btn3");
-  const popupBg = document.querySelector(".popup_bg");
-  const endBtn = document.querySelector(".end_btn");
-  const keepBtn = document.querySelector(".keep_btn");
-  const stars = document.querySelectorAll(".star");
-
-  // 별점 변수
-  let rating = 0;
-
-  // 별 클릭 이벤트
-  stars.forEach(star => {
-      star.addEventListener("click", function () {
-          rating = parseInt(this.getAttribute("data-value")); // 클릭한 별의 값 저장
-          updateStars(rating); // 별 색상 업데이트
-      });
-
-      // 마우스 오버 시 미리보기 효과 (선택 사항)
-      star.addEventListener("mouseover", function () {
-          const hoverValue = parseInt(this.getAttribute("data-value"));
-          updateStars(hoverValue);
-      });
-
-      // 마우스가 떠나면 원래 별점으로 복원 (선택 사항)
-      star.addEventListener("mouseout", function () {
-          updateStars(rating);
-      });
-  });
-
-  // 별 색상 업데이트 함수
-  function updateStars(value) {
-      stars.forEach(star => {
-          const starValue = parseInt(star.getAttribute("data-value"));
-          if (starValue <= value) {
-              star.classList.add("filled");
-          } else {
-              star.classList.remove("filled");
-          }
-      });
+function showDetailQuestion(index) {
+  if (index >= selectedHealthConcerns.length) {
+    document.getElementById("concern_detail_page").style.display = "none";
+    document.getElementById("concern_page2").classList.remove("active");
+    document.getElementById("concern_page3").classList.add("active");
+    return;
   }
 
-  // close 버튼 클릭 시 팝업 보이기/숨기기 (토글)
-  closeBtn.addEventListener("click", function () {
-      if (popupBg.classList.contains("active")) {
-          popupBg.classList.remove("active");
-      } else {
-          popupBg.classList.add("active");
-      }
-  });
+  const concern = selectedHealthConcerns[index];
+  const detail = healthDetailQuestions[concern];
 
-  // 종료 버튼 클릭 시 페이지 이동
-  endBtn.addEventListener("click", function () {
-      console.log("선택된 별점:", rating); // 별점 확인 (필요 시 서버로 전송)
-      window.location = "/main.html";
-  });
+  if (!detail) {
+    showDetailQuestion(index + 1);
+    return;
+  }
 
-  // 계속 설문하기 버튼 클릭 시 팝업 닫기
-  keepBtn.addEventListener("click", function () {
-      console.log("선택된 별점:", rating); // 별점 확인 (필요 시 서버로 전송)
-      popupBg.classList.remove("active");
+  document.getElementById("concern_detail_page").style.display = "block";
+
+  // ✅ 이미지 + 제목 삽입
+  const titleContainer = document.getElementById("health_detail_title");
+  titleContainer.innerHTML = detail.title;
+
+  document.getElementById("detail_question_description").innerText = detail.description;
+
+  const container = document.getElementById("detail_options_container");
+  container.innerHTML = "";
+  detail.options.forEach(option => {
+    const li = document.createElement("li");
+    li.className = "select_health_list";
+    li.innerHTML = `<p>${option}</p>`;
+    li.onclick = () => li.classList.toggle("select");
+    container.appendChild(li);
+  });
+}
+
+document.querySelector("#concern_page1 .next_wrap").addEventListener("click", () => {
+  selectedHealthConcerns = collectSelectedConcerns();
+
+  if (selectedHealthConcerns.length === 0) {
+    showWarning("하나 이상 선택해주세요.");
+    return;
+  }
+
+  const hasValidDetail = selectedHealthConcerns.some(concern => healthDetailQuestions[concern]);
+  if (!hasValidDetail) {
+    alert("선택된 고민에 대한 추가 질문이 없어 바로 결과 페이지로 이동합니다.");
+    window.location.href = "/result";
+    return;
+  }
+
+  hideWarning();
+  nextPage("concern_page1", "concern_page2");
+  currentDetailIndex = 0;
+  showDetailQuestion(currentDetailIndex);
+});
+
+document.getElementById("detail_next_btn").addEventListener("click", () => {
+  currentDetailIndex++;
+  showDetailQuestion(currentDetailIndex);
+});
+
+// ✅ 팝업 처리
+const popupBg = document.querySelector(".popup_bg");
+document.querySelectorAll(".close_btn, .close_btn2").forEach(closeBtn => {
+  closeBtn.addEventListener("click", () => {
+    popupBg.classList.toggle("active");
   });
 });
+document.querySelector(".end_btn")?.addEventListener("click", () => {
+  window.location.href = "/Propick/main.html";
+});
+document.querySelector(".keep_btn")?.addEventListener("click", () => {
+  popupBg.classList.remove("active");
+});
+
+// ✅ 결과 저장 및 이동
+function collectSurveyInput() {
+  const name = document.getElementById("nametext").value.trim();
+  const gender = document.querySelector("#basicinfo_page2 .select_purpose_list.selected p")?.innerText;
+  const age = parseInt(document.getElementById("agetext").value.trim(), 10);
+  const height = parseFloat(document.getElementById("heighttext").value.trim());
+  const weight = parseFloat(document.getElementById("weighttext").value.trim());
+  const purpose = document.querySelector("#purpose_page1 .select_purpose_list.selected p")?.innerText;
+  const workoutFreq = document.querySelector("#purpose_page2 .select_purpose_list.selected p")?.innerText;
+
+  const concerns = Array.from(document.querySelectorAll(
+      "#concern_page1 .select_health_list.select p, #concern_page2 .select_health_list.select p"
+  )).map(el => el.innerText.trim());
+
+  const inputData = { name, gender, age, heightCm: height, weightKg: weight, purpose, workoutFreq, healthConcerns: concerns };
+  console.log("설문 결과:", inputData);
+  localStorage.setItem("surveyInput", JSON.stringify(inputData));
+  window.location.href = "/result";
+}
+
+// ✅ 페이지 이동 함수
+function nextPage(fromId, toId) {
+  document.getElementById(fromId).classList.remove("active");
+  document.getElementById(toId).classList.add("active");
+}

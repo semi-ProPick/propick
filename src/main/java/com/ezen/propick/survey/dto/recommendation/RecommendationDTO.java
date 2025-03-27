@@ -1,4 +1,4 @@
-package com.ezen.propick.survey.dto;
+package com.ezen.propick.survey.dto.recommendation;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 @Builder
-
+// 조회/응답(응답) - 엔티티 정보를 모두 담아 클라이언트에 전달
 public class RecommendationDTO {
     private Integer recommendationId;
     private Integer responseId;
@@ -27,6 +27,5 @@ public class RecommendationDTO {
     private String recommendationProteinType;
 
     @Size(max = 1000, message = "경고 메시지는 1000자를 초과할 수 없습니다.")
-    private String warnings;
     private String recommendationWarning;
 }

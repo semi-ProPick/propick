@@ -29,9 +29,9 @@ public class SurveyOptions {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_option_id", nullable = true)
-    private SurveyOptions parentOptionId;
+    private SurveyOptions parentOption;
 
-    @OneToMany(mappedBy = "parentOptionId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parentOption", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SurveyOptions> childOptions = new ArrayList<>();
 
     @Column(name ="option_text",nullable = false, length = 255)
