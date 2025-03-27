@@ -23,7 +23,7 @@ public class SurveyResponseService {
     private final SurveyOptionsRepository optionRepository;
 
 
-    public void saveSurveyResponse(SurveyResponseRequestDTO requestDto, Integer userNo) {
+    public Integer saveSurveyResponse(SurveyResponseRequestDTO requestDto, Integer userNo) {
         // 1. Survey, User Entity 조회
         Survey survey = surveyRepository.findById(requestDto.getSurveyId())
                 .orElseThrow(() -> new IllegalArgumentException("설문을 찾을 수 없습니다."));
@@ -40,6 +40,7 @@ public class SurveyResponseService {
                 .build();
 
         surveyResponseRepository.save(response);
+
 
         // 3. 각 질문 응답에 대한 선택지 저장(다중 선택 고려)
         for (AnswerDTO answer : requestDto.getAnswers()) {
@@ -58,5 +59,7 @@ public class SurveyResponseService {
                 surveyResponseOptionRepository.save(responseOption);
             }
         }
+        // 이후 응답 ID 반환
+        return response.getResponseId();
     }
 }

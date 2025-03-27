@@ -32,6 +32,7 @@ public class SurveyOptions {
     private SurveyOptions parentOption;
 
     @OneToMany(mappedBy = "parentOption", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<SurveyOptions> childOptions = new ArrayList<>();
 
     @Column(name ="option_text",nullable = false, length = 255)

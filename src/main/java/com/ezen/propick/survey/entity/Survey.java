@@ -38,8 +38,10 @@ public class Survey {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private Status surveyStatus = Status.DRAFT;
 
+    @Builder.Default
     @OneToMany(mappedBy = "surveyId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SurveyQuestions> questions = new ArrayList<>();
 
