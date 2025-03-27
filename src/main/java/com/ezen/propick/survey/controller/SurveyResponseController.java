@@ -1,5 +1,6 @@
 package com.ezen.propick.survey.controller;
 
+import com.ezen.propick.survey.dto.survey.SurveyResponseIdDTO;
 import com.ezen.propick.survey.dto.survey.SurveyResponseRequestDTO;
 import com.ezen.propick.survey.service.SurveyResponseService;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,9 @@ public class SurveyResponseController {
     * ResponseEntity<DTO>	객체(JSON) 응답 (예: SurveyDTO, ResultDTO)
     * ResponseEntity<Void>	응답 바디 없음 (상태 코드만 보냄)
     * */
-    public ResponseEntity<String> saveSurveyResponse(@RequestBody SurveyResponseRequestDTO requestDto) {
-        // TODO: 로그인 연동 시 사용자 ID를 SecurityContext 등에서 추출
-        Integer userId = 1; // 테스트용
-
-        surveyResponseService.saveSurveyResponse(requestDto, userId);
-        return ResponseEntity.ok("설문 응답이 저장되었습니다.");
+    public ResponseEntity<SurveyResponseIdDTO> saveSurveyResponse(@RequestBody SurveyResponseRequestDTO requestDto) {
+        Integer userId = 1; //  실제 로그인 사용자와 연동 예정
+        Integer responseId = surveyResponseService.saveSurveyResponse(requestDto, userId);
+        return ResponseEntity.ok(new SurveyResponseIdDTO(responseId));
     }
 }

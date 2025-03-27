@@ -39,7 +39,8 @@ public class SurveyQuestions {
     private QuestionType questionType = QuestionType.Single;
 
 
-    @OneToMany(mappedBy = "questionId")
+    @OneToMany(mappedBy = "questionId", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<SurveyOptions> options = new ArrayList<>();
 
 

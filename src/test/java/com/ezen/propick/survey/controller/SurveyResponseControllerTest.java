@@ -1,6 +1,8 @@
-package com.ezen.propick.survey;
+package com.ezen.propick.survey.controller;
 
 import com.ezen.propick.user.entity.User;
+import com.ezen.propick.user.enumpackage.Gender;
+import com.ezen.propick.user.enumpackage.Role;
 import com.ezen.propick.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,14 +11,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import com.ezen.propick.user.enumpackage.Gender;
-import com.ezen.propick.user.enumpackage.Role;
 
-import java.time.LocalDate;
 import java.util.Date;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -68,6 +67,7 @@ public class SurveyResponseControllerTest {
                                 .content(requestBody)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("설문 응답이 저장되었습니다."));
+                .andExpect(jsonPath("$.responseId").exists());
+
     }
 }

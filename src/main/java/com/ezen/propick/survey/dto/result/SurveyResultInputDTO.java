@@ -15,4 +15,5 @@ public class SurveyResultInputDTO {
     private String purpose; // ex. "근육 증가"
     private String workoutFreq; // ex. "주2~3회"
     private List<String> healthConcerns; // ex. ["간 질환", "수면장애"]
+    private int age;
 }

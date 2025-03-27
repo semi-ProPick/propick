@@ -1,5 +1,6 @@
 package com.ezen.propick.survey.dto.survey;
 
+import com.ezen.propick.survey.entity.SurveyResponseOption;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -31,4 +32,6 @@ public class SurveyResponseDTO {
     @NotNull(message = "응답 상태는 필수입니다.")
     @Pattern(regexp = "Active|Deleted", message = "응답 상태는 'Active' 또는 'Deleted'이어야 합니다.")
     private String responseStatus;
+
+
 }
