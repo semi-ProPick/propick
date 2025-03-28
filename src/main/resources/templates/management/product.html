@@ -1,139 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Admin/event</title>
-    <link
-      href="vendor/fontawesome-free/css/all.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-      rel="stylesheet"
-    />
-    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/common.css" />
-  </head>
-
-  <body id="page-top">
-    <div id="wrapper">
-      <!-- 사이드바 -->
-      <div id="sidebar"></div>
-
-      <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-          <!-- 해더 -->
-          <div id="header"></div>
-
-          <div
-            class="d-sm-flex align-items-center justify-content-between mb-4"
-          ></div>
-          <!-- 내용 -->
-          <div class="container-fluid">
-            <h2 class="h3 mb-5 text-gray-800">상품 관리</h2>
-            <div class="card shadow mb-4">
-              <div class="card-header py-3 event-title" id="event-title">
-                <h6 class="m-0 font-weight-bold text-primary"></h6>
-                <button class="btn-register">
-                  <a href="/product_regist.html" class="">상품 등록</a>
-                </button>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table
-                    class="table table-bordered"
-                    id="dataTable"
-                    width="100%"
-                    cellspacing="0"
-                  >
-                    <thead>
-                      <tr>
-                        <th>체크박스</th>
-                        <th>상품ID</th>
-                        <th>브랜드명</th>
-                        <th>상품명</th>
-                        <th>종류</th>
-                        <th>가격</th>
-                        <th>수정/삭제</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><input type="checkbox" /></td>
-                        <td>pro1321</td>
-                        <td>브랜드 1</td>
-                        <td>프로틴 1</td>
-                        <td>WPC</td>
-                        <td>56,000</td>
-                        <td>
-                          <button class="btn-edit">
-                            <a href="/edit_product.html">수정</a>
-                          </button>
-                          <button class="btn-delete">삭제</button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div class="search-container">
-                    <input
-                      type="text"
-                      placeholder="상품명 또는 브랜드명 입력"
-                    />
-                    <button class="btn btn-search">검색</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div id="footer"></div>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/main/main.css" type="text/css" />
+  <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+  <title>상품</title>
+</head>
+<body>
+<div id="header" th:replace="~{main/mainHeader}"></div>
+<div id="wrap">
+  <div class="search_wrap">
+    <p>전체상품</p>
+    <form class="search" action="/products/search" method="get">
+      <input type="text" class="seach_input" placeholder="입력" name="keyword" />
+      <div class="search_icon">
+        <button type="submit" style="border-style: none; background: transparent">
+          <img src="/images/main/search.png" alt="검색" />
+        </button>
       </div>
+    </form>
+    <div class="category_list">
+      <!--      <p>카테고리</p>-->
+      <ul>
+        <li class="category_menu active">전체보기</li>
+        <!--        <li class="category_menu">섭취목적</li>-->
+        <li class="category_menu">건강고민</li>
+        <li class="category_menu">인기상품</li>
+        <li class="category_menu">할인</li>
+      </ul>
     </div>
+    <div class="category_wrap">
+      <p>어떤 프로틴이 필요하세요?</p>
+      <ul>
+        <li class="active">
+          <img src="/images/main/diet.png" alt="" />
+          <span>다이어트</span>
+        </li>
+        <li>
+          <img src="/images/main/volume.png" alt="" />
+          <span>증량</span>
+        </li>
+        <li>
+          <img src="/images/main/digest.png" alt="" />
+          <span>소화</span>
+        </li>
+        <li>
+          <img src="/images/main/ldl.png" alt="" />
+          <span>콜레스테롤</span>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <img src="/images/main/cheap.png" alt="" />
+          <span>할인</span>
+        </li>
+        <!--        <li>-->
+        <!--          <img src="/images/main/whey.png" alt="" />-->
+        <!--          <span>유청</span>-->
+        <!--        </li>-->
+        <!--        <li>-->
+        <!--          <img src="/images/main/casein.png" alt="" />-->
+        <!--          <span>카제인</span>-->
+        <!--        </li>-->
+        <!--        <li>-->
+        <!--          <img src="/images/main/plant.png" alt="" />-->
+        <!--          <span>식물성</span>-->
+        <!--        </li>-->
+      </ul>
+    </div>
+  </div>
+  <div class="recomment_wrap">
+    <img src="/images/main/mark.png" alt="" />
+    <p>내 몸에 꼭 맞는 프로틴 추천받기</p>
+    <img src="/images/main/mark.png" alt="" />
+  </div>
+  <div class="survey_wrap">
+    <div class="survey_btn">
+      <a href="/templates/main/survey_start.html">설문조사 하러가기</a>
+    </div>
+  </div>
+  <!-- 카테고리별 상품 보여지는 -->
+  <div class="products_wrap">
+    <p>인기 프로틴 <span class="footer_point">TOP 10</span></p>
+    <ul class="product_category">
+      <li class="product_cate active" id="all_category">전체</li>
+      <li class="product_cate" id="age_category">연령별</li>
+      <li class="product_cate" id="health_category">건강고민별</li>
+      <li class="product_cate" id="vegan_category">비건</li>
+      <li class="product_cate" id="diet_category">다이어트</li>
+      <li class="product_cate" id="discount_category">할인</li>
+    </ul>
+    <ul class="age_list">
+      <li class="age_cate active">10~20대</li>
+      <li class="age_cate">30대</li>
+      <li class="age_cate">40대</li>
+      <li class="age_cate">50대</li>
+      <li class="age_cate">60대</li>
+    </ul>
+    <div class="filtered_products">
+      <ul class="rank_product">
+        <a href="product_detail.html" target="_blank">
+          <li>
+            <img src="/images/main/rank1.png" alt="" />
+            <p>마이프로틴</p>
+          </li>
+        </a>
+        <li>
+          <img src="/images/main/rank2.png" alt="" />
+          <p>상품명</p>
+        </li>
+        <li>
+          <img src="/images/main/rank3.png" alt="" />
+          <p>상품명</p>
+        </li>
+      </ul>
+      <ul class="others_product" id="product_list">
+        <li th:each="product : ${products}">
+          <a th:href="@{/products/{id}(id=${product.productId})}">
+            <!-- 이미지 반복 출력 -->
+            <div class="product-images">
+              <img th:each="imgUrl : ${product.productImages}" th:src="@{${imgUrl}}" alt="상품 이미지" style="max-width: 100%; height: auto;">
+            </div>
+            <p><span th:text="${product.productName}">상품명</span></p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="search_results_wrap">
+    <ul class="search_results">
+      <li></li>
+    </ul>
+    <div class="pagination"></div>
+  </div>
+</div>
+</body>
+<script src="/js/main/header.js" defer></script>
+<script src="/js/main/product.js"></script>
+<script>
+  // 상품 카테고리 필터링 기능
+  document.addEventListener('DOMContentLoaded', function () {
+    const categoryItems = document.querySelectorAll('.product_cate');
+    const productList = document.getElementById('product_list');
 
-    <div id="logout_modal"></div>
+    // 카테고리 클릭 이벤트
+    categoryItems.forEach(item => {
+      item.addEventListener('click', function () {
+        // 클릭된 카테고리 활성화
+        categoryItems.forEach(item => item.classList.remove('active'));
+        item.classList.add('active');
 
-    <!-- Bootstrap core JavaScript-->
-    <script>
-      fetch("/header.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("header").innerHTML = data));
+        // 필터링된 카테고리 이름 가져오기
+        const selectedCategory = item.id;
+        filterProductsByCategory(selectedCategory);
+      });
+    });
 
-      fetch("/sidebar.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("sidebar").innerHTML = data));
+    // 카테고리에 따른 상품 필터링 함수
+    function filterProductsByCategory(category) {
+      const allProducts = document.querySelectorAll('.others_product li');
 
-      fetch("/footer.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("footer").innerHTML = data));
-      fetch("/logoutModal.html")
-        .then((res) => res.text())
-        .then(
-          (data) => (document.getElementById("logout_modal").innerHTML = data)
-        );
-    </script>
-
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
-  </body>
+      allProducts.forEach(product => {
+        // 각 상품에서 카테고리별 필터링을 할 수 있도록 데이터 처리 필요
+        // 예를 들어 product 객체에서 카테고리를 체크해서 표시/숨기기 처리 가능
+        if (product.classList.contains(category)) {
+          product.style.display = 'block'; // 카테고리 일치하는 상품 보여주기
+        } else {
+          product.style.display = 'none'; // 카테고리 일치하지 않는 상품 숨기기
+        }
+      });
+    }
+  });
+</script>
 </html>

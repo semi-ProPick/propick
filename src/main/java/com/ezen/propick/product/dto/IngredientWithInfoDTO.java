@@ -25,4 +25,8 @@ public class IngredientWithInfoDTO {
         this.ingredientUnit = ingredientUnit;
         this.ingredientInfo = ingredientAmount.stripTrailingZeros().toPlainString() + " " + ingredientUnit; // 결합된 값
     }
+
+    public String getIngredientInfo() {
+        return ingredientInfo;
+    }
 }

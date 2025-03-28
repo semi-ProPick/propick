@@ -1,7 +1,9 @@
 package com.ezen.propick.product.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -10,22 +12,25 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class ProductIngredientDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "product_ingredient_id")
+    private Integer productIngredientId;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "ingredient_id", referencedColumnName = "ingredient_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
 
-    @Column(name = "ingredient_amount")
-    private BigDecimal ingredientAmount; // 또는 적절한 타입 (예: Double, Integer 등)
+    @Column(name = "ingredient_amount", nullable = false)
+    private BigDecimal ingredientAmount;
+
+    @Column(name = "ingredient_unit", nullable = false, length = 10)
+    private String ingredientUnit;
 }
+

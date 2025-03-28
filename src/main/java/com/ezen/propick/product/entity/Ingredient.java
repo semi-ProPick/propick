@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "ingredient")
+@Table(name = "ingredients")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,6 +25,4 @@ public class Ingredient {
 
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductIngredientDetail> productIngredientDetails = new ArrayList<>();
-
-
 }

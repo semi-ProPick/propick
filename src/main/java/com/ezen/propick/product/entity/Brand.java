@@ -39,6 +39,6 @@ public class Brand {
     @Column(name = "brand_url", nullable = false)
     private String brandUrl;
 
-    @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Product> products = new ArrayList<>();
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
+    private List<Product> products;
 }

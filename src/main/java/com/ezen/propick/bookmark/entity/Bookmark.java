@@ -27,6 +27,7 @@ public class Bookmark {
     private Integer userNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "product_id",  nullable = false)
     private Product product;
+   // referencedColumnName = "product_id"
 }

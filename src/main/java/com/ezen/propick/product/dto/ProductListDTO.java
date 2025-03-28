@@ -19,12 +19,12 @@ public class ProductListDTO {
     private String productName;
     private String brandName;
     private String productType;
-    private Integer productPrice;
+    private BigDecimal productPrice;
     private List<String> productImages;
 
 
     // 생성자
-    public ProductListDTO(Integer productId, String productName, String brandName, String productType, Integer productPrice, List<String> productImages) {
+    public ProductListDTO(Integer productId, String productName, String brandName, String productType, BigDecimal productPrice, List<String> productImages) {
         this.productId = productId;
         this.productName = productName;
         this.brandName = brandName;

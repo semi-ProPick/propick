@@ -2,6 +2,8 @@ package com.ezen.propick.bookmark.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -14,7 +16,7 @@ public class BookmarkDTO {
     private Integer userNo; // user_no와 매핑
     private Integer productId; // product_id와 매핑
     private String productName; // 제품 이름 (마이페이지 표시용)
-    private Integer productPrice; // 제품 가격 (마이페이지 표시용)
+    private BigDecimal productPrice; // 제품 가격 (마이페이지 표시용)
     private String brandName;
 
     @Override
