@@ -14,7 +14,7 @@ import java.math.RoundingMode;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-
+@Setter
 @Entity
 @Table(name="recommendation")
 public class Recommendation {

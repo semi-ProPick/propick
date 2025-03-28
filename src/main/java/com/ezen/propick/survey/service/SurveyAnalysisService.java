@@ -37,7 +37,7 @@ public class SurveyAnalysisService {
             Integer questionId = question.getQuestionId();
             String optionText = option.getOption().getOptionText();
 
-            if (Arrays.asList(3, 4, 5, 6, 7).contains(questionId)) {
+            if (Arrays.asList(1, 2, 3, 4, 5, 6, 7).contains(questionId)) {
                 answerMap.put(questionId, optionText);
             } else if (questionId >= 8) {
                 answerListMap.computeIfAbsent(questionId, k -> new ArrayList<>()).add(optionText);
@@ -67,9 +67,11 @@ public class SurveyAnalysisService {
         }
 
         return SurveyResultInputDTO.builder()
+                .name(answerMap.get(1))
+                .gender(answerMap.get(2))
+                .age(Integer.parseInt(answerMap.get(3)))
                 .heightCm(Double.parseDouble(answerMap.get(4)))
                 .weightKg(Double.parseDouble(answerMap.get(5)))
-                .age(Integer.parseInt(answerMap.get(3)))
                 .purpose(answerMap.get(6))
                 .workoutFreq(answerMap.get(7))
                 .healthConcerns(finalHealthConcerns)
