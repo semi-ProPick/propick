@@ -15,6 +15,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder; //빈으로 등록해둔 것 주입받기
 
     public void createMember(MemberDTO memberDTO) {
+
+        System.out.println("회원가입 비밀번호 : " + memberDTO.getUserPwd());
         User user = new User();
         user.setUserId(memberDTO.getUserId());
         user.setUserPwd(passwordEncoder.encode(memberDTO.getUserPwd())); // 암호화 적용
