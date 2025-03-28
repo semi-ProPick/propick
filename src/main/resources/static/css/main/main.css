@@ -659,7 +659,7 @@ span {
 }
 
 .brand_1 {
-  background-image: url("/images/brand_1.png");
+  background-image: url("/images/main/brand_1.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -728,7 +728,7 @@ span {
 }
 
 .brand_3 {
-  background-image: url("/images/brand_3.png");
+  background-image: url("/images/main/brand_3.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

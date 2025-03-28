@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/board.css" type="text/css" />
-    <link rel="stylesheet" href="css/header.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/board.css" type="text/css" />
+    <link rel="stylesheet" href="css/main/header.css" type="text/css" />
     <title>자주 묻는 질문</title>
   </head>
   <body>
-    <div id="header"></div>
+  <header id="header" class="header_wrap" th:replace="~{main/mainHeader}"></header>
     <div class="Container1">
       <h2 class="faq-title">자주 묻는 질문 <b>(FAQ)</b></h2>
       <table class="table1">
@@ -133,7 +133,7 @@
         </tbody>
       </table>
     </div>
-    <script src="/js/f&q_board.js"></script>
-    <script src="/js/header.js" defer></script>
+    <script src="/js/main/f&q_board.js"></script>
+    <script src="/js/main/header.js" defer></script>
   </body>
 </html>

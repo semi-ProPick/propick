@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/board.css" />
-    <link rel="stylesheet" href="css/header.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/board.css" />
+    <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
     <title>자유게시판</title>
   </head>
   <body>
-    <div id="header"></div>
+  <header id="header" class="header_wrap" th:replace="~{main/mainHeader}"></header>
     <div class="Container2">
       <h2 class="faq-title">자유게시판</h2>
       <table class="table2">
@@ -158,5 +158,5 @@
       </footer>
     </div>
   </body>
-  <script src="/js/header.js" defer></script>
+  <script src="/js/main/header.js" defer></script>
 </html>

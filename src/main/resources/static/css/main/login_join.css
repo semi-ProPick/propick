@@ -41,8 +41,10 @@ a {
 .img_box {
   width: 60%;
   height: 100%;
-  align-items: left;
-  background-image: url("/images/image 50.png");
+  /*align-items: left;*/
+  display: flex;
+  align-items: flex-start;
+  background-image: url("../../images/main/image 50.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -67,7 +69,7 @@ a {
   width: 100%;
 }
 
-#group {
+.group {
   color: #ff5c35;
 }
 
@@ -78,10 +80,10 @@ a {
 }
 
 .login_id_pwd_box {
-  width: 70%;
+  width: 100%;
 }
 
-#lptext {
+.lptext {
   margin-bottom: 10px;
 }
 
@@ -104,7 +106,7 @@ a {
   border: none;
   background-color: #333333;
   cursor: pointer;
-  width: 70%;
+  width: 100%;
   height: 50px;
   border-radius: 10px;
   color: white;
@@ -125,6 +127,7 @@ a {
 }
 
 #error_message1 {
+
   display: none;
   color: #ff5c35;
   font-size: 12px;
@@ -191,7 +194,7 @@ a {
   background-color: #f2f2f2;
   border-radius: 5px;
   border: none;
-  width: 100%;
+  width: 96%;
   height: 61px;
   color: #959595;
 }
@@ -204,6 +207,7 @@ a {
   height: 61px;
   color: #959595;
   margin-bottom: 10px;
+  padding-left: 10px;
 }
 
 .request {
@@ -261,7 +265,7 @@ a {
   text-decoration: underline;
 }
 
-#agree-gap {
+.agree-gap {
   display: flex;
   align-items: center;
   width: 100%;

@@ -1,21 +1,40 @@
-//package com.ezen.propick.user.service;
-//
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Service;
-//
-//@Service
-//public class UserService {
-//
-//    private final PasswordEncoder passwordEncoder;
-//
-//    public UserService(PasswordEncoder passwordEncoder) {
-//        this.passwordEncoder = passwordEncoder;
+package com.ezen.propick.user.service;
+
+import com.ezen.propick.user.dto.LoginDTO;
+import com.ezen.propick.user.dto.MemberDTO;
+import com.ezen.propick.user.entity.User;
+import com.ezen.propick.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class UserService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; //빈으로 등록해둔 것 주입받기
+
+    public void createMember(MemberDTO memberDTO) {
+
+        User user = new User();
+        user.setUserId(memberDTO.getUserId());
+        user.setUserPwd(passwordEncoder.encode(memberDTO.getUserPwd())); // 암호화 적용
+        user.setUserName(memberDTO.getUserName());
+        user.setUserPhone(memberDTO.getUserPhone());
+        user.setUserGender(memberDTO.getUserGender());
+        user.setUserBirth(memberDTO.getUserBirth());
+
+        this.userRepository.save(user);
+    }
+
+
+    public LoginDTO findByUserId(String userId){
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        return new LoginDTO(user.getUserId(), user.getUserPwd());
+    }
+
+//    public MemberDTO inquireUserId(String inquireUserId){
 //    }
-//
-//    // 예시 메서드
-//    public void registerUser(String username, String rawPassword) {
-//        String encodedPassword = passwordEncoder.encode(rawPassword);
-//        // DB에 저장하는 로직 추가
-//        System.out.println("Encoded password: " + encodedPassword);
-//    }
-//}
+
+}

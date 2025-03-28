@@ -15,18 +15,23 @@ function validateForm(){
 
 
 
-        let koreanRegex = /^[가-힣]+$/;
-        let numberRegex = /^[0-9]{6}$/;
-        let engNum =  /^[a-zA-Z0-9]*$/;
-        let pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~@#$!%*?&])[a-zA-Z\d~@#$!%*?&]{8,}$/;
+    let koreanRegex = /^[가-힣]+$/;
+    let numberRegex1 = /^[0-9]{10,11}$/;
+    let numberRegex = /^[0-9]{2}\/[0-9]{2}\/[0-9]{2}$/;
+    let engNum =  /^[a-zA-Z0-9]*$/;
+    let pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~@#$!%*?&])[a-zA-Z\d~@#$!%*?&]{8,}$/;
+
+    let valid = true;
 
     // 이름 유효성 검사
     if(user_name.trim() === ""){
         error_name.style.display = "block";
         error_name.textContent = "이름을 입려해주세요.";
+        valid=false;
     }else if(!koreanRegex.test(user_name)){
         error_name.style.display="block";
         error_name.textContent = "이름을 제대로 입력해주세요.";
+        valid=false;
     } else {
         error_name.style.display = "none";
     }
@@ -35,9 +40,11 @@ function validateForm(){
     if(user_phone.trim() === ""){
         error_phone.style.display = "block";
         error_phone.textContent = "연락처를 입력해주세요.";
-    } else if(!numberRegex.test(user_phone)){
+        valid=false;
+    } else if(!numberRegex1.test(user_phone)){
         error_phone.style.display="block";
-        error_phone.textContent = "숫자만 입력가능합니다.";
+        error_phone.textContent = "연락처를 다시 확인해주세요.";
+        valid=false;
     } else {
         error_phone.style.display = "none";
     }
@@ -46,9 +53,11 @@ function validateForm(){
     if(user_id.trim() === ""){
         error_id.style.display ="block";
         error_id.textContent ="ID를 입력해주세요."
+        valid=false;
     } else if(!engNum.test(user_id)){
         error_id.style.display="block";
         error_id.textContent="영어와 숫자만 가능합니다.";
+        valid=false;
     } else{
         error_id.style.display="none";
     }
@@ -57,9 +66,11 @@ function validateForm(){
     if(user_pwd.trim() === ""){
         error_pwd.style.display ="block";
         error_pwd.textContent ="PWD를 입력하세요.";
+        valid=false;
     } else if(!pattern.test(user_pwd)){
         error_pwd.style.display="block";
-        error_pwd.textContent="영어, 특수문자, 숫자를 포함시켜주세요.";
+        error_pwd.textContent="영어, 특수문자, 숫자를 포함시키고 8자리 이상으로 입력하세요.";
+        valid=false;
     } else{
         error_pwd.style.display="none";
     }
@@ -68,12 +79,15 @@ function validateForm(){
     if(user_confirm_pwd.trim() === ""){
         error_confirm.style.display="block";
         error_confirm.textContent="PWD를 한번 더 입력해주세요.";
+        valid=false;
     } else if(user_pwd.trim() !== user_confirm_pwd.trim()){
         error_confirm.style.display="blcok";
         error_confirm.textContent = "PWD와 일치하게 입력해주세요.";
+        valid=false;
     } else if(!pattern.test(user_confirm_pwd)){
         error_confirm.style.display="block";
         error_confirm.textContent="PWD와 일치하게 입력해주세요.";
+        valid=false;
     } else{
         error_confirm.style.display="none";
     }
@@ -82,28 +96,37 @@ function validateForm(){
     if(user_birth.trim() === ""){
         error_birth.style.display="block";
         error_birth.textContent="생년월일을 입력해주세요.";
+        valid=false;
     }else if(!numberRegex.test(user_birth)){
         error_birth.style.display="block";
-        error_birth.textContent="6자리 숫자로 입력해주세요.";
+        error_birth.textContent="00/00/00 양식으로 적어주세요.";
+        valid=false;
     } else {
         error_birth.style.display="none";
     }
+
+    if (valid) {
+        document.getElementById("joinForm").submit();  // 폼을 실제로 제출
+        // setTimeout(function() {
+        //     window.location.href = "/user/login";  // 리디렉션
+        // }, 1000);  // 1초 지연 후 리디렉션
+    }
 }
 
-    function toggleCheckboxes(){
-        const select_all = document.getElementById("all_check");
-        const checkboxes = document.querySelectorAll(".check");
+function toggleCheckboxes(){
+    const select_all = document.getElementById("all_check");
+    const checkboxes = document.querySelectorAll(".check");
 
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = select_all.checked;
-        });
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = select_all.checked;
+    });
 }
 
 
 document.getElementById('view1').addEventListener('click', function(){
 // 첫 번째 전문보기
-const termsContent1 = document.getElementById('terms_content1');
-const isVisible1 = termsContent1.style.display == 'block';
+    const termsContent1 = document.getElementById('terms_content1');
+    const isVisible1 = termsContent1.style.display == 'block';
 
     if(isVisible1){
         termsContent1.style.display = 'none';
