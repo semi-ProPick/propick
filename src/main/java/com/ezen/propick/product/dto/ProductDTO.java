@@ -1,5 +1,6 @@
 package com.ezen.propick.product.dto;
 
+import com.ezen.propick.product.entity.ProductInfo;
 import com.ezen.propick.product.entity.ProductIngredientDetail;
 import lombok.*;
 
@@ -20,13 +21,14 @@ public class ProductDTO {
     private String productName;  // 제품명
     private String brandName;  // 브랜드명
     private String productType;  // 제품유형
-    private Integer productPrice;  // 제품 가격
+    private BigDecimal productPrice;  // 제품 가격
     private List<String> productImages;  // 제품 이미지
     private Map<String, String> nutrients;  // 영양소 정보
     private List<IngredientWithInfoDTO> ingredientDTOs;  // 성분 정보
     private Integer calories;  // 칼로리
     private Integer servingSize;  // 1회 섭취량
-
-
+    private Double proteinAmount; // 단백질 함량
+    private Double proteinPer100g; // 100g 기준 단백질 함량
+    private ProductInfo productInfo;  // ProductInfo를 추가
 
 }

@@ -11,6 +11,4 @@ public interface ProductIngredientDetailRepository extends JpaRepository<Product
     // 특정 상품의 모든 성분 정보 조회
     List<ProductIngredientDetail> findByProduct(Product product);
 
-    // 특정 성분을 포함하는 모든 상품 조회
-    List<ProductIngredientDetail> findByIngredient(Ingredient ingredient);
 }
