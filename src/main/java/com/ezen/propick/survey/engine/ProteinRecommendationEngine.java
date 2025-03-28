@@ -35,6 +35,9 @@ public class ProteinRecommendationEngine {
 
         // 최종 결과 DTO 생성
         return new SurveyRecommendationResultDTO(
+                input.getName(),
+                input.getGender(),
+                input.getAge(),
                 bmi, bmiStatus,
                 intake[0], intake[1],
                 recommendedTypes, avoidTypes,
