@@ -68,7 +68,7 @@ function visualizeResult(data) {
     document.getElementById('avoidProtein').innerText = `회피 단백질: ${data.avoidTypes.join(", ")}`;
 
     // 프로틴 섭취량 (텍스트로)
-    document.getElementById('maxIntakeGram').innerText ='섭취 단백질: ${data.maxIntakeGram}`;
+
 
     // 추천 섭취 타이밍 (텍스트로)
     document.getElementById('timing').innerText = `권장 섭취 시간: ${data.intakeTiming}`;
