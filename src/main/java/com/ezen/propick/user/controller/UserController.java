@@ -21,15 +21,6 @@ public class UserController {
         return "/main/login";
     }
 
-//@PostMapping("/login")
-//public String login(@RequestParam("userId") String userId, @RequestParam("userPwd") String userPwd) {
-//    // 받은 값 확인
-//    System.out.println("userId: " + userId);
-//    System.out.println("userPwd: " + userPwd);
-//
-//    // 로그인 처리를 진행
-//    return "redirect:/"; // 로그인 후 리다이렉트할 URL
-//}
 
     //     회원가입 페이지를 보여주는 메서드
     @GetMapping("/join")
@@ -42,6 +33,11 @@ public class UserController {
     public String join(@ModelAttribute MemberDTO memberDTO, BindingResult bindingResult) {
         userService.createMember(memberDTO);
         return "redirect:/";
+    }
+
+    @GetMapping("/findid")
+    public String findId() {
+        return "/main/id_find";
     }
 
 }

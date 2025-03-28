@@ -16,7 +16,6 @@ public class UserService {
 
     public void createMember(MemberDTO memberDTO) {
 
-        System.out.println("회원가입 비밀번호 : " + memberDTO.getUserPwd());
         User user = new User();
         user.setUserId(memberDTO.getUserId());
         user.setUserPwd(passwordEncoder.encode(memberDTO.getUserPwd())); // 암호화 적용
@@ -28,18 +27,14 @@ public class UserService {
         this.userRepository.save(user);
     }
 
-    public MemberDTO findByUserId(String userId){
+
+    public LoginDTO findByUserId(String userId){
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        String rawPwd = "1234";
-        String encodedPwd = passwordEncoder.encode(rawPwd);
-        System.out.println("encodePwd : " + encodedPwd);
-
-        System.out.println("맞아????????? : " + passwordEncoder.matches("1234", encodedPwd));
-
-        return new MemberDTO(user.getUserId(), user.getUserPwd());
+        return new LoginDTO(user.getUserId(), user.getUserPwd());
     }
 
-
+//    public MemberDTO inquireUserId(String inquireUserId){
+//    }
 
 }

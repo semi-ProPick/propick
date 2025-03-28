@@ -18,7 +18,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class AuthDetails implements UserDetails {
 
-    private MemberDTO memberDTO;
+    private LoginDTO loginDTO;
 
 
     @Override
@@ -29,13 +29,13 @@ public class AuthDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        System.out.println(memberDTO.getUserPwd());
-        return memberDTO.getUserPwd();  // LoginDTO에서 비밀번호를 가져옴
+        System.out.println(loginDTO.getUserPwd());
+        return loginDTO.getUserPwd();  // LoginDTO에서 비밀번호를 가져옴
     }
 
     @Override
     public String getUsername() {
-        return memberDTO.getUserId();  // LoginDTO에서 아이디를 가져옴
+        return loginDTO.getUserId();  // LoginDTO에서 아이디를 가져옴
     }
 
     @Override
