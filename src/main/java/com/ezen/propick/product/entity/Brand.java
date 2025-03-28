@@ -2,9 +2,11 @@ package com.ezen.propick.product.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +26,8 @@ public class Brand {
     @Column(name = "brand_name", nullable = false)
     private String brandName;
 
-    @Column(name = "brand_created_at" ,nullable = false, updatable = false)
+    @CreatedDate
+    @Column(name = "brand_created_at", nullable = false, updatable = false)
     private LocalDateTime brandCreatedAt;
 
     @Column(name = "brand_status", nullable = false)
@@ -36,7 +39,6 @@ public class Brand {
     @Column(name = "brand_url", nullable = false)
     private String brandUrl;
 
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)  // 외래 키
-    private List<Product> products;   // 브랜드 와 상품 연결
-
+    @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
 }

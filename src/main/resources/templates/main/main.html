@@ -125,8 +125,9 @@
 <!-- 이벤트 팝업 -->
 <div class="popup">
   <div class="popup-content">
-    <img th:src="@{/images/main/popup.png}" alt="이벤트 배너" class="popup-banner" />
-    <h3>한정수량 타임특가 이벤트</h3>
+    <a th:href="@{/popup/event}">
+      <img th:src="@{/images/main/popup.png}" alt="이벤트 배너" class="popup-banner" />
+    </a>    <h3>한정수량 타임특가 이벤트</h3>
     <p class="event-date">2023-06-01 ~ 별도공지</p>
     <div class="popup-buttons">
       <button class="btn btn-secondary">오늘 보지 않기</button>

@@ -3,9 +3,9 @@ package com.ezen.propick.product.dto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,8 +13,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ProductUpdateDTO {
-    // 상품 수정 dto
-
     @NotNull(message = "상품 ID는 필수 항목입니다.")
     private Integer productId;    // 상품 ID (수정할 상품의 ID)
 
@@ -35,16 +33,17 @@ public class ProductUpdateDTO {
     private List<Integer> categoryIds;  // 카테고리 리스트
 
     @NotEmpty(message = "최소 하나의 이미지 URL이 필요합니다.")
-    //private List<ProductImageDTO> productImages;
-    private List<String> productImages;// 제품 이미지
+    private List<String> productImages; // 제품 이미지
 
     @NotEmpty(message = "성분 이름은 필수 항목입니다.")
     private List<String> ingredientNames;  // 성분 이름 리스트
 
     private Integer productInfoId; // 성분 상세정보 ID
 
-    public ProductUpdateDTO(Integer productId, String productName, String productType, BigDecimal productPrice, Integer brandId,
-                            List<Integer> categoryIds, List<String> productImages) {
+    public ProductUpdateDTO(Integer productId, String productName, String productType,
+                            BigDecimal productPrice, Integer brandId,
+                            List<Integer> categoryIds, List<String> productImages,
+                            List<String> ingredientNames, Integer productInfoId) {
         this.productId = productId;
         this.productName = productName;
         this.productType = productType;
@@ -52,5 +51,7 @@ public class ProductUpdateDTO {
         this.brandId = brandId;
         this.categoryIds = categoryIds;
         this.productImages = productImages;
+        this.ingredientNames = ingredientNames;
+        this.productInfoId = productInfoId;
     }
 }

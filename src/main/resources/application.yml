@@ -1,13 +1,31 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ppdb
-    username: propick
-    password: propick
+    url: jdbc:mysql://localhost:3306/ppdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF-8
+    username: ${DB_USERNAME:propick}
+    password: ${DB_PASSWORD:propick}
+    hikari:
+      pool-name: ProPickHikariPool
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
   jpa:
-    show-sql: true
     database: mysql
-    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: false
+        use_sql_comments: true
+        jdbc:
+          batch_size: 50
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
