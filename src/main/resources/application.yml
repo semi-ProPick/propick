@@ -14,8 +14,8 @@ spring:
 
 logging:
   level:
-    org.springframework: DEBUG
-    com.ezen.propick: DEBUG
+    org.springframework: INFO
+    com.ezen.propick: INFO
 
   # Thymeleaf 설정 추가
   thymeleaf:

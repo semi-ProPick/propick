@@ -5,16 +5,14 @@ import com.ezen.propick.user.enumpackage.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberDTO {
@@ -40,5 +38,10 @@ public class MemberDTO {
     @NotBlank(message = "생년월일은 필수 입력 값입니다.")
     @DateTimeFormat(pattern = "yyyy/MM/dd")
     private Date userBirth;
+
+    public MemberDTO(String userId, String userPwd) {
+        this.userId = userId;
+        this.userPwd = userPwd;
+    }
 }
 
