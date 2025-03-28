@@ -5,35 +5,35 @@ import com.ezen.propick.product.dto.ProductDTO;
 import com.ezen.propick.product.dto.ProductListDTO;
 import com.ezen.propick.product.entity.*;
 import com.ezen.propick.product.repository.ProductImageRepository;
+import com.ezen.propick.product.repository.ProductInfoRepository;
 import com.ezen.propick.product.repository.ProductIngredientDetailRepository;
 import com.ezen.propick.product.repository.ProductRepository;
-import com.ezen.propick.product.utils.ImageUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class MainProductService {
 
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
+    private final ProductInfoRepository productInfoRepository;
     private final ProductIngredientDetailRepository productIngredientDetailRepository;
-    private final ObjectMapper objectMapper;
 
+    /* 전체 상품 목록 조회 */
     @Transactional
     public List<ProductListDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findAll();  // DB에서 모든 상품 조회
+
+        // 상품 목록을 DTO로 변환
         return products.stream().map(product ->
                 new ProductListDTO(
                         product.getProductId(),
@@ -41,81 +41,56 @@ public class MainProductService {
                         product.getBrand().getBrandName(),
                         product.getProductType(),
                         product.getProductPrice(),
-                        productImageRepository.findByProduct(product).stream()
-                                .map(ProductImage::getImageUrl)
-                                .collect(Collectors.toList())
+                        productImageRepository.findByProduct(product).stream()  // 상품에 속한 이미지 목록 조회
+                                .map(ProductImage::getImageUrl)  // 이미지 URL만 추출
+                                .collect(Collectors.toList())  // 리스트로 반환
                 )
         ).collect(Collectors.toList());
     }
 
     @Transactional
-    public List<ProductListDTO> getAllProductsWithCorrectedImages() {
-        List<ProductListDTO> products = getAllProducts();
-        products.forEach(product -> {
-            List<String> correctedImageUrls = product.getProductImages().stream()
-                    .map(imgUrl -> {
-                        if (!imgUrl.startsWith("/images/product-img/")) {
-                            return "/images/product-img/" + ImageUtils.decodeImageUrl(imgUrl);
-                        }
-                        return ImageUtils.decodeImageUrl(imgUrl);
-                    })
-                    .collect(Collectors.toList());
-            product.setProductImages(correctedImageUrls);
-        });
-        return products;
-    }
-
-    @Transactional
     public ProductDTO getProductDetailById(Integer productId) {
+        // 1. 상품 조회
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다: " + productId));
 
-        ProductInfo productInfo = product.getProductInfo();
+        // 2. 상품 상세 정보 조회
+        Optional<ProductInfo> optionalProductInfo = productInfoRepository.findByProduct(product);
+        ProductInfo productInfo = optionalProductInfo.orElse(null); // null 체크 후 사용
 
-        if (productInfo == null) {
-            log.warn("⚠ No ProductInfo found for productId: {}", productId);
+        if (optionalProductInfo.isEmpty()) {
+            System.out.println("⚠ No ProductInfo found for productId: " + productId);
         } else {
-            log.info("✅ ProductInfo found: {}", productInfo);
-            log.info("Calories: {}", productInfo.getCalories());
-            log.info("Serving Size: {}", productInfo.getServingSize());
-            log.info("Discount Rate: {}", productInfo.getDiscountRate());
-            log.info("Protein Amount: {}", productInfo.getProteinAmount());
+//            ProductInfo productInfo = optionalProductInfo.get();
+            System.out.println("✅ ProductInfo found: " + productInfo);
+            System.out.println("Calories: " + productInfo.getCalories());
+            System.out.println("Serving Size: " + productInfo.getServingSize());
         }
-
+        // 3. 상품 성분 정보 조회
         List<ProductIngredientDetail> ingredientDetails = productIngredientDetailRepository.findByProduct(product);
 
+        // 4. DTO 변환 (영양소 정보 Map 생성)
         Map<String, String> nutrientsMap = new HashMap<>();
         if (productInfo != null && productInfo.getNutrients() != null) {
+            // ObjectMapper를 사용하여 JSON 문자열을 Map으로 변환
             try {
+                ObjectMapper objectMapper = new ObjectMapper();
                 nutrientsMap = objectMapper.readValue(productInfo.getNutrients(), new TypeReference<Map<String, String>>(){});
             } catch (Exception e) {
-                log.error("Failed to parse nutrients JSON for productId: {}", productId, e);
-                nutrientsMap.put("error", "Invalid nutrients data");
+                e.printStackTrace(); // JSON 파싱 오류 처리
             }
         }
 
+        // 5. 성분 정보 DTO 변환
         List<IngredientWithInfoDTO> ingredientDetailDTOs = ingredientDetails.stream()
-                .map(detail -> {
-                    String ingredientName = "Unknown";
-                    BigDecimal ingredientAmount = BigDecimal.valueOf(0);
-                    String ingredientUnit = "N/A";
+                .map(detail -> new IngredientWithInfoDTO(
+                        detail.getIngredient() != null ? detail.getIngredient().getIngredientName() : "Unknown",
+                        detail.getIngredientAmount() != null ? detail.getIngredientAmount() : BigDecimal.ZERO,
+                        detail.getIngredientUnit() != null ? detail.getIngredientUnit() : "N/A"
+                ))
+                .collect(Collectors.toList());
 
-                    try {
-                        if (detail.getIngredient() != null) {
-                            ingredientName = detail.getIngredient().getIngredientName();
-                        }
-                        if (detail.getIngredientAmount() != null) {
-                            ingredientAmount = detail.getIngredientAmount();
-                        }
-                    } catch (Exception e) {
-                        log.error("Failed to map ProductIngredientDetail for productId: {}, productIngredientId: {}",
-                                productId, detail.getId(), e);
-                    }
-
-                    return new IngredientWithInfoDTO(ingredientName, ingredientAmount, ingredientUnit);
-                })
-                .collect(Collectors.<IngredientWithInfoDTO>toList()); // 타입 명시
-
+        // 6. ProductDTO 생성 및 반환
         return ProductDTO.builder()
                 .productId(product.getProductId())
                 .productName(product.getProductName())
@@ -123,20 +98,15 @@ public class MainProductService {
                 .productType(product.getProductType())
                 .productPrice(product.getProductPrice())
                 .productImages(product.getProductImages().stream()
-                        .map(image -> {
-                            String imageUrl = image.getImageUrl();
-                            if (!imageUrl.startsWith("/images/product-img/")) {
-                                return "/images/product-img/" + ImageUtils.decodeImageUrl(imageUrl);
-                            }
-                            return ImageUtils.decodeImageUrl(imageUrl);
-                        })
+                        .map(image -> image.getImageUrl())
                         .collect(Collectors.toList()))
                 .nutrients(nutrientsMap)
                 .ingredientDTOs(ingredientDetailDTOs)
-                .calories(productInfo != null ? productInfo.getCalories() : 0)
-                .servingSize(productInfo != null ? productInfo.getServingSize() : 0)
-                .discountRate(productInfo != null ? productInfo.getDiscountRate() : 0)
-                .proteinAmount(productInfo != null ? productInfo.getProteinAmount() : 0)
+                .calories(productInfo != null ? productInfo.getCalories() : null)
+                .servingSize(productInfo != null ? productInfo.getServingSize() : null)
                 .build();
+
     }
+
+
 }

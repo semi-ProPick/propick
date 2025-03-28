@@ -11,5 +11,5 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     // 카테고리 이름으로 조회
-    List<ProductCategory> findByCategoryName(String categoryName);
+    //List<ProductCategory> findByCategoryName(String categoryName);
 }

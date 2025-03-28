@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "ingredient")
 @Getter
@@ -20,10 +23,8 @@ public class Ingredient {
     @Column(name = "ingredient_name", nullable = false, length = 255)
     private String ingredientName;
 
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductIngredientDetail> productIngredientDetails = new ArrayList<>();
 
 
-    // productInfo 접근 메서드 추가
-//    public ProductInfo getProductInfo() {
-//        return this.productInfo;
-//    }
 }
