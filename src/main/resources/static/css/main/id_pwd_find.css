@@ -102,3 +102,27 @@ a {
 .page3 {
   display: none;
 }
+
+.success-message{
+  display: flex;
+  justify-content: center; /* 수평 중앙 */
+  align-items: center; /* 수직 중앙 */
+  flex-direction: column;
+}
+.line{
+  border: 1px solid #ff5c35;
+  width: 50%;
+  margin-top: 2%;
+  opacity: 0.3;
+}
+.label{
+  padding-top: 3%;
+}
+
+#yourId{
+  margin-bottom: 1%;
+}
+
+#error_message_info{
+  margin-bottom: 1%;
+}

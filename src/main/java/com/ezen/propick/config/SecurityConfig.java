@@ -54,7 +54,7 @@ public class SecurityConfig {
             logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"));
             logout.deleteCookies("JSESSIONID");
             logout.invalidateHttpSession(true);
-            logout.logoutSuccessUrl("/");  // 로그아웃 후 메인 페이지로 이동
+            logout.logoutSuccessUrl("/user/login");  // 로그아웃 후 메인 페이지로 이동
         }).sessionManagement(session -> {
             session.maximumSessions(1);  // 세션 하나만 허용
             session.invalidSessionUrl("/");  // 잘못된 세션은 메인 페이지로 이동

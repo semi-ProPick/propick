@@ -2,6 +2,7 @@ package com.ezen.propick.user.service;
 
 import com.ezen.propick.user.dto.LoginDTO;
 import com.ezen.propick.user.dto.MemberDTO;
+import com.ezen.propick.user.dto.findIdDTO;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,11 @@ public class UserService {
         return new LoginDTO(user.getUserId(), user.getUserPwd());
     }
 
-//    public MemberDTO inquireUserId(String inquireUserId){
-//    }
+    public findIdDTO inquiryId(String userName, String userPhone){
+        User user = userRepository.findByUserNameAndUserPhone(userName, userPhone)
+                .orElseThrow(() -> new RuntimeException(" 이름과 전화번호에 맞는 사용자 정보가 없습니다."));
+
+                return new findIdDTO(user.getUserId());
+    }
 
 }

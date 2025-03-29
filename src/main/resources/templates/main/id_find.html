@@ -12,18 +12,15 @@
     <div class="1" id="page1">
       <main class="container">
         <h2 class="title">프로픽</h2>
-        <section class="find-id">
+          <form action="/user/findid" class="find-id" method="post">
           <h3>아이디 찾기</h3>
           <p class="description">
-            가입하신 이메일이나 전화번호를 입력하시면 아이디를 찾아드립니다.
+            등록된 이름과 전화번호를 입력하시면 아이디를 찾아드립니다.
           </p>
-          <input
-            type="text"
-            id="userInput"
-            placeholder="가입하신 이메일이나 전화번호를 입력하세요."
-          />
-          <button onclick="findId()">아이디 찾기</button>
-        </section>
+            <input name="name" type="text" placeholder="이름을 입력하세요." required >
+            <input name="phone" type="text" required placeholder="전화번호를 입력하세요. ex)01012345678">
+          <button type="submit">아이디 찾기</button>
+        </form>
       </main>
     </div>
     <div class="2" id="page2">
@@ -32,10 +29,10 @@
 
         <section class="success-message">
           <h3>아이디 찾기에 성공하였습니다.</h3>
-          <hr />
-          <p class="label">아이디</p>
-          <p class="masked-email">o******@gmail.com</p>
-
+          <div class="line"></div>
+          <p class="label" id="yourId">[아이디]</p>
+          <p class="masked-email"><span th:text="${userId}"></span></p>
+          <p class="masked-email" id="error_message_info" th:text="${error}">조회된 아이디가 없습니다.</p>
           <div class="button-group">
             <button class="btn gray" onclick="findPassword()">
               비밀번호 찾기
