@@ -1,13 +1,14 @@
 package com.ezen.propick.user.service;
 
-import com.ezen.propick.user.dto.LoginDTO;
-import com.ezen.propick.user.dto.MemberDTO;
-import com.ezen.propick.user.dto.findIdDTO;
+import com.ezen.propick.user.dto.*;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -35,11 +36,30 @@ public class UserService {
         return new LoginDTO(user.getUserId(), user.getUserPwd());
     }
 
-    public findIdDTO inquiryId(String userName, String userPhone){
+    public FindIdDTO inquiryId(String userName, String userPhone){
         User user = userRepository.findByUserNameAndUserPhone(userName, userPhone)
                 .orElseThrow(() -> new RuntimeException(" 이름과 전화번호에 맞는 사용자 정보가 없습니다."));
 
-                return new findIdDTO(user.getUserId());
+                return new FindIdDTO(user.getUserId());
+    }
+
+    //비밀번호 변경할 때 정보 조회 아이디, 전화번호
+    public PwdUserInfoDTO inquiryMyInfo(String userId, String userPhone){
+        User user = userRepository.findByUserIdAndUserPhone(userId, userPhone)
+                .orElseThrow(() -> new RuntimeException(" 사용자를 찾을 수 없습니다."));
+        return new PwdUserInfoDTO(user.getUserId(), user.getUserPhone());
+    }
+
+    //비밀번호 변경
+    @Transactional
+    public boolean changePassword(String userId, String userPwd) {
+        Optional<User> user = userRepository.findByUserId(userId);
+
+        if (user.isPresent()) {
+            userRepository.updateByUserIdAndUserPwd(userId, passwordEncoder.encode(userPwd));
+            return true;
+        }
+        return false;
     }
 
 }

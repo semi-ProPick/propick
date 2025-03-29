@@ -25,12 +25,11 @@
     </div>
     <div class="2" id="page2">
       <main class="container">
-        <h2 class="title">프로픽</h2>
+        <h2 class="title">프로픽 ID 확인</h2>
 
         <section class="success-message">
-          <h3>아이디 찾기에 성공하였습니다.</h3>
           <div class="line"></div>
-          <p class="label" id="yourId">[아이디]</p>
+          <p class="label" id="yourId">[아이디를 확인하세요.]</p>
           <p class="masked-email"><span th:text="${userId}"></span></p>
           <p class="masked-email" id="error_message_info" th:text="${error}">조회된 아이디가 없습니다.</p>
           <div class="button-group">

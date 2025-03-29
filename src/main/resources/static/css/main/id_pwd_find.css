@@ -25,7 +25,7 @@ a {
 }
 
 .container {
-  margin-top: 120px;
+  margin-top: 5%;
   text-align: center;
 }
 
@@ -85,6 +85,7 @@ a {
   font-size: 14px;
   border: none;
   border-radius: 5px;
+  margin-top: 3%;
 }
 
 .btn.gray {
@@ -121,6 +122,7 @@ a {
 
 #yourId{
   margin-bottom: 1%;
+  color: #777;
 }
 
 #error_message_info{

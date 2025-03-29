@@ -1,13 +1,12 @@
 package com.ezen.propick.user.controller;
 
+import com.ezen.propick.user.dto.FindIdDTO;
 import com.ezen.propick.user.dto.MemberDTO;
-import com.ezen.propick.user.dto.findIdDTO;
-import com.ezen.propick.user.entity.User;
+import com.ezen.propick.user.dto.NewPwdDTO;
+import com.ezen.propick.user.dto.PwdUserInfoDTO;
 import com.ezen.propick.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,7 +49,7 @@ public class UserController {
     public String findUsername(@RequestParam String name, @RequestParam String phone, Model model) {
         try {
             // 이름과 전화번호로 아이디 찾기
-            findIdDTO findIdDTO = userService.inquiryId(name, phone);
+            FindIdDTO findIdDTO = userService.inquiryId(name, phone);
 
             // 아이디가 존재하면 모델에 아이디를 추가하여 반환
             model.addAttribute("userId", findIdDTO.getUserId()); // findIdDTO의 userId를 모델에 추가
@@ -62,5 +61,29 @@ public class UserController {
         }
     }
 
+    //비밀번호 보여주는 페이지
+    @GetMapping("/findpwd")
+    public String findPwd() {
+        return "/main/password_find";
+    }
 
+    @PostMapping("/findpwd")
+    public String resetPwd(@ModelAttribute NewPwdDTO newPwdDTO, Model model) {
+        try {
+            // 사용자 정보 확인
+            PwdUserInfoDTO userInfo = userService.inquiryMyInfo(newPwdDTO.getUserId(), newPwdDTO.getUserPhone());
+
+            // 비밀번호 변경
+            boolean isPasswordChanged = userService.changePassword(newPwdDTO.getUserId(), newPwdDTO.getUserPwd());
+
+            if (isPasswordChanged) {
+                model.addAttribute("success", "비밀번호가 변경되었습니다.");
+            } else {
+                model.addAttribute("error", "비밀번호 변경에 실패했습니다.");
+            }
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "/main/password_find"; // 비밀번호 찾기 페이지로 리턴
+    }
 }
