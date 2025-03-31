@@ -18,16 +18,4 @@ public class ProductImageDTO {
         this.productImgName = productImgName;
     }
 
-    // Getter 메서드
-    public Integer getProductImageId() {
-        return productImageId;
-    }
-
-    public String getProductImgUrl() {
-        return productImgUrl;
-    }
-
-    public String getProductImgName() {
-        return productImgName;
-    }
 }

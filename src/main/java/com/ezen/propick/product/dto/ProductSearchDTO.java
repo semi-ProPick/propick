@@ -21,17 +21,17 @@ public class ProductSearchDTO {
     private Integer productId;
     private String brandName;
 
+    private Integer discountRate;  // 할인율
+    private BigDecimal discountedPrice; // 할인된 가격
 
-    // getter, setter
-    public List<String> getProductImages() {
-        return productImages;
+
+    // 할인된 가격 계산
+    public void calculateDiscountedPrice() {
+        if (this.productPrice != null && this.discountRate != null && this.discountRate > 0) {
+            BigDecimal discountAmount = this.productPrice.multiply(BigDecimal.valueOf(this.discountRate).divide(BigDecimal.valueOf(100)));
+            this.discountedPrice = this.productPrice.subtract(discountAmount);
+        } else {
+            this.discountedPrice = this.productPrice;  // 할인율이 없으면 원래 가격 그대로
+        }
     }
-
-    public void setProductImages(List<String> productImages) {
-        this.productImages = productImages;
-    }
-
-
-
-
 }

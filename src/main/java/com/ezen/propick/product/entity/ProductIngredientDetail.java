@@ -1,17 +1,16 @@
 package com.ezen.propick.product.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "product_ingredient_detail")
-@Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Builder
 public class ProductIngredientDetail {
 
     @Id

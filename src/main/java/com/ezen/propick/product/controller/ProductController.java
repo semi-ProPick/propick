@@ -7,6 +7,7 @@ import com.ezen.propick.product.service.MainProductService;
 import com.ezen.propick.product.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@Profile("user")
 @Controller
 @RequiredArgsConstructor
 public class ProductController {
@@ -26,8 +29,17 @@ public class ProductController {
 
     // 상품 목록 페이지
     @GetMapping("/products")
-    public String getAllProducts(Model model) {
-        List<ProductListDTO> products = mainProductService.getAllProducts();  // 전체 상품 조회
+    public String getAllProducts(@RequestParam(value = "discount", required = false) Boolean discount,Model model) {
+        List<ProductListDTO> products;  // 전체 상품 조회
+
+        if (discount != null && discount) {
+            // 할인된 상품만 조회
+            products = mainProductService.getDiscountedProducts();
+        } else {
+            // 전체 상품 조회
+            products = mainProductService.getAllProducts();
+        }
+
         // 각 상품의 이미지 URL을 디코딩하고, /images/product-img/로 경로 수정
         products.forEach(product -> {
             List<String> correctedImageUrls = product.getProductImages().stream()
@@ -42,18 +54,9 @@ public class ProductController {
             product.setProductImages(correctedImageUrls);  // 디코딩된 이미지 경로를 설정
         });
         model.addAttribute("products", products);  // 상품 목록을 모델에 추가
+        model.addAttribute("discount", discount);
         return "main/product";  // 상품 목록 페이지 반환 (HTML 뷰)
     }
-
-
-    // 상품 상세 페이지
-//    @GetMapping("/products/{productId}")
-//    public String getProductDetail(@PathVariable Integer productId, Model model) {
-//        ProductDTO productDetail = mainProductService.getProductDetailById(productId);
-//        model.addAttribute("product", productDetail);
-//        return "main/product_detail";
-//
-//    }
 
 
     // 상품 상세 페이지
@@ -62,16 +65,17 @@ public class ProductController {
         // 1. 상품 상세 정보를 조회
         ProductDTO productDetail = mainProductService.getProductDetailById(productId);
 
-        // 2. ProductDTO에서 이미 proteinPer100g이 계산되어 있으므로 직접 사용
-        Double proteinPer100g = productDetail.getProteinPer100g();
+        // 2. 성분별 100g당 함량 계산
+        Map<String, Double> ingredientsPer100g = mainProductService.calculateIngredientsPer100g(productDetail.getProductInfo());
 
         // 3. Model에 product와 proteinPer100g을 추가
         model.addAttribute("product", productDetail);
-        model.addAttribute("proteinPer100g", proteinPer100g);
+        model.addAttribute("ingredientsPer100g", ingredientsPer100g);
 
         // 4. 상세 페이지로 전달
         return "main/product_detail";
     }
+
         // 검색
     @GetMapping("/products/search")
     public String getProductName(@RequestParam(value = "keyword", required = false) String keyword, Model model) {

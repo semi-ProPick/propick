@@ -1,9 +1,7 @@
 package com.ezen.propick.product.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,6 +14,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product {
 
     @Id
@@ -26,6 +26,9 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_brand_id", nullable = false)
     private Brand brand;  // 브랜드 참조
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductCategory> productCategories = new ArrayList<>();
 
     @Column(name = "product_name", nullable = false, length = 100)
     private String productName;
@@ -44,8 +47,10 @@ public class Product {
     @JoinColumn(name = "product_id", nullable = false) // 외래키를 ProductInfo 테이블에 설정
     private ProductInfo productInfo;
 
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductIngredientDetail> productIngredientDetails = new ArrayList<>();
+
 
 
     // 검색 시

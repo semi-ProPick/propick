@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Getter
 @NoArgsConstructor
@@ -16,17 +17,20 @@ public class IngredientWithInfoDTO {
     private BigDecimal ingredientAmount; // 성분량
     private String ingredientUnit;  // 성분단위
 
-    // 새 필드: ingredientAmount와 ingredientUnit 결합
-    private String ingredientInfo;
-
-    public IngredientWithInfoDTO(String ingredientName, BigDecimal ingredientAmount, String ingredientUnit) {
-        this.ingredientName = ingredientName;
-        this.ingredientAmount = ingredientAmount;
-        this.ingredientUnit = ingredientUnit;
-        this.ingredientInfo = ingredientAmount.stripTrailingZeros().toPlainString() + " " + ingredientUnit; // 결합된 값
+    // 성분량 + 단위
+    public String getIngredientInfo() {
+        if (ingredientAmount == null || ingredientUnit == null) {
+            return "정보 없음";
+        }
+        return ingredientAmount.stripTrailingZeros().toPlainString() + " " + ingredientUnit;
     }
 
-    public String getIngredientInfo() {
-        return ingredientInfo;
+    // 성분량을 100g 기준으로 계산하는 메서드
+    public BigDecimal calculatePer100g(Integer servingSize) {
+        if (servingSize == null || servingSize <= 0 || ingredientAmount == null || ingredientAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+        return ingredientAmount.divide(BigDecimal.valueOf(servingSize), 2, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
     }
 }

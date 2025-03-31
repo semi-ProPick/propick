@@ -28,4 +28,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByIngredientNameContaining(@Param("keyword") String keyword);
 
 
+    // 할인하는 상품 조회
+    @Query("SELECT p FROM Product p WHERE p.productInfo.discountRate > :discountRate")
+    List<Product> findByDiscountRateGreaterThan(double discountRate);
+
 }

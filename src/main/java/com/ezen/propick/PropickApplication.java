@@ -12,6 +12,6 @@ public class PropickApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PropickApplication.class, args);
-    }
 
+    }
 }

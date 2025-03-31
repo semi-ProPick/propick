@@ -1,25 +1,20 @@
 package com.ezen.propick.product.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "products_info")
-@Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Builder
 public class ProductInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_info_id")
     private Integer productInfoId;
-
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_id", nullable = false)
-//    private Product product;
 
     @OneToOne(mappedBy = "productInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private Product product; // Product와 양방향 관계 설정
@@ -39,12 +34,13 @@ public class ProductInfo {
     @Column(name = "protein_amount")
     private Double proteinAmount;    // 프로틴 함량
 
-    public Double getProteinAmount() {
-        return proteinAmount;
-    }
 
-    public void setProteinAmount(Double proteinAmount) {
-        this.proteinAmount = proteinAmount;
+    // 양방향 관계를 위해 setProduct 추가
+    public void setProduct(Product product) {
+        this.product = product;
+        if (product != null) {
+            product.setProductInfo(this);  // ProductInfo를 Product에 연결
+        }
     }
 }
 
