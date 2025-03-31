@@ -1,12 +1,14 @@
 package com.ezen.propick.user.controller;
 
-import com.ezen.propick.user.dto.FindIdDTO;
-import com.ezen.propick.user.dto.MemberDTO;
-import com.ezen.propick.user.dto.NewPwdDTO;
-import com.ezen.propick.user.dto.PwdUserInfoDTO;
+import com.ezen.propick.auth.model.AuthDetails;
+import com.ezen.propick.user.dto.*;
+import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -86,4 +88,29 @@ public class UserController {
         }
         return "/main/password_find"; // 비밀번호 찾기 페이지로 리턴
     }
+
+    @GetMapping("/modifyMyInfo")
+    public String modifyMyPage(Model model, @AuthenticationPrincipal AuthDetails userDetails) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        System.out.println("🔍 authentication.getName() 값: " + authentication.getName());
+        String userId = userDetails.getUsername();
+
+        User userInfo = userService.findUserByUserId(userId);
+        model.addAttribute("user", userInfo);
+
+        return "/main/user_modify";
+    }
+
+
+    @PostMapping("/modifyMyInfo")
+    public String modifyMyInfo(@ModelAttribute MyInfoDTO myInfoDTO, @AuthenticationPrincipal AuthDetails userDetails) {
+        String userId = userDetails.getUsername();
+
+        // userService를 통해 사용자 정보 수정
+        userService.updateUserInfo(userId, myInfoDTO);
+
+        return "redirect:/"; // 수정 완료 후 마이페이지로 리다이렉트
+    }
 }
+
+

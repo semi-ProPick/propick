@@ -36,7 +36,7 @@ public class MemberDTO {
     private Gender userGender;
 
     @NotBlank(message = "생년월일은 필수 입력 값입니다.")
-    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date userBirth;
 
     public MemberDTO(String userId, String userPwd) {

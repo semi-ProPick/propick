@@ -5,9 +5,11 @@ import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -61,5 +63,24 @@ public class UserService {
         }
         return false;
     }
+
+    //마이페이지 내 정보 관리 로그인 유저 정보 불러오기
+    //LoginDTO에서 아이디만 받고 나머지는 유저 객체를 생성해서 받기 위해 생성
+    public User findUserByUserId(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+    }
+
+    public User updateUserInfo(String userId, MyInfoDTO myInfoDTO) {
+        User currentUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        currentUser.setUserName(myInfoDTO.getUserName());
+        currentUser.setUserPhone(myInfoDTO.getUserPhone());
+        currentUser.setUserBirth(myInfoDTO.getUserBirth());
+
+        return userRepository.save(currentUser);
+    }
+
 
 }

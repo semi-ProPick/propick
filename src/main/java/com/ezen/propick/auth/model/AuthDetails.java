@@ -61,4 +61,6 @@ public class AuthDetails implements UserDetails {
         System.out.println("isEnabled");
         return true;  // 계정 활성화 여부를 처리
     }
+
+
 }

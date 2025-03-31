@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -35,6 +36,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender userGender;
     @Column(name = "user_birth", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date userBirth;
     @Column(name = "user_role", nullable = false)
     @Enumerated(EnumType.STRING)
