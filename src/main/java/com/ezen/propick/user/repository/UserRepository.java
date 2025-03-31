@@ -27,6 +27,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     void updateByUserIdAndUserPwd(@Param("userId")String userId, @Param("userPwd")String userPwd);
 
-
 }
 

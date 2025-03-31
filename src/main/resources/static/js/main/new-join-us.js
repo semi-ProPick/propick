@@ -17,7 +17,7 @@ function validateForm(){
 
         let koreanRegex = /^[가-힣]+$/;
         let numberRegex1 = /^[0-9]{10,11}$/;
-        let numberRegex = /^[0-9]{2}\/[0-9]{2}\/[0-9]{2}$/;
+        let numberRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
         let engNum =  /^[a-zA-Z0-9]*$/;
         let pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~@#$!%*?&])[a-zA-Z\d~@#$!%*?&]{8,}$/;
 

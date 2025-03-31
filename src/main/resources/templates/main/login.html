@@ -23,7 +23,7 @@
                     <span class="group">[</span>맞춤 프로틴<span class="group">]</span> 프로픽
                 </p>
             </div>
-            <form th:action="@{/user/doLogin}" method="post">
+            <form id="loginForm" th:action="@{/user/doLogin}" method="post">
             <div class="login_id_pwd_box">
                 <label for="insert_id"><p class="lptext">Login</p></label>
                 <input name="username" class="insert" id="insert_id" type="text" placeholder="아이디를 입력해주세요.">
@@ -34,7 +34,7 @@
             </div>
 
             <div class="login_box">
-                <button type="submit" id="welecome" >로그인</button>
+                <button type="button" id="welecome" onclick="validateForm()" >로그인</button>
 <!--                onclick="validateForm()"-->
 <!--                th:href="@{/}"-->
             </div>
