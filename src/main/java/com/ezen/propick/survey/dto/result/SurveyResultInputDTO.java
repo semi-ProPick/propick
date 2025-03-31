@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class SurveyResultInputDTO {
     private double weightKg;
     private String purpose; // ex. "근육 증가"
     private String workoutFreq; // ex. "주2~3회"
-    private List<String> healthConcerns; // ex. ["간 질환", "수면장애"]
+    private Map<String, Integer> healthConcerns; // ex. ["간 질환", "수면장애"]
     private int age;
     private String gender;
     private String name;

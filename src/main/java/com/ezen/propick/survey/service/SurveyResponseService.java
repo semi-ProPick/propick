@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+// 설문 저장/분석 관련만 유지
 public class SurveyResponseService {
 
     private final SurveyResponseRepository surveyResponseRepository;
@@ -79,20 +80,23 @@ public class SurveyResponseService {
 
         // ✅ 추가로 필요한 메서드 (설문 응답 → 입력 DTO 변환)
         private SurveyResultInputDTO createInputDTO(SurveyResponseRequestDTO requestDto, User user) {
-
-            double heightCm = Double.parseDouble(findOptionTextByQuestionId(requestDto, 4)); // 질문ID: 키
-            double weightKg = Double.parseDouble(findOptionTextByQuestionId(requestDto, 5)); // 질문ID: 몸무게
-            int age = Integer.parseInt(findOptionTextByQuestionId(requestDto, 3));           // 질문ID: 나이
+            double heightCm = Double.parseDouble(findOptionTextByQuestionId(requestDto, 4));
+            double weightKg = Double.parseDouble(findOptionTextByQuestionId(requestDto, 5));
+            int age = Integer.parseInt(findOptionTextByQuestionId(requestDto, 3));
 
             return SurveyResultInputDTO.builder()
                     .heightCm(heightCm)
                     .weightKg(weightKg)
                     .age(age)
-                    .healthConcerns(extractHealthConcerns(requestDto))
+                    .healthConcerns(toConcernMap(extractHealthConcerns(requestDto)))
                     .purpose(extractPurpose(requestDto))
                     .workoutFreq(extractWorkoutFrequency(requestDto))
                     .build();
         }
+    private Map<String, Integer> toConcernMap(List<String> list) {
+        return list.stream()
+                .collect(Collectors.toMap(c -> c, c -> 1, Integer::sum));
+    }
 
     // 특정 질문ID로 선택된 옵션 텍스트 찾기 메서드
     private String findOptionTextByQuestionId(SurveyResponseRequestDTO requestDto, int questionId) {
@@ -184,5 +188,7 @@ public class SurveyResponseService {
         // 초기 임시 제품 ID 설정 (실제 로직은 추후 추가)
         return 1; // 현재는 간단히 임시로 제품 id를 반환하도록 하였으며, 이후 알고리즘을 추가하면 됩니다.
     }
+
+
 
 }

@@ -12,21 +12,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-@Service // 서비스 빈으로 등록
-@RequiredArgsConstructor // 생성자 자동 생성 (final 필드 주입)
+@Service
+@RequiredArgsConstructor
 public class SurveyServiceImpl implements SurveyService {
 
     private final SurveyRepository surveyRepository;
 
-    //주어진 surveyId로 설문 데이터를 조회하고 DTO로 변환
     @Override
     public SurveyDTO getSurveyById(Integer surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new IllegalArgumentException("설문을 찾을 수 없습니다."));
 
-        // SurveyQuestions -> SurveyQuestionDTO 변환
+        // 🔥 하위 증상 질문(questionId: 9~15)을 제외하고 상위 질문만 처리
+        List<Integer> excludedDetailQuestionIds = List.of(9, 10, 11, 12, 13, 14, 15);
+
         List<SurveyQuestionDTO> questionDTOs = survey.getQuestions().stream()
+                .filter(q -> !excludedDetailQuestionIds.contains(q.getQuestionId())) // 제외
                 .map(this::convertToQuestionDTO)
                 .collect(Collectors.toList());
 
@@ -40,9 +41,6 @@ public class SurveyServiceImpl implements SurveyService {
                 .build();
     }
 
-    /**
-     * SurveyQuestions 엔티티를 SurveyQuestionDTO로 변환
-     */
     private SurveyQuestionDTO convertToQuestionDTO(SurveyQuestions question) {
         List<SurveyOptionsDTO> optionDTOs = question.getOptions().stream()
                 .map(this::convertToOptionDTO)
@@ -57,12 +55,9 @@ public class SurveyServiceImpl implements SurveyService {
                 .build();
     }
 
-    /**
-     * SurveyOptions 엔티티를 SurveyOptionsDTO로 변환
-     */
     private SurveyOptionsDTO convertToOptionDTO(SurveyOptions option) {
         List<SurveyOptionsDTO> childDTOs = option.getChildOptions().stream()
-                .map(this::convertToOptionDTO) // 재귀적으로 자식도 처리
+                .map(this::convertToOptionDTO) // 재귀적으로 처리
                 .collect(Collectors.toList());
 
         return SurveyOptionsDTO.builder()

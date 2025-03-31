@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -25,4 +26,8 @@ public class SurveyRecommendationResultDTO {
     private List<String> avoidTypes;
     private String intakeTiming;
     private List<String> warningMessages;
+    private Map<String, Integer> healthConcerns;
+    Map<String, Integer> proteinRecommendationStats;
+    private Map<String, Integer> intakeTimingRatio;
+
 }

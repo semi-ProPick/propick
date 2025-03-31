@@ -312,37 +312,9 @@
             <p>우선 관리가 필요한 것을 선택하세요</p>
         </div>
         <div class="select_health_contents">
-            <ul>
-                <li class="select_health_list">
-                    <img src="/images/main/bowel.png" alt="소화, 장" />
-                    <p>소화, 장</p>
-                </li>
-                <li class="select_health_list">
-                    <img src="/images/main/skin_disease.png" alt="피부 질환" />
-                    <p>피부 질환</p>
-                </li>
-                <li class="select_health_list">
-                    <img src="/images/main/kidney.png" alt="신장 부담" />
-                    <p>신장 부담</p>
-                </li>
-                <li class="select_health_list">
-                    <img src="/images/main/sleep_disorder.png" alt="수면 장애" />
-                    <p>수면 장애</p>
-                </li>
-                <li class="select_health_list">
-                    <img src="/images/main/joint.png" alt="관절(골다공증)" />
-                    <p>관절(골다공증)</p>
-                </li>
-                <li class="select_health_list">
-                    <img src="/images/main/liver.png" alt="간" />
-                    <p>간</p>
-                </li>
-                <li class="select_health_list">
-                    <img src="/images/main/blood.png" alt="혈관, 혈액순환" />
-                    <p>혈관, 혈액순환</p>
-                </li>
-            </ul>
+            <ul id="top_health_concern_container"></ul>
         </div>
+
         <div class="next_wrap">
             <p>다음</p>
         </div>
@@ -424,4 +396,10 @@
 </div>
 </body>
 <script src="/js/main/survey.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 선택된 이름을 결과 페이지에서도 사용 가능하도록 localStorage 저장됨
+        // 설문 시작 시 필요한 초기화가 있다면 이곳에 추가 가능
+    });
+</script>
 </html>

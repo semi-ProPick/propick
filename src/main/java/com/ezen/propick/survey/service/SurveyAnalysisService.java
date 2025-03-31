@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +75,11 @@ public class SurveyAnalysisService {
                 .weightKg(Double.parseDouble(answerMap.get(5)))
                 .purpose(answerMap.get(6))
                 .workoutFreq(answerMap.get(7))
-                .healthConcerns(finalHealthConcerns)
+                .healthConcerns(toConcernMap(finalHealthConcerns))
                 .build();
+    }
+    private Map<String, Integer> toConcernMap(List<String> list) {
+        return list.stream()
+                .collect(Collectors.toMap(c -> c, c -> 1, Integer::sum));
     }
 }
