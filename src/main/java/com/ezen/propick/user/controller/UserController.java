@@ -4,6 +4,7 @@ import com.ezen.propick.auth.model.AuthDetails;
 import com.ezen.propick.user.dto.*;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
