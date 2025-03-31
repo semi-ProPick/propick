@@ -4,13 +4,17 @@ import com.ezen.propick.auth.model.AuthDetails;
 import com.ezen.propick.user.dto.*;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -112,6 +116,27 @@ public class UserController {
 
         return "redirect:/"; // 수정 완료 후 마이페이지로 리다이렉트
     }
+
+    //회원 탈퇴
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable String userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("회원 탈퇴 완료");
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<String> deleteCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        userService.deleteUser(userDetails.getUsername());  // 현재 로그인된 유저 탈퇴
+        return ResponseEntity.ok("회원 탈퇴 완료");
+    }
+
+    @RequestMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("로그아웃 완료");
+    }
+
+
 }
 
 

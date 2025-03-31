@@ -91,7 +91,7 @@
         </div>
       </div>
 
-      <button class="button">회원 탈퇴</button>
+      <button class="button" onclick="deleteUser()">회원 탈퇴</button>
     </div>
     </div>
   </form>
@@ -106,4 +106,26 @@
 
   </body>
   <script src="/js/main/header.js" defer></script>
+
+  <script>
+    function deleteUser() {
+      if (confirm("정말 탈퇴하시겠습니까?")) {
+        fetch('/user/me', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+                .then(response => {
+                  if (response.ok) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    window.location.href = '/'; // 탈퇴 후 홈으로 이동
+                  } else {
+                    alert("탈퇴 실패. 다시 시도해주세요.");
+                  }
+                })
+                .catch(error => console.error('Error:', error));
+      }
+    }
+  </script>
 </html>

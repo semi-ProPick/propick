@@ -27,5 +27,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     void updateByUserIdAndUserPwd(@Param("userId")String userId, @Param("userPwd")String userPwd);
 
+    //회원 탈퇴
+    @Modifying
+    @Query("DELETE FROM User u WHERE u.userId = :userId")
+    void deleteByUserId(String userId);
 }
 

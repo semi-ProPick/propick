@@ -83,4 +83,11 @@ public class UserService {
     }
 
 
+    //회원 탈퇴
+    @Transactional
+    public void deleteUser(String userId) {
+        userRepository.deleteByUserId(userId);
+    }
+
+
 }
