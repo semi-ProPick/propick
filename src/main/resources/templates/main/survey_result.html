@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" xmlns="">
 <head>
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -9,7 +9,7 @@
 <title>설문 결과</title>
 </head>
 <body>
-    <div id="header"></div>
+<div th:replace="~{main/mainHeader}"></div>
     <div id="wrap">
         <div id="section_wrap1">
             <div id="section1_content">
@@ -22,15 +22,20 @@
                 </div>
             </div>
         </div>
-        
+
+
         <div id="section_result">
             <div class="close_btn3"></div>
-            <h1>
+            <h1 id="user_result_title">
                 000님의 <br />
                 프로틴 추천 결과
             </h1>
-            <div class="user_info_box">
-                <p>성별: 여성 | 나이: 20세 | BMI: 50세(비만)</p>
+        </div>
+
+
+
+        <div class="user_info_box">
+                <p id="user_info_text"></p>
             </div>
 
             <div class="recommendation">
@@ -38,50 +43,35 @@
                 <div class="chart_container">
                     <!-- 건강상태 데이터 분석 부분 -->
                     <div class="health_conditions">
-                        <img
-                            src="/images/main/health_conditions.png"
-                            alt="Health Conditions Chart"
-                            class="health_conditions_img" />
-                        <ul>
-                            <li class="list-title">[건강 팁]</li>
-                            <li>
-                                • 신장 부담 위험 → 단백질 섭취량을 줄이는
-                                것이 좋습니다!
-                            </li>
-                            <li>
-                                • 소화불량 → WPC 피하고 WPI 선택하는 것이
-                                좋습니다!
-                            </li>
+                        <canvas id="health_conditions_chart" class="health_conditions_img"></canvas>
+                        <ul id="warnings" class="warning_list">
+                            <!-- JS에서 동적으로 li로 채움 -->
                         </ul>
                     </div>
 
                     <!-- 데이터 유형 적합도 데이터 분석 부분 -->
                     <div class="protein_type">
-                        <img
-                            src="/images/main/protein_type.png"
-                            alt="Protein Type Chart"
-                            class="protein_type_img" />
+                        <canvas id="protein_type_chart" class="protein_type_img"></canvas>
                         <ul>
-                            <li class="list-title">[추천 단백질 유형]</li>
-                            <li>• WPI(60%)</li>
-                            <li>• WPH(30%)</li>
+                            <li class="list-title">[단백질 정보]</li>
+                            <li id="recommendedProtein">• 추천 단백질</li>
+                            <li id="avoidProtein">• 회피 단백질</li>
                         </ul>
+
                     </div>
 
-                    <!-- 단백질 섭취취 타이밍 데이터 분석 부분 -->
+                    <!-- 단백질 섭취 타이밍 데이터 분석 부분 -->
                     <div class="protein_intake">
-                        <img
-                            src="/images/main/protein_intake.png"
-                            alt="Protein Intake Chart"
-                            class="protein_intake_img" />
+                        <canvas id="protein_intake_chart" class="protein_intake_img"></canvas>
+
                         <ul>
-                            <li class="list-title">[프로틴 섭취량]</li>
-                            <li>• 하루112g</li>
+                            <li class="list-title">[하루 권장 섭취량]</li>
+                            <li id="intakeAmount">•</li>
                         </ul>
+
                         <ul>
-                            <li class="list-title">[프로틴 섭취 타이밍]</li>
-                            <li>• 운동 후 30g</li>
-                            <li>• 취침 전 20g</li>
+                            <li class="list-title">[권장 섭취 시간]</li>
+                            <li id="timing">•</li>
                         </ul>
                     </div>
                 </div>
@@ -90,11 +80,7 @@
 
             <div class="protein_list">
                 <h2>추천 프로틴</h2>
-                <div class="protein_items">
-                    <div class="protein_item">마이프로틴</div>
-                    <div class="protein_item">마이프로틴</div>
-                    <div class="protein_item">마이프로틴</div>
-                </div>
+                <div id="productName" class="product_name_box"></div>
             </div>
         
 
@@ -120,8 +106,233 @@
             </div>
         </div>
     </div>
-    </body>
-  <script src="/js/main/header.js" ></script>
-  <script src="/js/main/survey.js" ></script>
+   </body>
+    <script src="/js/main/header.js" defer></script>
+<!--<script src="/js/main/survey_result.js" ></script>-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const useDummyData = true;
+
+        const userName = localStorage.getItem("userName") || "고객";
+        document.querySelector("#user_result_title").innerHTML = `${userName}님의 <br /> 프로틴 추천 결과`;
+
+        if (useDummyData) {
+            const dummyData = {
+                bmi: 22.8,
+                bmiStatus: "정상",
+                minIntakeGram: 60,
+                maxIntakeGram: 90,
+                recommendedTypes: ["WPI", "카제인"],
+                avoidTypes: ["식물성"],
+                intakeTiming: "운동 후",
+                warningMessages: ["간 수치가 높을 수 있습니다", "수면 패턴 관리가 필요합니다"],
+                productName: "머슬몬스터 WPI",
+                gender: "남성",
+                age: 28,
+                healthConditions: {
+                    "간 건강": 85,
+                    "수면 장애": 70,
+                    "관절 건강": 60
+                },
+                recommendedTypeScores: {
+                    "WPI": 70,
+                    "카제인": 30
+                },
+                intakeTimingRatio: {
+                    "아침": 40,
+                    "운동 후": 60
+                }
+            };
+
+            updateUserInfo(dummyData);
+            visualizeResult(dummyData);
+            return;
+        }
+
+        const surveyResponseId = localStorage.getItem("surveyResponseId");
+        if (!surveyResponseId) {
+            alert("설문 결과를 불러올 수 없습니다.");
+            return;
+        }
+
+        fetch(`/api/recommendations/${surveyResponseId}`)
+            .then(res => res.json())
+            .then(data => {
+                updateUserInfo(data);
+                visualizeResult(data);
+            })
+            .catch(err => console.error("결과 불러오기 실패:", err));
+    });
+
+    // 사용자 정보 출력
+    function updateUserInfo(data) {
+        const userText = `성별: ${data.gender} | 나이: ${data.age}세 | BMI: ${data.bmi} (${data.bmiStatus})`;
+        document.getElementById("user_info_text").innerText = userText;
+    }
+
+    // 차트 객체 전역 선언
+    let healthChart, proteinChart, intakeChart;
+    // 결과 시각화
+    function visualizeResult(data) {
+        // 1. 건강 상태 레이더 차트
+        const healthLabels = Object.keys(data.healthConditions);
+        const healthScores = Object.values(data.healthConditions);
+
+        const ctx1 = document.getElementById('health_conditions_chart').getContext('2d');
+        if (healthChart) healthChart.destroy();
+        healthChart = new Chart(ctx1, {
+            type: 'radar',
+            data: {
+                labels: healthLabels,
+                datasets: [{
+                    label: '건강 상태 점수',
+                    data: healthScores,
+                    backgroundColor: 'rgba(155, 114, 207, 0.7)',
+                    borderColor: '#C6B8F9',
+                    pointBackgroundColor: '#231A3F'
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '건강 상태 유형',
+                    font: {
+                        size: 20,
+                        weight: 'bold'
+                    }
+                    },
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 15
+                            }
+                        }
+                    }
+                },
+                scale: {
+                    ticks: {
+                        min: 0,
+                        max: 100,
+                        stepSize: 20
+                    }
+                }
+            }
+        });
+
+
+        // 2. 추천 단백질 유형 파이 차트
+        const sortedTypes = Object.entries(data.recommendedTypeScores || {})
+            .sort((a, b) => b[1] - a[1]);
+        const typeLabels = sortedTypes.map(([k]) => k);
+        const typeScores = sortedTypes.map(([_, v]) => v);
+
+        const ctx2 = document.getElementById('protein_type_chart').getContext('2d');
+        if (proteinChart) proteinChart.destroy();
+        proteinChart = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: typeLabels,
+                datasets: [{
+                    data: typeScores,
+                    backgroundColor: ['#F6D8FC', '#E1C8FB', '#C6B8F9', '#BDC1FA', '#DCE2F6', '#8e61cf']
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '추천 단백질 유형',
+                        font: {
+                            size: 20,
+                            weight: 'bold'
+                        }
+                    },
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 15
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 3. 섭취 타이밍 도넛 차트
+        const ctx3 = document.getElementById('protein_intake_chart').getContext('2d');
+        if (intakeChart) intakeChart.destroy();
+
+        const timingLabels = Object.keys(data.intakeTimingRatio || {});
+        const timingValues = Object.values(data.intakeTimingRatio || {});
+
+        intakeChart = new Chart(ctx3, {
+            type: 'doughnut',
+            data: {
+                labels: timingLabels,
+                datasets: [{
+                    data: timingValues,
+                    backgroundColor: ['#CFBAF0', '#A3C4F3', '#90DBF4', '#8EECF5', '#98F5E1', '#FFD6A5']
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '섭취 타이밍 비율',
+                        font: {
+                            size: 20,
+                            weight: 'bold'
+                        }
+                    },
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 15
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.label}: ${context.parsed}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // [4] 텍스트 정보
+        document.getElementById('timing').innerText = `• ${data.intakeTiming}`;
+        document.getElementById('intakeAmount').innerText = `• ${data.minIntakeGram}g ~ ${data.maxIntakeGram}g`;
+        document.getElementById('recommendedProtein').innerText = `• 추천 단백질: ${data.recommendedTypes.join(', ')}`;
+        document.getElementById('avoidProtein').innerText = `• 회피 단백질: ${data.avoidTypes.join(', ')}`;
+
+        // [5] 경고 메시지
+        const warningsList = document.getElementById('warnings');
+        if (warningsList) {
+            warningsList.innerHTML = '';
+            const title = document.createElement('li');
+            title.className = 'list-title';
+            title.innerText = '[건강 팁]';
+            warningsList.appendChild(title);
+
+            (data.warningMessages || []).forEach(msg => {
+                const li = document.createElement('li');
+                li.innerText = `• ${msg}`;
+                warningsList.appendChild(li);
+            });
+        }
+
+        // [6] 추천 제품
+        document.getElementById('productName').innerText = `추천 제품: ${data.productName}`;
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </html>
 

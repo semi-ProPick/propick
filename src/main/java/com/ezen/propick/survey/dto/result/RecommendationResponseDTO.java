@@ -3,6 +3,7 @@ package com.ezen.propick.survey.dto.result;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -14,9 +15,25 @@ import java.util.List;
 * */
 public class RecommendationResponseDTO {
     private Integer recommendationId;
-    private double recommendationIntakeAmount;
-    private String recommendationTiming;
-    private String recommendationProteinType;
-    private List<String> recommendationWarnings;
+
+    private double bmi;
+    private String bmiStatus;
+
+    private double minIntakeGram;
+    private double maxIntakeGram;
+
+    private List<String> recommendedTypes;
+    private List<String> avoidTypes;
+
+    private String intakeTiming;
+    private List<String> warningMessages;
+
     private String productName;
+
+    // 추가 권장 필드 (옵션)
+    private String gender;
+    private int age;
+
+    private Map<String, Integer> healthConditions; // 건강 상태 가중치 (질병명과 점수)
+    Map<String, Integer> recommendedTypeScores;
 }

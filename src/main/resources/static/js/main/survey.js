@@ -92,22 +92,6 @@ document.querySelectorAll(".select_purpose_list").forEach(item => {
   });
 });
 
-// ✅ 건강 고민 항목 최대 3개까지 선택 제한
-document.querySelectorAll('.select_health_list').forEach(item => {
-  item.addEventListener('click', () => {
-    const selectedItems = document.querySelectorAll('.select_health_list.selected');
-    if (item.classList.contains('selected')) {
-      item.classList.remove('selected');
-    } else {
-      if (selectedItems.length >= 3) {
-        showWarning("최대 3개까지 선택할 수 있어요.");
-        return;
-      }
-      item.classList.add('selected');
-    }
-  });
-});
-
 // ✅ 이전 버튼
 const backMap = [
   ["basicinfo_page2", "basicinfo_page1"],
@@ -122,131 +106,72 @@ const backMap = [
   ["concern_page2", "concern_page1"],
   ["concern_page3", "concern_page2"]
 ];
-backMap.forEach(([from, to]) => {
-  const btn = document.querySelector(`#${from} .before_page`);
-  if (btn) {
-    btn.addEventListener("click", () => {
-      document.getElementById(from).classList.remove("active");
-      document.getElementById(to).classList.add("active");
-    });
-  }
-});
 
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    const currentPage = document.querySelector(".contents_wrap.active");
-    const nextButton = currentPage?.querySelector(".next_wrap");
-    if (nextButton) nextButton.click();
-  }
-});
 
-// ✅ 세부 질문 로직용 데이터
-const healthDetailQuestions = {
-  "소화, 장": {
-    title: `
-      <div class="question-title-with-img">
-        <img src="/images/main/bowel.png" alt="소화, 장" />
-        <span>소화 문제</span>
-      </div>
-    `,
-    description: "해당되는 소화 증상을 선택해주세요.",
-    options: [
-      "소화가 잘 안 돼요",
-      "유제품 섭취 후 소화불량이 있어요",
-      "설사가 자주 발생해요",
-      "변비가 자주 있어요"
-    ]
-  },
-  "피부 질환": {
-    title: `
-      <div class="question-title-with-img">
-        <img src="/images/main/skin_disease.png" alt="피부 질환" />
-        <span>피부 문제</span>
-      </div>
-    `,
-    description: "피부와 관련된 증상을 선택해주세요.",
-    options: [
-      "여드름이 자주 생겨요",
-      "피부에 발진이나 가려움증이 있어요",
-      "유제품 섭취 후 피부 반응이 있어요",
-      "콩 제품 섭취 후 피부 반응이 있어요",
-      "견과류나 첨가물에 알레르기가 있어요"
-    ]
-  },
-  "신장 부담": {
-    title: `
-      <div class="question-title-with-img">
-        <img src="/images/main/kidney.png" alt="신장 부담" />
-        <span>신장 건강</span>
-      </div>
-    `,
-    description: "신장과 관련된 증상을 선택해주세요.",
-    options: [
-      "신장 질환(신부전, 결석 등) 진단을 받은 적 있어요",
-      "소변량이 줄거나 부종이 자주 생겨요",
-      "소변에 거품이 많아요(단백뇨 의심)",
-      "나트륨 섭취를 제한하고 있어요"
-    ]
-  },
-  "수면 장애": {
-    title: `
-      <div class="question-title-with-img">
-        <img src="/images/main/sleep_disorder.png" alt="수면 장애" />
-        <span>수면 문제</span>
-      </div>
-    `,
-    description: "수면과 관련된 증상을 선택해주세요.",
-    options: [
-      "잠들기 어려워요",
-      "자주 깨거나 얕게 자요",
-      "저녁 늦게 먹으면 잠이 안 와요"
-    ]
-  },
-  "관절(골다공증)": {
-    title: `
-      <div class="question-title-with-img">
-        <img src="/images/main/joint.png" alt="관절 건강" />
-        <span>관절 및 뼈 건강</span>
-      </div>
-    `,
-    description: "관절이나 뼈 건강과 관련된 증상을 선택해주세요.",
-    options: [
-      "골다공증 또는 관절염 진단을 받은 적 있어요",
-      "관절 통증이 자주 있어요"
-    ]
-  },
-  "간": {
-    title: `
-      <div class="question-title-with-img">
-        <img src="/images/main/liver.png" alt="간 건강" />
-        <span>간 건강</span>
-      </div>
-    `,
-    description: "간 건강과 관련된 증상을 선택해주세요.",
-    options: [
-      "지방간, 간염 등 간 질환을 진단받은 적 있어요",
-      "피로감이 자주 느껴져요"
-    ]
-  },
-  "혈관, 혈액순환": {
-    title: `
-      <div class="question-title-with-img">
-        <img src="/images/main/blood.png" alt="혈관 건강" />
-        <span>혈관 및 혈액순환 문제</span>
-      </div>
-    `,
-    description: "혈관 및 혈액순환과 관련된 증상을 선택해주세요.",
-    options: [
-      "고혈압 또는 심혈관 질환 진단을 받은 적 있어요",
-      "손발이 차갑거나 혈액순환이 잘 안 돼요",
-      "콜레스테롤이나 중성지방 수치가 높아요"
-    ]
-  }
+// ✅ 건강 고민 API 기반 트리 구조 로딩
+// ✅ 건강 고민 이미지 매핑
+const healthConcernImages = {
+  "소화, 장": "/images/main/digest.png",
+  "피부 질환": "/images/main/skin_disease.png",
+  "신장 부담": "/images/main/kidney.png",
+  "수면 장애": "/images/main/sleep_disorder.png",
+  "관절 건강": "/images/main/joint.png",
+  "간 건강": "/images/main/liver.png",
+  "혈관 건강": "/images/main/blood.png"
 };
 
-// ✅ 세부 질문 표시 흐름
+let healthConcernMap = {};
 let selectedHealthConcerns = [];
 let currentDetailIndex = 0;
+
+// ✅ 건강 고민 로딩
+async function loadHealthConcernsFromSurvey() {
+  const res = await fetch("/api/surveys/1");
+  const data = await res.json();
+  const healthQuestion = data.questions.find(q => q.questionText.includes("건강 고민"));
+  if (!healthQuestion) return;
+
+  healthQuestion.options.forEach(option => {
+    const parentText = option.optionText.trim();
+    const children = option.childOptions?.map(o => o.optionText.trim()) || [];
+    healthConcernMap[parentText] = children;
+  });
+
+  renderTopConcerns(Object.keys(healthConcernMap));
+}
+
+function renderTopConcerns(optionList) {
+  const container = document.querySelector("#top_health_concern_container");
+  container.innerHTML = "";
+
+  optionList.forEach(text => {
+    const li = document.createElement("li");
+    li.className = "select_health_list";
+    const imageSrc = healthConcernImages[text] || "/images/default.png";
+
+    li.innerHTML = `
+      <div class="health-option-box">
+        <img src="${imageSrc}" alt="${text}" />
+        <p>${text}</p>
+      </div>
+    `;
+
+    li.addEventListener("click", () => {
+      if (li.classList.contains("selected")) {
+        li.classList.remove("selected");
+      } else {
+        const selectedItems = document.querySelectorAll(".select_health_list.selected");
+        if (selectedItems.length >= 3) {
+          showWarning("최대 3개까지 선택할 수 있어요.");
+          return;
+        }
+        li.classList.add("selected");
+      }
+    });
+
+    container.appendChild(li);
+  });
+}
 
 function collectSelectedConcerns() {
   const selected = document.querySelectorAll("#concern_page1 .select_health_list.selected p");
@@ -262,24 +187,24 @@ function showDetailQuestion(index) {
   }
 
   const concern = selectedHealthConcerns[index];
-  const detail = healthDetailQuestions[concern];
-
-  if (!detail) {
+  const children = healthConcernMap[concern];
+  if (!children || children.length === 0) {
     showDetailQuestion(index + 1);
     return;
   }
-
   document.getElementById("concern_detail_page").style.display = "block";
-
-  // ✅ 이미지 + 제목 삽입
-  const titleContainer = document.getElementById("health_detail_title");
-  titleContainer.innerHTML = detail.title;
-
-  document.getElementById("detail_question_description").innerText = detail.description;
+  document.getElementById("concern_page2").classList.add("active");
+  document.getElementById("health_detail_title").innerHTML = `
+    <div class="question-title-with-img">
+      <img src="${healthConcernImages[concern] || '/images/default.png'}" alt="${concern}" />
+      <span>${concern} 관련 증상</span>
+    </div>
+  `;
+  document.getElementById("detail_question_description").innerText = "해당되는 증상을 선택해주세요.";
 
   const container = document.getElementById("detail_options_container");
   container.innerHTML = "";
-  detail.options.forEach(option => {
+  children.forEach(option => {
     const li = document.createElement("li");
     li.className = "select_health_list";
     li.innerHTML = `<p>${option}</p>`;
@@ -287,7 +212,6 @@ function showDetailQuestion(index) {
     container.appendChild(li);
   });
 }
-
 document.querySelector("#concern_page1 .next_wrap").addEventListener("click", () => {
   selectedHealthConcerns = collectSelectedConcerns();
 
@@ -296,7 +220,8 @@ document.querySelector("#concern_page1 .next_wrap").addEventListener("click", ()
     return;
   }
 
-  const hasValidDetail = selectedHealthConcerns.some(concern => healthDetailQuestions[concern]);
+  const hasValidDetail = selectedHealthConcerns.some(concern => healthConcernMap[concern]?.length > 0);
+
   if (!hasValidDetail) {
     alert("선택된 고민에 대한 추가 질문이 없어 바로 결과 페이지로 이동합니다.");
     window.location.href = "/result";
@@ -309,11 +234,27 @@ document.querySelector("#concern_page1 .next_wrap").addEventListener("click", ()
   showDetailQuestion(currentDetailIndex);
 });
 
+
 document.getElementById("detail_next_btn").addEventListener("click", () => {
   currentDetailIndex++;
   showDetailQuestion(currentDetailIndex);
 });
 
+
+
+// ✅ 페이지 로딩 시 실행
+document.addEventListener("DOMContentLoaded", () => {
+  loadHealthConcernsFromSurvey();
+});
+
+// ✅ Enter 키로 다음 페이지 이동 처리
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    const currentPage = document.querySelector(".contents_wrap.active");
+    const nextButton = currentPage?.querySelector(".next_wrap");
+    if (nextButton) nextButton.click();
+  }
+});
 // ✅ 팝업 처리
 const popupBg = document.querySelector(".popup_bg");
 document.querySelectorAll(".close_btn, .close_btn2").forEach(closeBtn => {
@@ -328,8 +269,32 @@ document.querySelector(".keep_btn")?.addEventListener("click", () => {
   popupBg.classList.remove("active");
 });
 
-// ✅ 결과 저장 및 이동
+// ✅ 페이지 전환 함수
+function nextPage(fromId, toId) {
+  document.getElementById(fromId).classList.remove("active");
+  document.getElementById(toId).classList.add("active");
+}
+// ✅ [이전] 버튼 동작
+document.querySelectorAll(".before_page").forEach(button => {
+  button.addEventListener("click", () => {
+    const currentPageId = button.closest(".contents_wrap")?.id;
+    const target = backMap.find(pair => pair[0] === currentPageId);
+    if (target) {
+      nextPage(target[0], target[1]);
+    }
+  });
+});
+
+// ✅ [닫기] 버튼 동작 (팝업 열기)
+document.querySelectorAll(".close_btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelector(".popup_bg").classList.add("active");
+  });
+});
+
+// ✅ 결과 저장 및 로그인 여부 확인 후 이동
 function collectSurveyInput() {
+  // 1. 설문 입력값 수집
   const name = document.getElementById("nametext").value.trim();
   const gender = document.querySelector("#basicinfo_page2 .select_purpose_list.selected p")?.innerText;
   const age = parseInt(document.getElementById("agetext").value.trim(), 10);
@@ -339,17 +304,43 @@ function collectSurveyInput() {
   const workoutFreq = document.querySelector("#purpose_page2 .select_purpose_list.selected p")?.innerText;
 
   const concerns = Array.from(document.querySelectorAll(
-      "#concern_page1 .select_health_list.select p, #concern_page2 .select_health_list.select p"
+      "#concern_page1 .select_health_list.selected p, #concern_page2 .select_health_list.select p"
   )).map(el => el.innerText.trim());
 
-  const inputData = { name, gender, age, heightCm: height, weightKg: weight, purpose, workoutFreq, healthConcerns: concerns };
-  console.log("설문 결과:", inputData);
+  // 2. 데이터 localStorage 저장
+  const inputData = {
+    name,
+    gender,
+    age,
+    heightCm: height,
+    weightKg: weight,
+    purpose,
+    workoutFreq,
+    healthConcerns: concerns
+  };
   localStorage.setItem("surveyInput", JSON.stringify(inputData));
-  window.location.href = "/result";
+  localStorage.setItem("userName", name); // 이름도 저장해서 결과 페이지에서 활용
+
+  window.location.href = "/survey_result";
+
+  // // 3. 로그인 여부 확인
+  // const isLoggedIn = !!localStorage.getItem("userToken");
+  // if (isLoggedIn) {
+  //   // 로그인 O → 결과 페이지 이동
+  //   window.location.href = "/survey_result";
+  // } else {
+  //   // 로그인 X → 로그인 페이지로 안내
+  //   alert("설문 결과를 확인하려면 로그인 또는 회원가입이 필요합니다.");
+  //   window.location.href = "/join";
+  // }
+  //
+  // // 로그인 완료 후 -->join 페이지에 작성
+  // const savedSurvey = localStorage.getItem("surveyInput");
+  // if (savedSurvey) {
+  //   window.location.href = "/survey_result";
+  // }
+
+
+
 }
 
-// ✅ 페이지 이동 함수
-function nextPage(fromId, toId) {
-  document.getElementById(fromId).classList.remove("active");
-  document.getElementById(toId).classList.add("active");
-}

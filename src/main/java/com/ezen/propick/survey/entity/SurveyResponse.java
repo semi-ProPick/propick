@@ -48,4 +48,7 @@ public class SurveyResponse {
     @Column(name="response_status", nullable = false)
     private ResponseStatus responseStatus = ResponseStatus.ACTIVE;
 
+    public void setResponseStatus(ResponseStatus status) {
+        this.responseStatus = status;
+    }
 }

@@ -609,6 +609,8 @@ header {
 .protein_intake {
   margin-top: -16px;
 }
+
+
 .close_btn3 {
   cursor: pointer;
   background-image: url(/images/main/close.png);
@@ -642,20 +644,26 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-around;
+
+}
+#section1_text p{
   font-weight: normal;
-  font-size: 15px;
+  font-size: 22px;
   text-align: center;
+
 }
 
 #section_result {
-  padding: 60px;
+  padding: 20px;
   text-align: center;
 }
 
 #section_result h1 {
-  font-size: 30px;
+  font-size: 35px;
   margin-bottom: 20px;
+
 }
+
 
 .user_info_box {
   border-radius: 10px;
@@ -673,26 +681,29 @@ header {
 
 .recommendation {
   border: 3px solid #ff5c35;
-  padding: 0px;
+  padding: 10px;
   border-radius: 20px;
   margin: 60px;
 }
 
 .recommendation h1 {
-  font-size: 30px;
+  font-size: 40px;
   color: #ff5c35;
-  margin-top: 20px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: center; /* 추가 */
+  font-weight: bolder;
 }
 .recommendation p {
   font-size: 20px;
   font-weight: normal;
+  margin: 50px;
 }
 
 .chart_container {
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
-  gap: 15px;
 }
 
 .health_conditions,
@@ -703,33 +714,64 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between; /* ✅ 상하 정렬 간격 일정하게 */
+  min-height: 500px; /* ✅ 박스 높이 통일 */
+  padding: 20px 0;
+  box-sizing: border-box;
 }
+
 
 .health_conditions ul,
 .protein_type ul,
-.protein_intak ul {
-  margin: 10px;
-  list-style: none;
+.protein_intake ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-height: 100px; /* ✅ 텍스트 영역 높이 통일 */
   padding: 0;
-  font-size: 15px;
+  margin: 0;
+
+
 }
+
 
 .health_conditions ul li,
 .protein_type ul li,
-.protein_intak ul li {
-  display: flex;
-  align-items: center;
+.protein_intake ul li {
+  margin-top: 30px; /* ✅ 고정 값으로 동일한 위치에서 시작하도록 설정 */
+  padding: 0;
+  list-style: none;
+  text-align: left;
   margin-bottom: 5px;
+  font-size: 20px;
 }
+
 
 .health_conditions_img,
 .protein_type_img,
 .protein_intake_img {
-  max-width: 30px;
-  max-height: 30px;
-  margin: 20px;
-  display: flex;
+  width: 380px;
+  height: 380px;
+  display: block;
+  margin-bottom: 20px;
 }
+
+
+
+.health-option-box {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 이미지와 텍스트 사이 간격 */
+}
+
+.health-option-box img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-left: 10px;
+}
+
 
 .line {
   border: 0;
@@ -870,4 +912,11 @@ header {
 
 .star.filled {
   color: #ffd700;
+}
+#user_result_title {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-weight: bold;
+  font-size: 35px;
 }
