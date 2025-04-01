@@ -34,7 +34,7 @@ public class Recommendation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    private User user;
 
     //float -> BigDeciaml 변경 정확한 소수 연산이 필요할때는 BigDecimal을 사용
     @Column(name="recommendation_intake_amount", precision=10, scale=2, nullable = false)

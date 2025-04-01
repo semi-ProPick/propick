@@ -106,10 +106,27 @@ function validateForm(){
     }
 
     if (valid) {
-        document.getElementById("joinForm").submit();  // 폼을 실제로 제출
+        document.getElementById("joinForm");  // 폼을 실제로 제출
         // setTimeout(function() {
         //     window.location.href = "/user/login";  // 리디렉션
         // }, 1000);  // 1초 지연 후 리디렉션
+
+        //설문 로그인 위해 필요함
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get("redirect") || "/main";
+
+        const form = document.getElementById("joinForm");
+
+        // 중복 추가 방지
+        if (!document.querySelector('input[name="redirect"]')) {
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "redirect";
+            hiddenInput.value = redirect;
+            form.appendChild(hiddenInput);
+        }
+
+        form.submit();  //
     }
 }
 
@@ -164,5 +181,22 @@ document.getElementById('view3').addEventListener('click', function(){
     } else {
         termsContent3.style.display = 'block';
         this.textContent = '전문 숨기기';
+    }
+});
+
+//설문조사 결과 확인을 위해 필요
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+
+    const joinLink = document.getElementById("join-link");
+    if (joinLink) {
+        joinLink.addEventListener("click", () => {
+            if (redirect) {
+                window.location.href = `/join.html?redirect=${encodeURIComponent(redirect)}`;
+            } else {
+                window.location.href = `/join.html`;
+            }
+        });
     }
 });

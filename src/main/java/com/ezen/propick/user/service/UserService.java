@@ -1,6 +1,6 @@
 package com.ezen.propick.user.service;
 
-import com.ezen.propick.user.dto.LoginDTO;
+
 import com.ezen.propick.user.dto.MemberDTO;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.repository.UserRepository;
@@ -28,13 +28,18 @@ public class UserService {
     }
 
 
-    public LoginDTO findByUserId(String userId){
+    public MemberDTO findByUserId(String userId){
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        return new LoginDTO(user.getUserId(), user.getUserPwd());
-    }
 
-//    public MemberDTO inquireUserId(String inquireUserId){
-//    }
+        return MemberDTO.builder()
+                .userId(user.getUserId())
+                .userPwd(user.getUserPwd())
+                .userName(user.getUserName())
+                .userPhone(user.getUserPhone())
+                .userGender(user.getUserGender())
+                .userBirth(user.getUserBirth())
+                .build();
+    }
 
 }

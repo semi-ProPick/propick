@@ -32,3 +32,11 @@ logging:
   web:
     resources:
       static-locations: classpath:/static/, classpath:/public/
+
+  # 기본 프로파일을 설정
+  profiles:
+    active: user
+
+  # 또는 관리자로 실행할 때는 'admin'으로 변경
+#  profiles:
+#    active: admin

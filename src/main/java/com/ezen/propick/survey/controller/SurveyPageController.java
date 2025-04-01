@@ -1,8 +1,9 @@
 package com.ezen.propick.survey.controller;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
+//@Profile("user")
 @Controller
 public class SurveyPageController {
 

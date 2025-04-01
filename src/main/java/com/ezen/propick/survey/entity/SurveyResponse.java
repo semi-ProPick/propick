@@ -30,9 +30,9 @@ public class SurveyResponse {
     @JoinColumn(name = "survey_id", nullable = false)
     private Survey surveyId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    @ManyToOne
+    @JoinColumn(name = "user_no")
+    private User user;
 
     @OneToMany(mappedBy = "response", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<SurveyResponseOption> surveyResponseOptions;

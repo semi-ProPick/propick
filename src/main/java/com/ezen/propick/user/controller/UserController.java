@@ -30,14 +30,23 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute MemberDTO memberDTO, BindingResult bindingResult) {
+    public String join(@ModelAttribute MemberDTO memberDTO,
+                       BindingResult bindingResult,
+                       @RequestParam(value = "redirect", required = false) String redirect) {
+
         userService.createMember(memberDTO);
-        return "redirect:/";
+
+        // redirect 파라미터가 있으면 해당 경로로, 없으면 홈(/)으로 이동
+        if (redirect != null && !redirect.isBlank()) {
+            return "redirect:" + redirect;
+        } else {
+            return "redirect:/";
+        }
     }
+
 
     @GetMapping("/findid")
     public String findId() {
         return "/main/id_find";
     }
-
 }

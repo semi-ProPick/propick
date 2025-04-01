@@ -368,10 +368,10 @@
             <span>추천 결과는 로그인(회원가입) 후 확인 할 수 있어요.</span>
         </div>
         <div class="contents_impo_title">
-            <p><a href="/templates/main/new-login.html">로그인(회원가입) 하러가기</a></p>
+            <p><a href="/login.html">로그인(회원가입) 하러가기</a></p>
         </div>
         <div class="next_wrap">
-            <p onclick="collectSurveyInput()">로그인 후 결과 확인</p>
+            <p onclick="moveToLogin()">로그인 후 결과 확인</p>
         </div>
     </div>
 
@@ -401,5 +401,11 @@
         // 선택된 이름을 결과 페이지에서도 사용 가능하도록 localStorage 저장됨
         // 설문 시작 시 필요한 초기화가 있다면 이곳에 추가 가능
     });
+</script>
+<script>
+    function moveToLogin() {
+        const redirect = "/survey_result";
+        window.location.href = `/login?redirect=${encodeURIComponent(redirect)}`;
+    }
 </script>
 </html>

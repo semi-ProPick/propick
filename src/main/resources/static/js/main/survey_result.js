@@ -217,3 +217,48 @@ function visualizeResult(data) {
     document.getElementById('productName').innerText = `추천 제품: ${data.productName}`;
 }
 
+    document.addEventListener("DOMContentLoaded", () => {
+        let selectedRating = 0;
+
+        // 별 클릭 시 선택 값 저장
+        document.querySelectorAll(".star").forEach(star => {
+            star.addEventListener("click", () => {
+                selectedRating = parseInt(star.dataset.value);
+
+                // 별점 시각적으로 표시
+                document.querySelectorAll(".star").forEach(s => {
+                    s.classList.remove("selected");
+                    if (parseInt(s.dataset.value) <= selectedRating) {
+                        s.classList.add("selected");
+                    }
+                });
+            });
+        });
+
+        // 평가 후 종료 버튼 눌렀을 때
+        document.querySelector('.end_btn').addEventListener('click', async () => {
+            const score = document.querySelector('.star.selected')?.dataset.value;
+            const surveyId = 1; // 고정이거나 localStorage에서 가져올 수 있음
+            const responseId = localStorage.getItem("surveyResponseId");
+
+            if (!score || !responseId) {
+                alert("만족도를 선택하거나 응답 ID가 없습니다.");
+                return;
+            }
+
+            const dto = {
+                surveyId: parseInt(surveyId),
+                responseId: parseInt(responseId),
+                satisfactionScore: parseInt(score)
+            };
+
+            await fetch("/api/satisfaction", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(dto)
+            });
+
+            alert("설문이 저장되었습니다!");
+            window.location.href = "/store"; // 또는 원하는 페이지
+        });
+    }

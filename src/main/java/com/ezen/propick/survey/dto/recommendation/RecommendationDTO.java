@@ -12,7 +12,7 @@ public class RecommendationDTO {
     private Integer recommendationId;
     private Integer responseId;
     private Integer productId;
-    private Integer userNo;
+    private String userId;
 
     @NotNull(message = "섭취량 안내는 필수입니다.")
     @DecimalMin(value = "0.0", inclusive = true, message = "섭취량은 0 이상이어야 합니다.")

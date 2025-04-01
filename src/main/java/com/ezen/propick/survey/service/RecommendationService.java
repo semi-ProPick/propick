@@ -25,8 +25,12 @@ public class RecommendationService {
     private final SurveyResponseRepository responseRepository;
     private final ProductRepository productRepository; // 제품 추천 로직이 있을 경우 사용
 
-    public Recommendation createAndSaveRecommendation(Integer surveyResponseId, SurveyResultInputDTO inputDto, Integer productId, Integer userNo) {
-
+    public Recommendation createAndSaveRecommendation(
+            Integer surveyResponseId,
+            SurveyResultInputDTO inputDto,
+            Integer productId,
+            String userId // ✅ 문자열 기반 로그인 ID
+    ) {
         // 추천 로직 엔진으로부터 결과 DTO 생성
         SurveyRecommendationResultDTO result = recommendationEngine.generate(inputDto);
 
@@ -38,10 +42,10 @@ public class RecommendationService {
         Product recommendedProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("추천할 제품을 찾을 수 없습니다."));
 
-        // Recommendation 엔티티로 매핑하여 저장
+        // Recommendation 저장
         Recommendation recommendation = Recommendation.builder()
                 .responseId(response)
-                .userNo(response.getUserNo()) // 설문 응답에서 유저 정보를 직접 가져오는 것도 가능
+                .user(response.getUser())// ✅ User 엔티티 자체를 넣음
                 .productId(recommendedProduct)
                 .recommendationIntakeAmount(BigDecimal.valueOf(result.getMinIntakeGram()))
                 .recommendationProteinType(ProteinType.valueOf(result.getRecommendedTypes().get(0)))

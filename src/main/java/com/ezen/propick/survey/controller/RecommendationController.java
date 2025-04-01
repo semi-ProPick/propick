@@ -1,12 +1,15 @@
 package com.ezen.propick.survey.controller;
 
+import com.ezen.propick.auth.model.AuthDetails;
 import com.ezen.propick.survey.dto.result.RecommendationResponseDTO;
 import com.ezen.propick.survey.dto.result.SurveyRecommendationResultDTO;
 import com.ezen.propick.survey.entity.Recommendation;
 import com.ezen.propick.survey.repository.RecommendationRepository;
 import com.ezen.propick.survey.service.SurveyAnalysisService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/api/recommendations")
 @RequiredArgsConstructor
@@ -21,7 +25,6 @@ public class RecommendationController {
 
     private final RecommendationRepository recommendationRepository;
     private final SurveyAnalysisService surveyAnalysisService;
-
     /**
      * 특정 설문 응답 ID에 기반한 단백질 추천 결과를 조회하는 API
      *
@@ -29,9 +32,17 @@ public class RecommendationController {
      * @return 추천 결과 데이터를 담은 DTO (JSON 형식)
      */
     @GetMapping("/{surveyResponseId}")
-    public ResponseEntity<RecommendationResponseDTO> getRecommendation(@PathVariable Integer surveyResponseId) {
-        Recommendation recommendation = recommendationRepository.findByResponseId_ResponseId(surveyResponseId)
-                .orElseThrow(() -> new IllegalArgumentException("추천 정보를 찾을 수 없습니다."));
+    public ResponseEntity<RecommendationResponseDTO> getRecommendation(
+            @PathVariable Integer surveyResponseId,
+            @AuthenticationPrincipal AuthDetails user) {
+
+        // ✅ 로그인 사용자 ID (문자열 userId)
+        String userId = user.getLoginDTO().getUserId();
+
+        // ✅ 추천 정보 조회 (응답 ID + 유저 ID 기준)
+        Recommendation recommendation = recommendationRepository
+                .findByResponseId_ResponseIdAndUser_UserId(surveyResponseId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("추천 정보를 찾을 수 없거나 권한이 없습니다."));
 
         // 설문 분석 결과를 받아오기
         SurveyRecommendationResultDTO analysisDto = surveyAnalysisService.analyzeSurvey(surveyResponseId);

@@ -24,9 +24,6 @@ public class Satisfaction {
     @Column(name = "satisfaction_id", updatable = false, nullable = false)
     private Integer satisfactionId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id", nullable = false)
@@ -43,7 +40,7 @@ public class Satisfaction {
 
     public void setSatisfactionScore(Integer score) {
         if (score < 1 || score > 5) {
-            throw new IllegalArgumentException("Satisfaction score must be between 1 and 5");
+            throw new IllegalArgumentException("만족도는 1-5만~");
         }
         this.satisfactionScore = score;
     }

@@ -293,7 +293,7 @@ document.querySelectorAll(".close_btn").forEach(btn => {
 });
 
 // ✅ 결과 저장 및 로그인 여부 확인 후 이동
-function collectSurveyInput() {
+async function collectSurveyInput() {
   // 1. 설문 입력값 수집
   const name = document.getElementById("nametext").value.trim();
   const gender = document.querySelector("#basicinfo_page2 .select_purpose_list.selected p")?.innerText;
@@ -307,40 +307,76 @@ function collectSurveyInput() {
       "#concern_page1 .select_health_list.selected p, #concern_page2 .select_health_list.select p"
   )).map(el => el.innerText.trim());
 
-  // 2. 데이터 localStorage 저장
-  const inputData = {
-    name,
-    gender,
-    age,
-    heightCm: height,
-    weightKg: weight,
-    purpose,
-    workoutFreq,
-    healthConcerns: concerns
+  localStorage.setItem("userName", name);
+
+  // 2. 로그인 여부 확인
+  const loginRes = await fetch("/api/user/me", { credentials: "include" });
+  // 예: collectSurveyInput() 또는 결과 보기 전에 로그인 필요할 때
+  if (res.status === 401) {
+    localStorage.setItem("redirectAfterLogin", "/survey_result"); // 로그인 후 이동할 경로 저장
+    alert("로그인이 필요합니다.");
+    window.location.href = "/login.html"; // 로그인 페이지로 이동
+    return;
+  }
+
+
+  // 3. 서버로 응답 전송 형식 맞추기
+  const surveyData = {
+    surveyId: 1,
+    answers: [
+      { questionId: 1, selectedOptionIds: [await findOptionIdByText(name)] },
+      { questionId: 2, selectedOptionIds: [await findOptionIdByText(gender)] },
+      { questionId: 3, selectedOptionIds: [await findOptionIdByText(age.toString())] },
+      { questionId: 4, selectedOptionIds: [await findOptionIdByText(height.toString())] },
+      { questionId: 5, selectedOptionIds: [await findOptionIdByText(weight.toString())] },
+      { questionId: 6, selectedOptionIds: [await findOptionIdByText(purpose)] },
+      { questionId: 7, selectedOptionIds: [await findOptionIdByText(workoutFreq)] },
+      { questionId: 8, selectedOptionIds: await Promise.all(concerns.map(findOptionIdByText)) }
+    ]
   };
-  localStorage.setItem("surveyInput", JSON.stringify(inputData));
-  localStorage.setItem("userName", name); // 이름도 저장해서 결과 페이지에서 활용
 
+  // 4. 설문 응답 서버로 전송
+  const res = await fetch("/api/survey-responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include", // ✅ 인증 포함
+    body: JSON.stringify(surveyData)
+  });
+
+  if (!res.ok) {
+    alert("설문 저장 중 오류가 발생했습니다.");
+    return;
+  }
+
+  const result = await res.json();
+  const responseId = result.responseId;
+
+  // 5. 결과 페이지 이동
+  localStorage.setItem("surveyResponseId", responseId);
   window.location.href = "/survey_result";
-
-  // // 3. 로그인 여부 확인
-  // const isLoggedIn = !!localStorage.getItem("userToken");
-  // if (isLoggedIn) {
-  //   // 로그인 O → 결과 페이지 이동
-  //   window.location.href = "/survey_result";
-  // } else {
-  //   // 로그인 X → 로그인 페이지로 안내
-  //   alert("설문 결과를 확인하려면 로그인 또는 회원가입이 필요합니다.");
-  //   window.location.href = "/join";
-  // }
-  //
-  // // 로그인 완료 후 -->join 페이지에 작성
-  // const savedSurvey = localStorage.getItem("surveyInput");
-  // if (savedSurvey) {
-  //   window.location.href = "/survey_result";
-  // }
-
-
-
 }
 
+// ✅ optionText로 optionId 찾는 함수
+async function findOptionIdByText(text) {
+  const res = await fetch("/api/surveys/1");
+  const data = await res.json();
+
+  for (const question of data.questions) {
+    for (const option of question.options) {
+      if (option.optionText.trim() === text) {
+        return option.optionId;
+      }
+
+      for (const child of option.childOptions || []) {
+        if (child.optionText.trim() === text) {
+          return child.optionId;
+        }
+      }
+    }
+  }
+
+  console.warn("옵션 ID를 찾을 수 없음:", text);
+  return null;
+}

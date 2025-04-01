@@ -29,27 +29,26 @@ public class SurveyResponseService {
     private final SurveyOptionsRepository optionRepository;
     private final RecommendationService recommendationService;
 
-    public Integer saveSurveyResponse(SurveyResponseRequestDTO requestDto, Integer userNo) {
-        // 1. Survey, User Entity 조회
-        Survey survey = surveyRepository.findById(requestDto.getSurveyId())
-                .orElseThrow(() -> new IllegalArgumentException("설문을 찾을 수 없습니다."));
-
-        User user = userRepository.findById(userNo)
+    public Integer saveSurveyResponse(SurveyResponseRequestDTO dto, String userId) {
+        // 1. 사용자 조회
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 2.  SurveyResponse 생성
+        // 2. 설문 조회
+        Survey survey = surveyRepository.findById(dto.getSurveyId())
+                .orElseThrow(() -> new IllegalArgumentException("설문지를 찾을 수 없습니다."));
+
+        // 3. 응답 엔티티 생성
         SurveyResponse response = SurveyResponse.builder()
+                .user(user)
                 .surveyId(survey)
-                .userNo(user)
-                .responseStatus(ResponseStatus.ACTIVE)
                 .responseDate(LocalDateTime.now())
                 .build();
 
         surveyResponseRepository.save(response);
 
-
-        // 3. 각 질문 응답에 대한 선택지 저장(다중 선택 고려)
-        for (AnswerDTO answer : requestDto.getAnswers()) {
+        // 4. 응답 선택지 저장
+        for (AnswerDTO answer : dto.getAnswers()) {
             SurveyQuestions question = questionRepository.findById(answer.getQuestionId())
                     .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
 
@@ -66,15 +65,17 @@ public class SurveyResponseService {
             }
         }
 
-        //4. 추천 결과 생성 및 저장 로직 호출
-        SurveyResultInputDTO inputDTO = createInputDTO(requestDto, user); // 아래에서 추가로 작성
-        Integer recommendedProductId = decideRecommendedProductId(inputDTO); // 제품 추천 로직(임시로 설정하거나 구현 필요)
+        // 5. 추천 생성
+        SurveyResultInputDTO inputDTO = createInputDTO(dto, user);
+        Integer recommendedProductId = decideRecommendedProductId(inputDTO);
 
         recommendationService.createAndSaveRecommendation(
-                response.getResponseId(), inputDTO, recommendedProductId, userNo
+                response.getResponseId(),
+                inputDTO,
+                recommendedProductId,
+                user.getUserId() // ✅ userNo → userId 문자열로 변경
         );
 
-        // 이후 응답 ID 반환
         return response.getResponseId();
     }
 

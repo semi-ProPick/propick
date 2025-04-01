@@ -1,17 +1,20 @@
 package com.ezen.propick.user.dto;
+
 import com.ezen.propick.user.enumpackage.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+
 import java.util.Date;
 
 @Getter
 @Setter
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class MemberDTO {
 
     @NotBlank(message = "아이디는 필수 입력 값입니다.")
@@ -33,6 +36,11 @@ public class MemberDTO {
     private Gender userGender;
 
     @NotBlank(message = "생년월일은 필수 입력 값입니다.")
-    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date userBirth;
+
+    public MemberDTO(String userId, String userPwd) {
+        this.userId = userId;
+        this.userPwd = userPwd;
+    }
 }
