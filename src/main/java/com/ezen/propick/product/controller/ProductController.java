@@ -15,7 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String getAllProducts(Model model) {
+    public String getAllProducts(Model model, HttpServletRequest request) { // HttpServletRequest 추가
         Integer userNo = getCurrentUserNo();
         if (userNo == null) {
             log.warn("User is not authenticated, bookmark status will not be set");
@@ -50,10 +50,14 @@ public class ProductController {
 
         List<ProductListDTO> products = mainProductService.getAllProducts(userNo);
         if (products == null) {
+            log.warn("mainProductService.getAllProducts(userNo) returned null!");
             products = new ArrayList<>();
         }
 
+        log.info("Number of products retrieved: {}", products.size());
+
         products.forEach(product -> {
+            log.info("Product: {} - Price: {}", product.getProductName(), product.getProductPrice());
             List<String> correctedImageUrls = new ArrayList<>();
             if (product.getProductImages() != null) {
                 for (String imgUrl : product.getProductImages()) {
@@ -61,7 +65,6 @@ public class ProductController {
                         correctedImageUrls.add("");
                     } else {
                         String decodedUrl = ImageUtils.decodeImageUrl(imgUrl);
-                        // URL 앞에 접두사가 없으면 추가
                         if (!decodedUrl.startsWith("/images/product-img/")) {
                             decodedUrl = "/images/product-img/" + decodedUrl;
                         }
@@ -70,19 +73,18 @@ public class ProductController {
                 }
             }
             product.setProductImages(correctedImageUrls);
-            // 인증된 사용자인 경우에만 북마크 상태를 업데이트
             product.setIsBookmarked(userNo != null && bookmarkService.isBookmarked(userNo, product.getProductId()));
         });
         model.addAttribute("products", products);
+        model.addAttribute("contextPath", request.getContextPath()); // contextPath 추가
         return "main/product";
     }
 
     @GetMapping("/products/{productId}")
-    public String getProductDetail(@PathVariable Integer productId, Model model) {
+    public String getProductDetail(@PathVariable Integer productId, Model model, HttpServletRequest request) { // HttpServletRequest 추가
         ProductDTO productDetail = mainProductService.getProductDetailById(productId);
         if (productDetail == null) {
             log.error("Product with id {} not found", productId);
-            // 에러 페이지나 리다이렉션 처리
             return "error/404";
         }
         List<String> imageUrls = productDetail.getProductImages();
@@ -94,7 +96,7 @@ public class ProductController {
                 } else {
                     String decodedUrl = ImageUtils.decodeImageUrl(imgUrl);
                     if (decodedUrl == null || decodedUrl.isEmpty()) {
-                        decodedUrl = "/images/default.png"; // 기본 이미지 URL 설정
+                        decodedUrl = "/images/default.png";
                     }
                     if (!decodedUrl.startsWith("/images/product-img/")) {
                         decodedUrl = "/images/product-img/" + decodedUrl;
@@ -108,11 +110,13 @@ public class ProductController {
         productDetail.setProductImages(correctedImageUrls);
         model.addAttribute("product", productDetail);
         model.addAttribute("proteinPer100g", productDetail.getProteinPer100g());
+        model.addAttribute("contextPath", request.getContextPath()); // contextPath 추가
         return "main/product_detail";
     }
 
     @GetMapping("/products/search")
-    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword,
+                                 Model model, HttpServletRequest request) { // HttpServletRequest 추가
         Integer userNo = getCurrentUserNo();
         if (userNo == null) {
             log.warn("User is not authenticated, bookmark status will not be set");
@@ -124,13 +128,12 @@ public class ProductController {
         } else {
             searchResults = mainProductService.getProductBySearchKeyword(keyword);
         }
-        // ProductSearchDTO에서 ProductListDTO로 변환
         List<ProductListDTO> products = searchResults.stream()
                 .map(p -> new ProductListDTO(
                         p.getProductId(),
                         p.getProductName(),
                         p.getBrandName(),
-                        "", // productType은 검색 결과에서 사용되지 않음
+                        "",
                         p.getProductPrice(),
                         p.getProductImages()
                 ))
@@ -143,6 +146,7 @@ public class ProductController {
         });
         model.addAttribute("products", products);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("contextPath", request.getContextPath()); // contextPath 추가
         return "main/product";
     }
 }

@@ -36,10 +36,11 @@ spring:
 
   logging:
     level:
+      org.springframework: DEBUG
       org.hibernate.SQL: INFO
       org.hibernate.type.descriptor.sql: INFO
-      org.springframework.web: INFO
-      com.ezen.propick: INFO
+      org.springframework.web: DEBUG
+      com.ezen.propick: DEBUG
       org.thymeleaf: DEBUG
 
   web:

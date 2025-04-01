@@ -40,7 +40,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> {
             // 로그인, 회원가입, 실패 페이지, 메인 페이지는 모두 허용
             auth.requestMatchers("/**").permitAll();
-
+            auth.requestMatchers("/api/bookmarks/toggle").permitAll();
+            auth.requestMatchers("/api/products/**", "/api/bookmarks/**").permitAll();
+            auth.requestMatchers("/login", "/doLogin", "/logout", "/", "/products/**").permitAll();
             // 그 외의 요청은 인증이 필요
             auth.anyRequest().authenticated();  // 모든 요청은 인증을 요구
         }).formLogin(login -> {
