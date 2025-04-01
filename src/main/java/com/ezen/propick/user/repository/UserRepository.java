@@ -32,10 +32,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("DELETE FROM User u WHERE u.userId = :userId")
     void deleteByUserId(String userId);
 
-    //아이디 중복 체크
-    boolean existsByUserId(String userId);
 
-    //전화번호 중복 체크
-    boolean existsByUserPhone(String userPhone);
 }
 

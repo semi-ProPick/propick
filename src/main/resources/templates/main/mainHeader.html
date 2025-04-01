@@ -7,8 +7,12 @@
   <div class="menu_icon">
     <div></div>
   </div>
-  <div class="logo"><a th:href="@{/}" class="propick-logo">propick</a></div>  <div class="user_icon">
-  <a th:href="@{/main/mypage}">
+  <div class="logo"><a th:href="@{/}" class="propick-logo">propick</a></div>
+  <div class="user_icon">
+    <form id="logoutBtnBox" th:action="@{/user/logout}" th:method="post">
+      <button id="logoutBtn">logout</button>
+    </form>
+  <a th:href="@{/mypage}">
     <img src="/images/main/user.png" alt="" />
   </a>
 </div>
@@ -36,7 +40,7 @@
           <li><a th:href="@{/main/freeBoard}">자유게시판</a></li>
         </ul>
       </li>
-      <li><a th:href="@{/main/join}">회원가입</a></li>
+      <li><a th:href="@{/user/join}">회원가입</a></li>
     </ul>
   </div>
 </header>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,11 +14,11 @@
   <h2 class="page-title">마이페이지</h2>
 
   <div class="card">
-    <h3 class="user-name"><span id="user-name">홍길동</span> 님</h3>
+    <h3 class="user-name"><span id="user-name" sec:authentication="name"></span>님 환영합니다.</h3>
 
     <div class="menu-grid">
       <div class="menu-item">
-        <a href="/user_modify.html">
+        <a href="/user/modifyMyInfo">
           <img src="/images/main/icon1.png" alt="정보 조회" /><br />
           <p>정보 조회</p>
         </a>
@@ -55,7 +55,7 @@
   <div class="popup-content">
     <span class="close-btn">✖</span>
     <p class="popup-message">로그인이 필요합니다.</p>
-    <button class="login-btn"><a th:href="@{/login}">로그인</a></button>
+    <button class="login-btn"><a th:href="@{/user/login}">로그인</a></button>
   </div>
 </div>
 </body>
