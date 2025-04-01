@@ -136,6 +136,19 @@ public class UserController {
         return ResponseEntity.ok("로그아웃 완료");
     }
 
+    //회원가입 아이디 중복 체크
+    @GetMapping("/check-id")
+    public ResponseEntity<Boolean> checkUserId(@RequestParam String userId) {
+        boolean isDuplicate = userService.isUserIdExists(userId);
+        return ResponseEntity.ok(isDuplicate);
+    }
+
+    @GetMapping("/check-phone")
+    public ResponseEntity<Boolean> checkUserPhone(@RequestParam String userPhone) {
+        boolean isDuplicate = userService.isUserPhoneExists(userPhone);
+        return ResponseEntity.ok(isDuplicate);
+    }
+
 
 }
 

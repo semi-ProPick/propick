@@ -49,6 +49,20 @@ function validateForm(){
         error_phone.style.display = "none";
     }
 
+    fetch(`/api/user/check-id?userPhone=${user_phone}`)
+        .then(response => response.json())  // JSON 변환
+        .then(isDuplicate => {
+            if (isDuplicate) {
+                error_phone.style.display = "block";
+                error_phone.textContent = "이미 사용 중인 전화번호입니다.";
+            } else {
+                error_phone.style.display = "none";
+            }
+        })
+        .catch(error => {
+            console.error("전화번호 중복 검사 중 오류 발생", error);
+        });
+
     //아이디 유효성 검사
     if(user_id.trim() === ""){
         error_id.style.display ="block";
@@ -61,6 +75,23 @@ function validateForm(){
     } else{
         error_id.style.display="none";
     }
+    fetch(`/api/user/check-id?userId=${user_id}`)
+        .then(response => response.json())  // JSON 변환
+        .then(isDuplicate => {
+            if (isDuplicate) {
+                error_id.style.display = "block";
+                error_id.textContent = "이미 사용 중인 아이디입니다.";
+            } else {
+                error_id.style.display = "none";
+            }
+        })
+        .catch(error => {
+            console.error("ID 중복 검사 중 오류 발생", error);
+        });
+}
+
+
+
 
     //비밀번호
     if(user_pwd.trim() === ""){
@@ -99,7 +130,7 @@ function validateForm(){
         valid=false;
     }else if(!numberRegex.test(user_birth)){
         error_birth.style.display="block";
-        error_birth.textContent="00/00/00 양식으로 적어주세요.";
+        error_birth.textContent="0000-00-00 양식으로 적어주세요.";
         valid=false;
     } else {
         error_birth.style.display="none";
@@ -107,12 +138,8 @@ function validateForm(){
 
     if (valid) {
         document.getElementById("joinForm").submit();  // 폼을 실제로 제출
-        // setTimeout(function() {
-        //     window.location.href = "/user/login";  // 리디렉션
-        // }, 1000);  // 1초 지연 후 리디렉션
-    }
-}
 
+}
     function toggleCheckboxes(){
         const select_all = document.getElementById("all_check");
         const checkboxes = document.querySelectorAll(".check");

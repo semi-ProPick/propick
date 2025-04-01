@@ -89,5 +89,13 @@ public class UserService {
         userRepository.deleteByUserId(userId);
     }
 
+    //아이디 중복 체크
+    public boolean isUserIdExists(String userId) {
+        return userRepository.existsByUserId(userId);
+    }
 
+    //전화번호 중복 체크
+    public boolean isUserPhoneExists(String userPhone) {
+        return userRepository.existsByUserId(userPhone);
+    }
 }
