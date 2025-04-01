@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" th:href="@{/css/main/main.css}" type="text/css" />
+  <link rel="stylesheet" th:href="@{/css/main/header.css}" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <title>상품</title>
+  <style>
+    .favorite-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      color: #ccc;
+      transition: color 0.3s ease;
+    }
+    .favorite-icon.favorited {
+      color: #ffd700;
+    }
+    .product-item {
+      position: relative;
+      display: inline-block;
+      width: 200px;
+      margin: 10px;
+      text-align: center;
+    }
+    .product-images img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+    .product-item p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<div id="header" th:replace="~{main/mainHeader :: header}"></div>
+<div id="wrap">
+  <div class="search_wrap">
+    <p>전체상품</p>
+    <form class="search" th:action="@{/products/search}" method="get">
+      <input type="text" class="search_input" placeholder="입력" name="keyword" th:value="${keyword}" />
+      <div class="search_icon">
+        <button type="submit" style="border-style: none; background: transparent">
+          <img th:src="@{/images/main/search.png}" alt="검색" />
+        </button>
+      </div>
+    </form>
+    <div class="category_list">
+      <ul>
+        <li class="category_menu active">전체보기</li>
+        <li class="category_menu">건강고민</li>
+        <li class="category_menu">인기상품</li>
+        <li class="category_menu">할인</li>
+      </ul>
+    </div>
+    <div class="category_wrap">
+      <p>어떤 프로틴이 필요하세요?</p>
+      <ul>
+        <li class="active">
+          <img th:src="@{/images/main/diet.png}" alt="다이어트" />
+          <span>다이어트</span>
+        </li>
+        <li>
+          <img th:src="@{/images/main/volume.png}" alt="증량" />
+          <span>증량</span>
+        </li>
+        <li>
+          <img th:src="@{/images/main/digest.png}" alt="소화" />
+          <span>소화</span>
+        </li>
+        <li>
+          <img th:src="@{/images/main/ldl.png}" alt="콜레스테롤" />
+          <span>콜레스테롤</span>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <img th:src="@{/images/main/cheap.png}" alt="할인" />
+          <span>할인</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="recomment_wrap">
+    <img th:src="@{/images/main/mark.png}" alt="추천 마크" />
+    <p>내 몸에 꼭 맞는 프로틴 추천받기</p>
+    <img th:src="@{/images/main/mark.png}" alt="추천 마크" />
+  </div>
+  <div class="survey_wrap">
+    <div class="survey_btn">
+      <a th:href="@{/survey/start}">설문조사 하러가기</a>
+    </div>
+  </div>
+  <div class="products_wrap">
+    <p>인기 프로틴 <span class="footer_point">TOP 10</span></p>
+    <ul class="product_category">
+      <li class="product_cate active" id="all_category">전체</li>
+      <li class="product_cate" id="age_category">연령별</li>
+      <li class="product_cate" id="health_category">건강고민별</li>
+      <li class="product_cate" id="vegan_category">비건</li>
+      <li class="product_cate" id="diet_category">다이어트</li>
+      <li class="product_cate" id="discount_category">할인</li>
+    </ul>
+    <ul class="age_list">
+      <li class="age_cate active">10~20대</li>
+      <li class="age_cate">30대</li>
+      <li class="age_cate">40대</li>
+      <li class="age_cate">50대</li>
+      <li class="age_cate">60대</li>
+    </ul>
+    <div class="filtered_products">
+      <ul class="others_product" id="product_list" th:if="${products != null and not #lists.isEmpty(products)}">
+        <li th:each="product : ${products}" class="product-item">
+          <a th:href="@{/products/{id}(id=${product.productId})}">
+            <div class="product-images">
+              <img th:src="@{${product.productImages != null and not #lists.isEmpty(product.productImages) ? product.productImages[0] : '/images/default.png'}}"
+                   alt="상품 이미지"
+                   style="max-width: 100%; height: auto;" />
+            </div>
+            <p><span th:text="${product.productName != null ? product.productName : '상품명'}"></span></p>
+          </a>
+          <div class="favorite-icon"
+               th:attr="data-product-id=${product.productId}"
+               th:classappend="${product.isBookmarked} ? 'favorited' : ''">
+            <i class="fas fa-star"></i>
+          </div>
+        </li>
+      </ul>
+      <div th:unless="${products != null and not #lists.isEmpty(products)}">
+        <p>표시할 상품이 없습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="search_results_wrap">
+    <ul class="search_results">
+      <li></li>
+    </ul>
+    <div class="pagination"></div>
+  </div>
+</div>
+<script th:src="@{/js/main/header.js}" defer></script>
+<script th:src="@{/js/main/product.js}"></script>
+<script>
+  const contextPath = /*[[${contextPath}]]*/ '';
+  console.log("Context Path:", contextPath);
+
+  window.toggleFavorite = function(element) {
+    const productId = element.getAttribute('data-product-id');
+    const isBookmarked = element.classList.contains('favorited');
+
+    const url = `${contextPath}/api/bookmarks/toggle`;
+    console.log("Request URL:", url);
+    console.log("Request Body:", { productId: productId, isBookmarked: !isBookmarked });
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productId: productId,
+        isBookmarked: !isBookmarked
+      })
+    })
+            .then(response => {
+              if (response.status === 401) {
+                alert("로그인이 필요합니다.");
+                window.location.href = `${contextPath}/login`;
+                throw new Error('Unauthorized');
+              }
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.success) {
+                element.classList.toggle('favorited');
+                alert(isBookmarked ? '북마크가 해제되었습니다.' : '북마크가 등록되었습니다.');
+              } else {
+                alert('북마크 업데이트에 실패했습니다: ' + (data.message || '알 수 없는 오류'));
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('북마크 업데이트 중 오류가 발생했습니다: ' + error.message);
+            });
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const categoryItems = document.querySelectorAll('.product_cate');
+    const productList = document.getElementById('product_list');
+
+    if (categoryItems && productList) {
+      categoryItems.forEach(item => {
+        item.addEventListener('click', function () {
+          categoryItems.forEach(item => item.classList.remove('active'));
+          item.classList.add('active');
+          const selectedCategory = item.id;
+          filterProductsByCategory(selectedCategory);
+        });
+      });
+
+      function filterProductsByCategory(category) {
+        const allProducts = document.querySelectorAll('.others_product li');
+        allProducts.forEach(product => {
+          if (category === 'all_category' || product.dataset.category === category.replace('_category', '')) {
+            product.style.display = 'block';
+          } else {
+            product.style.display = 'none';
+          }
+        });
+      }
+    }
+
+    const favoriteIcons = document.querySelectorAll('.favorite-icon');
+    favoriteIcons.forEach(icon => {
+      icon.addEventListener('click', function() {
+        toggleFavorite(this);
+      });
+    });
+  });
+</script>
+</body>
+</html>

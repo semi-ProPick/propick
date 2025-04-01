@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/main/main.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+    <link rel="stylesheet" href="/css/jquery.fullPage.css" type="text/css" />
+    <title>브랜드소개</title>
+</head>
+<body>
+<div id="header" th:replace="~{main/mainHeader}"></div>
+<div id="wrap">
+    <div id="fullPage">
+        <!-- 브랜드 첫번째 -->
+        <div class="section brand_wrap brand_1">
+            <div class="brand_text">
+                <p>
+                    우리는 바라고 있어요<br />오늘보다 더 나은 내일의 내가 되기를.
+                </p>
+                <br />
+                <p>
+                    프로픽은 건강 목표와 선호도를 반영한 개인 맞춤형 보충제를
+                    추천하는<br />
+                    F&B 큐레이팅 커머스 플랫폼 입니다.
+                </p>
+                <br />
+                <p>
+                    단순한 추천을 넘어, 올바른 섭취 정보와 신뢰할 수 있는 리뷰를
+                    한눈에 확인하세요.<br />
+                    프로픽과 함께, 건강한 삶을 디자인해보세요.
+                </p>
+            </div>
+        </div>
+        <!-- 브랜드 두번째 -->
+        <div class="section brand_2">
+            <div class="content_wrap2">
+                <div class="brand_image">
+                    <img src="/images/main/brand_2.png" alt="Brand Image" />
+                </div>
+                <div class="brand_text2">
+                    <h2>
+                        <span>[&ensp;프로픽&ensp;]</span> 은 이렇게 당신의 건강을
+                        돕습니다.
+                    </h2>
+                    <ol>
+                        <li>
+                            1. 다양한 선택지를 제공해 당신의 니즈에 딱 맞는 보충제 추천
+                        </li>
+                        <li>
+                            2. 운동 초보자도 쉽게 자신에게 맞는 보충제를 찾아 건강한 시작
+                            가능
+                        </li>
+                        <li>3. 개인 정보 기반으로 정확한 섭취 정보 제공, 신뢰 쌓기</li>
+                        <li>
+                            4. 분산된 보충제 정보를 한곳에서 확인, 시간 절약과 편리함 실현
+                        </li>
+                        <li>
+                            5. 고객 데이터로 맞춤형 영양제 추천 서비스 추가, 건강 여정
+                            동반
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- 브랜드 세번째 -->
+        <div class="section brand_wrap brand_3">
+            <div class="brand_content">
+                <div class="brand_text3">
+                    <h2>
+                        건강을 맞춤하다, 당신에게 딱 맞게
+                        <span>[&ensp;프로픽&ensp;]</span> 하다.
+                    </h2>
+                    <p>
+                        건강한 삶의 동반자를 위해 프로픽이 찾은 세가지
+                        <span>Keyword</span>
+                    </p>
+                </div>
+                <div class="circle_image">
+                    <img src="/images/main/circle_3.png" alt="Circle Image" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/js/main/header.js" defer></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#fullPage").fullpage({
+            slidesNavigation: true,
+            responsiveWidth: 1024,
+            autoScrolling: true,
+        });
+    });
+</script>
+</html>
