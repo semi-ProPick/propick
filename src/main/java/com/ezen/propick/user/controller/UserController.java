@@ -42,7 +42,7 @@ public class UserController {
     @PostMapping("/join")
     public String join(@ModelAttribute MemberDTO memberDTO, BindingResult bindingResult) {
         userService.createMember(memberDTO);
-        return "redirect:/";
+        return "redirect:/user/login";
     }
 
     //아이디찾기 페이지
