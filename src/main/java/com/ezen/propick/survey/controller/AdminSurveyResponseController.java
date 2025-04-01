@@ -1,4 +1,3 @@
-package com.ezen.propick.survey.controller;
 //
 //import com.ezen.propick.survey.service.SurveyResponseService;
 //import lombok.RequiredArgsConstructor;
