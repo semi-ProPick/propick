@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://http://www.thymelesf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -24,11 +24,10 @@
         <tr th:each="qnaBoard : ${list}">
           <td th:text="${qnaBoard.id}">번호</td>
           <td>
-            <a th:text="${qnaBoard.title}" th:href="@{/main/Free_boardcm{id=${board.id}}">제목</a>
+            <a th:text="${qnaBoard.title}" th:href="@{/main/q&a_detailpage(id=${qnaBoard.id})}">제목</a>
           </td>
-          <td th:text="${qnatBoard.contents}">내용</td>
-          <td th:text="${#temporals.format(qnaBoard.created_at, 'yyyy-MM-dd HH:mm:ss')}">작성일</td>
-          <td th:text="${#temporals.format(qnaBoard.updated_at, 'yyyy-MM-dd HH:mm:ss')}">수정일</td>
+          <td th:text="${#temporals.format(qnaBoard.created_at, 'yy-MM-dd &nbsp;HH:mm')}">작성일</td>
+<!--          <td th:text="${#temporals.format(qnaBoard.updated_at, 'yy-MM-dd &nbsp;HH:mm')}">수정일</td>-->
         </tr>
           <tr>
             <td>10</td>
@@ -119,31 +118,37 @@
           </button>
         </div>
         <div class="pagination">
-          <button class="pagination-btn prev" disabled>◀</button>
-          <button class="pagination-btn active">1</button>
-          <button class="pagination-btn">2</button>
-          <button class="pagination-btn">3</button>
-          <button class="pagination-btn">4</button>
-          <button class="pagination-btn">5</button>
-          <button class="pagination-btn">6</button>
-          <button class="pagination-btn">7</button>
-          <button class="pagination-btn">8</button>
-          <button class="pagination-btn">9</button>
-          <button class="pagination-btn next">▶</button>
+          <!-- 이전 버튼 -->
+          <button class="pagination-btn prev"
+                  th:disabled="${nowPage == 1}"
+                  th:onclick="'location.href=\'/main/q&a_board?page=' + (${nowPage - 2}) + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+            ◀
+          </button>
+
+          <!-- 페이지 번호 버튼 -->
+          <th:block th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+            <button class="pagination-btn"
+                    th:classappend="${pageNum == nowPage} ? 'active'"
+                    th:onclick="'location.href=\'/main/q&a_board?page=' + (${pageNum - 1}) + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+              [[${pageNum}]]
+            </button>
+          </th:block>
+
+          <!-- 다음 버튼 -->
+          <button class="pagination-btn next"
+                  th:disabled="${nowPage == endPage}"
+                  th:onclick="'location.href=\'/main/q&a_board?page=' + ${nowPage} + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+            ▶
+          </button>
         </div>
         <div class="search-container">
-          <form action="/search" method="get">
-            <input
-              type="text"
-              name="query"
-              class="search-input"
-              placeholder="제목 검색..."
-            />
-            <button type="submit" class="search-btn">검색</button>
+          <form th:action="@{/main/q&a_board.html}" method="get">
+          <input type="text" name="searchKeyword" class="search-input" placeholder="제목 검색..."/>
+          <button type="submit" class="search-btn">검색</button>
           </form>
         </div>
       </footer>
     </div>
   </body>
-  <script src="/js/header.js" defer></script>
+  <script src="/js/main/header.js" defer></script>
 </html>

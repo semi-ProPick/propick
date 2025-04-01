@@ -23,15 +23,36 @@
 
         </div>
     </div>
-    <div class="separator1"></div>
     <div class="button-container">
         <span class="like-button" id="like-button">👍</span>
-        <button>댓글쓰기</button> &nbsp;&nbsp;&nbsp;
-        <button><a th:href="@{/main/board_delete(id=${userPostBoard.id})}">삭제</a></button>
+        <button><a th:href="@{/main/board_delete(id=${userPostBoard.id})}">삭제</a></button>&nbsp;&nbsp;&nbsp;
+        <button><a th:href="@{/main/free_modify/{id}(id=${userPostBoard.id})}">수정</a></button>
     </div>
-    <div class="comment-section" id="comment-section">
+    <div class="separator1"></div>
+    <div class="comment-section">
+        <h3>댓글</h3>
+        <div class="comment-input-box">
+            <textarea class="comment-box" placeholder="댓글을 입력하세요..."></textarea>
+            <button class="comment-submit-button" onclick="submitComment()">등록</button>
+        </div>
     </div>
+
+    <!-- 댓글 목록 -->
+    <div class="comment-list">
+        <div class="comment-item" th:each="comment : ${comment}">
+            <div class="comment-header">
+                <span th:text="${comment.created_at}">작성 날짜</span>
+            </div>
+            <p class="comment-content" th:text="${comment.contents}">댓글 내용</p>
+            <div class="comment-actions">
+                <button class="comment-edit-button">수정</button>
+                <button class="comment-delete-button">삭제</button>
+            </div>
+        </div>
+    </div>
+
 </body>
+
 <script src="/js/main/free_boardcm.js"></script>
 <script src="/js/main/header.js" defer></script>
 </html>

@@ -50,8 +50,8 @@ public class FnaBoard {
     //하나의 보드가 여러개의 댓글을 가지고 있다.
     // casecade : 저장,병합,삭세,분리 등의 작업을 하면 자동으로 전파됨,
     // orphanRemoval : 연관관계에서 제거하면 자식엔티티 자동 삭제
-    @OneToMany(mappedBy = "fnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BoardComment> comments = new ArrayList<>();
+//    @OneToMany(mappedBy = "fnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UserPostBoardComment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "fnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardImage> images = new ArrayList<>();

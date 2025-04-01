@@ -39,11 +39,14 @@ public class QnaBoard {
     @Column(name = ("q_n_a_private_key"))
     private int private_key;
 
-    @OneToMany(mappedBy = "qnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BoardComment> comments = new ArrayList<>();
+    @Column(name = ("post_filename"))
+    private String filename;
 
-    @OneToMany(mappedBy = "qnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BoardImage> images = new ArrayList<>();
+    @Column(name = ("post_filepath"))
+    private String filepath;
+
+//    @OneToMany(mappedBy = "qnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UserPostBoardComment> comments = new ArrayList<>();
 
     @PrePersist
     public void setDefaultPostContents() {
