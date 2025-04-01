@@ -1,6 +1,5 @@
 package com.ezen.propick.product.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,18 +15,5 @@ public class ProductImageDTO {
         this.productImageId = productImageId;
         this.productImgUrl = productImgUrl;
         this.productImgName = productImgName;
-    }
-
-    // Getter 메서드
-    public Integer getProductImageId() {
-        return productImageId;
-    }
-
-    public String getProductImgUrl() {
-        return productImgUrl;
-    }
-
-    public String getProductImgName() {
-        return productImgName;
     }
 }

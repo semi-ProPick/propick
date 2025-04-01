@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,33 +29,27 @@ public class BookmarkService {
     @Transactional
     public BookmarkDTO addBookmark(BookmarkDTO bookmarkDTO) {
         logger.info("Adding bookmark for userNo: {}, productId: {}", bookmarkDTO.getUserNo(), bookmarkDTO.getProductId());
-
-        // 중복 체크
         if (bookmarkRepository.existsByUserNoAndProductProductId(bookmarkDTO.getUserNo(), bookmarkDTO.getProductId())) {
             logger.warn("Bookmark already exists for userNo: {}, productId: {}", bookmarkDTO.getUserNo(), bookmarkDTO.getProductId());
             throw new IllegalStateException("이미 찜한 상품입니다.");
         }
 
-        // Product 조회
         Product product = productRepository.findById(bookmarkDTO.getProductId())
                 .orElseThrow(() -> {
                     logger.error("Product not found with ID: {}", bookmarkDTO.getProductId());
                     return new IllegalArgumentException("상품을 찾을 수 없습니다: " + bookmarkDTO.getProductId());
                 });
 
-        // Bookmark 생성
         Bookmark bookmark = Bookmark.builder()
                 .bookmark_status(BookmarkStatus.valueOf(bookmarkDTO.getStatus()))
                 .userNo(bookmarkDTO.getUserNo())
                 .product(product)
                 .build();
 
-        // 저장
         logger.info("Saving bookmark to DB: {}", bookmark);
         Bookmark savedBookmark = bookmarkRepository.save(bookmark);
         logger.info("Saved bookmark: {}", savedBookmark);
 
-        // DTO로 변환
         return convertToDTO(savedBookmark);
     }
 
@@ -89,6 +84,40 @@ public class BookmarkService {
         boolean exists = bookmarkRepository.existsByUserNoAndProductProductId(userNo, productId);
         logger.info("Checked if productId: {} is bookmarked for userNo: {}, result: {}", productId, userNo, exists);
         return exists;
+    }
+
+    @Transactional
+    public boolean toggleBookmark(Integer userNo, Integer productId, boolean isBookmarked) {
+        logger.info("Toggling bookmark for userNo: {}, productId: {}, isBookmarked: {}", userNo, productId, isBookmarked);
+        if (isBookmarked) {
+            // 북마크 추가
+            if (bookmarkRepository.existsByUserNoAndProductProductId(userNo, productId)) {
+                logger.warn("Bookmark already exists for userNo: {}, productId: {}", userNo, productId);
+                return true;
+            }
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> {
+                        logger.error("Product not found with ID: {}", productId);
+                        return new IllegalArgumentException("상품을 찾을 수 없습니다: " + productId);
+                    });
+            Bookmark bookmark = Bookmark.builder()
+                    .bookmark_status(BookmarkStatus.ACTIVE)
+                    .userNo(userNo)
+                    .product(product)
+                    .build();
+            bookmarkRepository.save(bookmark);
+            logger.info("Bookmark added for userNo: {}, productId: {}", userNo, productId);
+        } else {
+            // 북마크 제거
+            Optional<Bookmark> bookmarkOpt = bookmarkRepository.findByUserNoAndProductProductId(userNo, productId);
+            if (bookmarkOpt.isPresent()) {
+                bookmarkRepository.delete(bookmarkOpt.get());
+                logger.info("Bookmark removed for userNo: {}, productId: {}", userNo, productId);
+            } else {
+                logger.warn("Bookmark not found for userNo: {}, productId: {}", userNo, productId);
+            }
+        }
+        return true;
     }
 
     private BookmarkDTO convertToDTO(Bookmark bookmark) {

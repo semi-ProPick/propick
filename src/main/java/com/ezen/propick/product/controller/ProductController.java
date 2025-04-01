@@ -1,12 +1,15 @@
 package com.ezen.propick.product.controller;
 
+import com.ezen.propick.bookmark.service.BookmarkService;
 import com.ezen.propick.product.dto.ProductDTO;
 import com.ezen.propick.product.dto.ProductListDTO;
 import com.ezen.propick.product.dto.ProductSearchDTO;
 import com.ezen.propick.product.service.MainProductService;
 import com.ezen.propick.product.utils.ImageUtils;
+import com.ezen.propick.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,64 +22,127 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class ProductController {
 
     private final MainProductService mainProductService;
+    private final BookmarkService bookmarkService;
 
+    private Integer getCurrentUserNo() {
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof CustomUserDetails) {
+                return ((CustomUserDetails) principal).getUserNo();
+            }
+            log.warn("No authenticated user found, returning null userNo");
+        } catch (Exception e) {
+            log.error("Error retrieving current userNo: {}", e.getMessage(), e);
+        }
+        return null;
+    }
 
-    // 상품 목록 페이지
     @GetMapping("/products")
     public String getAllProducts(Model model) {
-        List<ProductListDTO> products = mainProductService.getAllProducts();  // 전체 상품 조회
-        // 각 상품의 이미지 URL을 디코딩하고, /images/product-img/로 경로 수정
-        products.forEach(product -> {
-            List<String> correctedImageUrls = product.getProductImages().stream()
-                    .map(imgUrl -> {
-                        // 만약 imgUrl이 이미 /images/product-img/로 시작하지 않으면 추가
-                        if (!imgUrl.startsWith("/images/product-img/")) {
-                            return "/images/product-img/" + ImageUtils.decodeImageUrl(imgUrl);
-                        }
-                        return ImageUtils.decodeImageUrl(imgUrl);  // 이미 경로가 제대로 설정되어 있으면 그대로 사용
-                    })
-                    .collect(Collectors.toList());
-            product.setProductImages(correctedImageUrls);  // 디코딩된 이미지 경로를 설정
-        });
-        model.addAttribute("products", products);  // 상품 목록을 모델에 추가
-        return "main/product";  // 상품 목록 페이지 반환 (HTML 뷰)
-    }
-
-
-    // 상품 상세 페이지
-    @GetMapping("/products/{productId}")
-    public String getProductDetail(@PathVariable Integer productId, Model model) {
-        // 1. 상품 상세 정보를 조회
-        ProductDTO productDetail = mainProductService.getProductDetailById(productId);
-
-        // 2. ProductDTO에서 이미 proteinPer100g이 계산되어 있으므로 직접 사용
-        Double proteinPer100g = productDetail.getProteinPer100g();
-
-        // 3. Model에 product와 proteinPer100g을 추가
-        model.addAttribute("product", productDetail);
-        model.addAttribute("proteinPer100g", proteinPer100g);
-
-        // 4. 상세 페이지로 전달
-        return "main/product_detail";
-    }
-    // 검색
-    @GetMapping("/products/search")
-    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
-        List<ProductSearchDTO> products;
-
-        if (keyword == null || keyword.trim().isEmpty()) {
-            products = new ArrayList<>();
-        } else {
-            products = mainProductService.getProductBySearchKeyword(keyword); // 검색
+        Integer userNo = getCurrentUserNo();
+        if (userNo == null) {
+            log.warn("User is not authenticated, bookmark status will not be set");
         }
 
+        List<ProductListDTO> products = mainProductService.getAllProducts(userNo);
+        if (products == null) {
+            products = new ArrayList<>();
+        }
+
+        products.forEach(product -> {
+            List<String> correctedImageUrls = new ArrayList<>();
+            if (product.getProductImages() != null) {
+                for (String imgUrl : product.getProductImages()) {
+                    if (imgUrl == null) {
+                        correctedImageUrls.add("");
+                    } else {
+                        String decodedUrl = ImageUtils.decodeImageUrl(imgUrl);
+                        // URL 앞에 접두사가 없으면 추가
+                        if (!decodedUrl.startsWith("/images/product-img/")) {
+                            decodedUrl = "/images/product-img/" + decodedUrl;
+                        }
+                        correctedImageUrls.add(decodedUrl);
+                    }
+                }
+            }
+            product.setProductImages(correctedImageUrls);
+            // 인증된 사용자인 경우에만 북마크 상태를 업데이트
+            product.setIsBookmarked(userNo != null && bookmarkService.isBookmarked(userNo, product.getProductId()));
+        });
         model.addAttribute("products", products);
-        return "main/product"; // 검색 결과를 main/product 페이지로 전달
+        return "main/product";
     }
 
+    @GetMapping("/products/{productId}")
+    public String getProductDetail(@PathVariable Integer productId, Model model) {
+        ProductDTO productDetail = mainProductService.getProductDetailById(productId);
+        if (productDetail == null) {
+            log.error("Product with id {} not found", productId);
+            // 에러 페이지나 리다이렉션 처리
+            return "error/404";
+        }
+        List<String> imageUrls = productDetail.getProductImages();
+        List<String> correctedImageUrls = new ArrayList<>();
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            for (String imgUrl : imageUrls) {
+                if (imgUrl == null) {
+                    correctedImageUrls.add("");
+                } else {
+                    String decodedUrl = ImageUtils.decodeImageUrl(imgUrl);
+                    if (decodedUrl == null || decodedUrl.isEmpty()) {
+                        decodedUrl = "/images/default.png"; // 기본 이미지 URL 설정
+                    }
+                    if (!decodedUrl.startsWith("/images/product-img/")) {
+                        decodedUrl = "/images/product-img/" + decodedUrl;
+                    }
+                    correctedImageUrls.add(decodedUrl);
+                }
+            }
+        } else {
+            log.warn("Product {} has no images", productId);
+        }
+        productDetail.setProductImages(correctedImageUrls);
+        model.addAttribute("product", productDetail);
+        model.addAttribute("proteinPer100g", productDetail.getProteinPer100g());
+        return "main/product_detail";
+    }
 
+    @GetMapping("/products/search")
+    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        Integer userNo = getCurrentUserNo();
+        if (userNo == null) {
+            log.warn("User is not authenticated, bookmark status will not be set");
+        }
 
+        List<ProductSearchDTO> searchResults;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            searchResults = new ArrayList<>();
+        } else {
+            searchResults = mainProductService.getProductBySearchKeyword(keyword);
+        }
+        // ProductSearchDTO에서 ProductListDTO로 변환
+        List<ProductListDTO> products = searchResults.stream()
+                .map(p -> new ProductListDTO(
+                        p.getProductId(),
+                        p.getProductName(),
+                        p.getBrandName(),
+                        "", // productType은 검색 결과에서 사용되지 않음
+                        p.getProductPrice(),
+                        p.getProductImages()
+                ))
+                .collect(Collectors.toList());
+        if (products == null) {
+            products = new ArrayList<>();
+        }
+        products.forEach(product -> {
+            product.setIsBookmarked(userNo != null && bookmarkService.isBookmarked(userNo, product.getProductId()));
+        });
+        model.addAttribute("products", products);
+        model.addAttribute("keyword", keyword);
+        return "main/product";
+    }
 }

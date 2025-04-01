@@ -1,31 +1,59 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ppdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/ppdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=UTF-8&socketTimeout=60000&autoReconnect=true
     username: ${DB_USERNAME:propick}
     password: ${DB_PASSWORD:propick}
     hikari:
       pool-name: ProPickHikariPool
       maximum-pool-size: 10
-      minimum-idle: 5
-      idle-timeout: 30000
+      minimum-idle: 2
+      idle-timeout: 15000
       max-lifetime: 1800000
       connection-timeout: 30000
       leak-detection-threshold: 60000
+  thymeleaf:
+    cache: false
   jpa:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
-        show_sql: false
         use_sql_comments: true
         jdbc:
           batch_size: 50
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
+        order_inserts: true
+        order_updates: true
+
+  server:
+    tomcat:
+      use-forwarded-headers: true
+      max-http-header-size: 8192
+
+  logging:
+    level:
+      org.hibernate.SQL: INFO
+      org.hibernate.type.descriptor.sql: INFO
+      org.springframework.web: INFO
+      com.ezen.propick: INFO
+      org.thymeleaf: DEBUG
+
+  web:
+    resources:
+      static-locations:
+        - classpath:/static/
+        - classpath:/public/
+        - classpath:/resources/
+        - classpath:/META-INF/resources/
+        - classpath:/static/management/
+
+  profiles:
+    active: user
+
+  devtools:
+    restart:
+      enabled: false

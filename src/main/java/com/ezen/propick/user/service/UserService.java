@@ -5,36 +5,46 @@ import com.ezen.propick.user.dto.MemberDTO;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder; //빈으로 등록해둔 것 주입받기
 
+    public LoginDTO findByUserId(String userId) {
+        logger.debug("Finding user by userId: {}", userId);
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            logger.warn("User not found with userId: {}", userId);
+            return null;
+        }
+        LoginDTO loginDTO = new LoginDTO(user.getUserNo(), user.getUserId(), user.getUserPwd());
+        logger.debug("Found user: {}", loginDTO);
+        return loginDTO;
+    }
+
+    public void registerUser(MemberDTO memberDTO) {
+        logger.info("Registering new user: {}", memberDTO.getUserId());
+        User user = new User(
+                memberDTO.getUserId(),
+                memberDTO.getUserPwd(),
+                memberDTO.getUserName(),
+                memberDTO.getUserPhone(),
+                memberDTO.getUserGender(),
+                memberDTO.getUserBirth()
+        );
+        userRepository.save(user);
+        logger.info("User registered successfully: {}", memberDTO.getUserId());
+    }
+
+    // createMember 메서드 추가
     public void createMember(MemberDTO memberDTO) {
-
-        User user = new User();
-        user.setUserId(memberDTO.getUserId());
-        user.setUserPwd(passwordEncoder.encode(memberDTO.getUserPwd())); // 암호화 적용
-        user.setUserName(memberDTO.getUserName());
-        user.setUserPhone(memberDTO.getUserPhone());
-        user.setUserGender(memberDTO.getUserGender());
-        user.setUserBirth(memberDTO.getUserBirth());
-
-        this.userRepository.save(user);
+        registerUser(memberDTO);
     }
-
-
-    public LoginDTO findByUserId(String userId){
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        return new LoginDTO(user.getUserId(), user.getUserPwd());
-    }
-
-//    public MemberDTO inquireUserId(String inquireUserId){
-//    }
-
 }

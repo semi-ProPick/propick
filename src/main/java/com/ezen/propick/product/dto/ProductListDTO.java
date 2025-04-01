@@ -1,6 +1,5 @@
 package com.ezen.propick.product.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,19 +10,15 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
 public class ProductListDTO {
-    // 상품 목록 페이지용 dto
-
     private Integer productId;
     private String productName;
     private String brandName;
     private String productType;
     private BigDecimal productPrice;
     private List<String> productImages;
+    private boolean isBookmarked;
 
-
-    // 생성자
     public ProductListDTO(Integer productId, String productName, String brandName, String productType, BigDecimal productPrice, List<String> productImages) {
         this.productId = productId;
         this.productName = productName;
@@ -31,5 +26,11 @@ public class ProductListDTO {
         this.productType = productType;
         this.productPrice = productPrice;
         this.productImages = productImages;
+        this.isBookmarked = false;
+    }
+
+    // 명시적으로 setIsBookmarked 메서드 추가
+    public void setIsBookmarked(boolean isBookmarked) {
+        this.isBookmarked = isBookmarked;
     }
 }
