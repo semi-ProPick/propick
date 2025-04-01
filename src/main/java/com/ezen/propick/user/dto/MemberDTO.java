@@ -1,17 +1,14 @@
 package com.ezen.propick.user.dto;
 
+import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.enumpackage.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
-
-import java.util.Date;
 
 @Getter
 @Setter
-@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,3 +41,4 @@ public class MemberDTO {
         this.userPwd = userPwd;
     }
 }
+

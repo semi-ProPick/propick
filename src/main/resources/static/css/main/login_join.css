@@ -44,7 +44,7 @@ a {
   /*align-items: left;*/
   display: flex;
   align-items: flex-start;
-  background-image: url("../../images/main/image 50.png");
+  background-image: url("../../images/main/image50.png");
   background-repeat: no-repeat;
   background-size: cover;
 }

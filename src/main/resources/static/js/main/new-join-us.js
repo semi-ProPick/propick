@@ -17,7 +17,7 @@ function validateForm(){
 
     let koreanRegex = /^[가-힣]+$/;
     let numberRegex1 = /^[0-9]{10,11}$/;
-    let numberRegex = /^[0-9]{2}\/[0-9]{2}\/[0-9]{2}$/;
+    let numberRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
     let engNum =  /^[a-zA-Z0-9]*$/;
     let pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~@#$!%*?&])[a-zA-Z\d~@#$!%*?&]{8,}$/;
 
@@ -103,30 +103,6 @@ function validateForm(){
         valid=false;
     } else {
         error_birth.style.display="none";
-    }
-
-    if (valid) {
-        document.getElementById("joinForm");  // 폼을 실제로 제출
-        // setTimeout(function() {
-        //     window.location.href = "/user/login";  // 리디렉션
-        // }, 1000);  // 1초 지연 후 리디렉션
-
-        //설문 로그인 위해 필요함
-        const params = new URLSearchParams(window.location.search);
-        const redirect = params.get("redirect") || "/main";
-
-        const form = document.getElementById("joinForm");
-
-        // 중복 추가 방지
-        if (!document.querySelector('input[name="redirect"]')) {
-            const hiddenInput = document.createElement("input");
-            hiddenInput.type = "hidden";
-            hiddenInput.name = "redirect";
-            hiddenInput.value = redirect;
-            form.appendChild(hiddenInput);
-        }
-
-        form.submit();  //
     }
 }
 

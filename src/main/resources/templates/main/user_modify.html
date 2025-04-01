@@ -4,74 +4,52 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/login_join.css" type="text/css" />
-    <link rel="stylesheet" href="/css/header.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/login_join.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
     <title>내 정보 관리</title>
   </head>
   <body>
-    <div id="header"></div>
+  <div th:replace="~{main/mainHeader}"></div>
+  <form action="/user/modifyMyInfo" method="post">
     <div class="page1">
       <h2>내 정보 관리</h2>
       <hr />
       <div class="section">
-        <h4>계정정보</h4>
-        <p>ohgiraffers@gmail.com</p>
+        <h4>계정 ID</h4>
+        <input class="modify-info" type="text"  th:value="${user.userId}" name="userId" readonly >
+      </div>
+
+<!--      <div class="section">-->
+<!--        <h4>계정 비밀번호</h4>-->
+<!--        <input class="modify-info" type="text" placeholder="비밀번호는 수정할 수 없습니다." name="userPwd" readonly >-->
+<!--      </div>-->
+
+      <div class="section">
+        <h4>이름</h4>
+        <input class="modify-info" type="text" th:value="${user.userName}" name="userName" required>
       </div>
 
       <div class="section">
         <h4>전화번호</h4>
-        <p>010-1234-5678</p>
-        <button class="button">전화번호 변경</button>
+        <input class="modify-info" type="text" th:value="${user.userPhone}" name="userPhone" required>
       </div>
 
       <div class="section">
-        <h4>프로필</h4>
-        <p>2002년생 / (여성)</p>
-        <button class="button">프로필 변경</button>
+        <h4>생년월일</h4>
+        <input class="modify-info" type="Date" th:value="${#dates.format(user.userBirth, 'yyyy-MM-dd')}" name="userBirth" required>
       </div>
 
-      <div class="section">
-        <h4>마케팅 알림</h4>
-        <p>
-          이메일 : <span class="highlight">ON</span> &nbsp; SMS :
-          <span class="highlight">ON</span>
-        </p>
-        <button class="button">마케팅 알림 변경</button>
-      </div>
+<!--      <div class="section">-->
+<!--        <div class="genderBox">-->
+<!--        <h4>성별</h4>-->
+<!--          <input class="modify-gender" type="radio" th:checked="*{userGender == T(com.ezen.propick.user.enumpackage.Gender).Male}" name="userGender" value="Male">남성-->
+<!--          <input class="modify-gender" type="radio" th:checked="*{userGender == T(com.ezen.propick.user.enumpackage.Gender).Female}" name="userGender" value="Female">여성-->
+<!--        </div>-->
+<!--      </div>-->
 
       <div class="section">
-        <button class="button" style="border: none; background: none">
-          회원탈퇴
-        </button>
+        <button type="submit" class="button">등록</button>
       </div>
-    </div>
-
-    <div class="page2">
-      <div class="section">
-        <h4>전화번호</h4>
-        <p>010-1234-5678</p>
-        <button class="button">전화번호 변경</button>
-      </div>
-    </div>
-
-    <div class="page3">
-      <div class="section">
-        <h4>프로필</h4>
-        <p>2002년생 / (여성)</p>
-        <button class="button">프로필 변경</button>
-      </div>
-    </div>
-
-    <div class="page4">
-      <div class="section">
-        <h4>마케팅 알림</h4>
-        <p>
-          이메일 : <span class="highlight">ON</span> &nbsp; SMS :
-          <span class="highlight">ON</span>
-        </p>
-        <button class="button">마케팅 알림 변경</button>
-      </div>
-    </div>
 
     <div class="container2">
       <h2 class="title">회원탈퇴</h2>
@@ -113,16 +91,41 @@
         </div>
       </div>
 
-      <button class="button">회원 탈퇴</button>
+      <button class="button" onclick="deleteUser()">회원 탈퇴</button>
     </div>
+    </div>
+  </form>
 
-    <div class="popup">
-      <div class="popup-content">
-        <span class="close-btn">✖</span>
-        <p class="popup-message">정말 탈퇴하시겠습니까?.</p>
-        <button class="login-btn">회원탈퇴</button>
-      </div>
-    </div>
+<!--    <div class="popup">-->
+<!--      <div class="popup-content">-->
+<!--        <span class="close-btn">✖</span>-->
+<!--        <p class="popup-message">정말 탈퇴하시겠습니까?.</p>-->
+<!--        <button class="login-btn">회원탈퇴</button>-->
+<!--      </div>-->
+<!--    </div>-->
+
   </body>
-  <script src="/js/header.js" defer></script>
+  <script src="/js/main/header.js" defer></script>
+
+  <script>
+    function deleteUser() {
+      if (confirm("정말 탈퇴하시겠습니까?")) {
+        fetch('/user/me', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+                .then(response => {
+                  if (response.ok) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    window.location.href = '/'; // 탈퇴 후 홈으로 이동
+                  } else {
+                    alert("탈퇴 실패. 다시 시도해주세요.");
+                  }
+                })
+                .catch(error => console.error('Error:', error));
+      }
+    }
+  </script>
 </html>
