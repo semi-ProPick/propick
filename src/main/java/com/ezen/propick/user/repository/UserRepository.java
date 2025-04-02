@@ -8,10 +8,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     //로그인
     Optional<User> findByUserId(String userId);
 
@@ -32,6 +33,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("DELETE FROM User u WHERE u.userId = :userId")
     void deleteByUserId(String userId);
 
+    //관리자 페이지 ==================================================
 
+    //모든 회원 조회
+    List<User> findAll();
 }
 

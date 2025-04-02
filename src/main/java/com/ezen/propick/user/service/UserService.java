@@ -8,12 +8,15 @@
     import org.springframework.data.jpa.repository.Query;
     import org.springframework.security.crypto.password.PasswordEncoder;
     import org.springframework.stereotype.Service;
+    import org.springframework.web.bind.annotation.RequestMapping;
 
     import java.util.Date;
+    import java.util.List;
     import java.util.Optional;
 
     @RequiredArgsConstructor
     @Service
+    @RequestMapping
     public class UserService {
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder; //빈으로 등록해둔 것 주입받기
@@ -87,6 +90,13 @@
         @Transactional
         public void deleteUser(String userId) {
             userRepository.deleteByUserId(userId);
+        }
+
+
+        //회원 관리 페이지 =================================================
+        //데이터에 있는 유저 정보 테이블 형식으로 띄우기
+        public List<User> findAllUsers(){
+            return userRepository.findAll();
         }
 
     }

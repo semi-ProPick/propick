@@ -26,7 +26,7 @@
 </head>
 
 <body id="page-top">
-<form id="userPage" action="/" th:object="${MemberDTO}" method="post">
+<form id="userPage" action="/" th:object="${AdminUserInfoDTO}" method="post">
 <div id="wrapper">
   <!-- 사이드바 -->
   <div id="sidebar" th:replace="~{management/sidebar}"></div>
@@ -45,21 +45,21 @@
                 <th>선택</th>
                 <th>회원 ID</th>
                 <th>이름</th>
-                <th>이메일</th>
-                <th>가입일</th>
+                <th>전화번호</th>
+                <th>성별</th>
                 <th>관리</th>
               </tr>
               </thead>
               <tbody>
               <tr th:each="member : ${members}">
-                <td><input type="checkbox" th:value="${member.id}" /></td>
-                <td th:text="${member.id}">user1</td>
-                <td th:text="${member.name}">홍길동</td>
-                <td th:text="${member.email}">hong@example.com</td>
-                <td th:text="${#dates.format(member.joinDate, 'yyyy-MM-dd')}">2025-02-28</td>
+                <td><input type="checkbox" th:value="${member.userId}" /></td>
+                <td th:text="${member.userId}">user1</td>
+                <td th:text="${member.userName}">홍길동</td>
+                <td th:text="${member.userPhone}">010-1234-1234</td>
+                <td th:text="${member.userGender}">Male</td>
                 <td>
-                  <button th:attr="onclick='window.location.href=\'/admin/members/edit/' + ${member.id} + '\''">수정</button>
-                  <button th:attr="onclick='deleteMember(' + ${member.id} + ')'">삭제</button>
+                  <button>수정</button>
+                  <button>삭제</button>
                 </td>
               </tr>
               </tbody>
@@ -104,23 +104,9 @@
                   (data) => (document.getElementById("logout_modal").innerHTML = data)
           );
 </script>
-<script>
-  function deleteMember(memberId) {
-    if (confirm('정말로 삭제하시겠습니까?')) {
-      // 삭제 요청을 서버에 보냅니다.
-      fetch('/admin/members/delete/' + memberId, {
-        method: 'DELETE'
-      }).then(response => {
-        if (response.ok) {
-          alert('삭제되었습니다.');
-          location.reload();
-        } else {
-          alert('삭제 실패하였습니다.');
-        }
-      });
-    }
-  }
-</script>
+
+
+
 <script src="/sccs/vendor/jquery/jquery.min.js"></script>
 
 <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>

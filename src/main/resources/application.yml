@@ -6,6 +6,8 @@ spring:
     password: propick
   jpa:
     show-sql: true
+
+
     database: mysql
     generate-ddl: false
     properties:
