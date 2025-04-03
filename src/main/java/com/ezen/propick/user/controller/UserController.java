@@ -27,6 +27,19 @@ public class UserController {
     @Autowired
     private final UserService userService;
     //로그인페이지 반환
+
+    //메인페이지
+    @GetMapping
+    public String index(Model model) {
+        return "main/main";
+    }
+
+    //마이페이지
+    @GetMapping("/mypage")
+    public String mypage() {
+        return "main/mypage";
+    }
+
     @GetMapping("/login")
     public String login(){
         return "/main/login";

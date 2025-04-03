@@ -58,7 +58,7 @@
                 <td th:text="${member.userPhone}">010-1234-1234</td>
                 <td th:text="${member.userGender}">Male</td>
                 <td>
-                  <button>수정</button>
+                  <button><a th:href="@{/update(userId=${member.userId})}">수정</a></button>
                   <button>삭제</button>
                 </td>
               </tr>

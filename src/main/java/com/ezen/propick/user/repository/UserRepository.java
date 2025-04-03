@@ -1,13 +1,14 @@
 package com.ezen.propick.user.repository;
 
 import com.ezen.propick.user.entity.User;
+import org.hibernate.query.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("UPDATE User u SET u.userPwd = :userPwd WHERE u.userId = :userId")
     @Transactional
     @Modifying
-    void updateByUserIdAndUserPwd(@Param("userId")String userId, @Param("userPwd")String userPwd);
+    void updateByUserIdAndUserPwd(@Param("userId") String userId, @Param("userPwd") String userPwd);
 
     //회원 탈퇴
     @Modifying
@@ -36,6 +37,16 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     //관리자 페이지 ==================================================
 
     //모든 회원 조회
+    @Transactional
     List<User> findAll();
-}
 
+
+    //유저 정보 수정
+    @Query("UPDATE User u SET u.userName = :userName, u.userPhone = :userPhone WHERE u.userId = :userId")
+    @Modifying
+    int updateByUserIdAndUserNameAndUserPhone(@Param("userId") String userId,
+                                               @Param("userName") String userName,
+                                               @Param("userPhone") String userPhone);
+
+
+}

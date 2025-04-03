@@ -99,4 +99,27 @@
             return userRepository.findAll();
         }
 
+
+        //관리자 페이지에서 회원 정보 수정하기 위해서 정보 수정 페이지에 유저 정보 나오게
+        public AdminUserModifyDTO inquiryUserInfo(String userId){
+            User user = userRepository.findByUserId(userId)
+                    .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+            return new AdminUserModifyDTO(user.getUserId());
+        }
+
+        //유저 정보 수정
+
+        @Transactional
+        public boolean changeUserInfo(String userId, String userName, String userPhone) {
+            int updatedRows = userRepository.updateByUserIdAndUserNameAndUserPhone(userId, userName, userPhone);
+            userRepository.flush(); //변경 사항 바로 반영
+            return updatedRows > 0; // 업데이트된 행이 1개 이상이면 true 반환
+        }
+
+
+        @Transactional
+        public Optional<User> getUserById(String userId) {
+            return userRepository.findByUserId(userId);
+        }
     }
+

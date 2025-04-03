@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -10,28 +10,29 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Admin</title>
-    <link
-      href="vendor/fontawesome-free/css/all.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
+<!--    <link-->
+<!--      href="vendor/fontawesome-free/css/all.min.css"-->
+<!--      rel="stylesheet"-->
+<!--      type="text/css"-->
+<!--    />-->
     <link
       href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
       rel="stylesheet"
     />
-    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
-    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
-    <link href="css/common.css" rel="stylesheet" />
+      <link href="/css/management/sb-admin-2.css" rel="stylesheet" />
+      <link href="/css/management/sb-admin-2.min.css" rel="stylesheet" />
+      <link href="/css/management/common.css" rel="stylesheet" />
   </head>
 
   <body id="page-top">
+  <form action="/update" method="post">
     <div id="wrapper">
       <!-- 사이드바 -->
-      <div id="sidebar"></div>
+      <div id="sidebar" th:replace="~{management/sidebar}"></div>
       <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
           <!-- 해더 -->
-          <div id="header"></div>
+          <div id="header" th:replace="~{management/header}"></div>
           <!-- 내용 -->
           <div class="container-fluid">
             <div
@@ -41,57 +42,41 @@
             <h2>회원 수정 </h2>
                 <div class="user_info_box">
                     <p>회원 ID</p>
-                    <input class="text" type="text" readonly>
+                    <input class="text" type="text" name="userId" th:value="${user.userId}" readonly>
                     <p class="impossible">회원 아이디는 수정할 수 없습니다.</p>
                 </div>
 
                 <div class="user_info_box">
                     <p>회원 비밀번호</p>
-                    <input class="text" type="text" readonly>
+                    <input class="text" type="text" value="********" readonly>
                     <p class="impossible">회원 비밀번호는 수정할 수 없습니다.</p>
                 </div>
     
                 <div class="user_info_box">
                     <p>회원 이름</p>
-                    <input type="text">
+                    <input type="text" name="userName" th:value="${user.userName}">
                 </div>
     
                 <div class="user_info_box">
                     <p>회원 성별</p>
-                    <input class="text" type="text" readonly>
+                    <input class="text" type="text" th:value="${user.userGender}" readonly>
                     <p class="impossible">회원 성별은 수정할 수 없습니다.</p>
                 </div>
     
                 <div class="user_info_box">
                     <p>생년월일</p>
-                    <input class="text" type="text" readonly>
+                    <input class="text" type="text" th:value="${user.userBirth}" readonly>
                     <p class="impossible">회원 생일은 수정할 수 없습니다.</p>
                 </div>
     
                 <div class="user_info_box">
-                    <p>이메일</p>
-                    <input type="text">
-                </div>
-    
-                <div class="user_info_box">
-                    <p>가입일</p>
-                    <input class="text" type="text" readonly>
-                    <p class="impossible">회원 가입일은 수정할 수 없습니다.</p>
-                </div>
-    
-                <div class="user_info_box">
-                    <p>권환</p>
-                    <input type="text">
-                </div>
-    
-                <div class="user_info_box">
                     <p>연락처</p>
-                    <input type="text">
+                    <input type="text" name="userPhone" th:value="${user.userPhone}">
                 </div>
 
                 <div class="click_ox">
                     <div class="ox">
-                        <button>등록</button>
+                        <button type="submit">등록</button>
                         <button>취소</button>
                     </div>
                 </div>
@@ -99,10 +84,11 @@
           </div>
         </div>
         <!-- 푸터 -->
-        <div id="footer"></div>
+        <div id="footer" th:replace="~{management/footer}"></div>
       </div>
     </div>
-    <div id="logout_modal"></div>
+    <div id="logout_modal" th:replace="~{management/logoutModal}"></div>
+  </form>
 
     <!-- Bootstrap core JavaScript-->
     <script>
@@ -129,20 +115,24 @@
         );
     </script>
 
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/sccs/vendor/jquery/jquery.min.js"></script>
+
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/jquery-easing/jquery.easing.min.js"></script>
+
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    <script src="/js/management/sb-admin-2.min.js"></script>
+
 
     <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="/js/management/chart-area-demo.js"></script>
+
+    <script src="/js/management/chart-pie-demo.js"></script>
   </body>
 </html>
