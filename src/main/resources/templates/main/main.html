@@ -6,6 +6,9 @@
   <link rel="stylesheet" th:href="@{/css/main/main.css}" type="text/css" />
   <link rel="stylesheet" th:href="@{/css/main/header.css}" type="text/css" />
   <title>main</title>
+  <style>
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
 <div id="wrap">
@@ -21,7 +24,7 @@
         <a th:href="@{/survey_start}">AI 프로틴 추천받기</a>
       </div>
       <p id="products_view">
-        <a th:href="@{/product}">모든 제품 보기</a>
+        <a th:href="@{/products}">모든 제품 보기</a>
       </p>
     </div>
   </div>
@@ -123,15 +126,16 @@
   </footer>
 </div>
 <!-- 이벤트 팝업 -->
-<div class="popup">
+<div class="popup" id="eventPopup">
   <div class="popup-content">
     <a th:href="@{/popup/event}">
       <img th:src="@{/images/main/popup.png}" alt="이벤트 배너" class="popup-banner" />
-    </a>    <h3>한정수량 타임특가 이벤트</h3>
+    </a>
+    <h3>한정수량 타임특가 이벤트</h3>
     <p class="event-date">2023-06-01 ~ 별도공지</p>
     <div class="popup-buttons">
-      <button class="btn btn-secondary">오늘 보지 않기</button>
-      <button class="btn btn-primary">팝업 닫기</button>
+      <button class="btn btn-secondary" onclick="dontShowToday()">오늘 보지 않기</button>
+      <button class="btn btn-primary" onclick="closePopup()">팝업 닫기</button>
     </div>
   </div>
 </div>
@@ -142,10 +146,37 @@
 </body>
 <script th:src="@{/js/main/header.js}"></script>
 <script>
-  const closeBtn = document.querySelector(".btn-primary");
-  const popup = document.querySelector(".popup");
-  closeBtn.addEventListener("click", function () {
-    popup.style.display = "none";
+  // 페이지 로드 시 팝업 표시 여부 확인
+  document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('eventPopup');
+    const dontShowToday = localStorage.getItem('dontShowToday_eventPopup');
+    const today = new Date().toISOString().split('T')[0]; // 오늘 날짜 (YYYY-MM-DD)
+
+    // 오늘 하루 보지 않기로 설정되어 있고, 날짜가 오늘이라면 팝업 숨기기
+    if (dontShowToday && dontShowToday === today) {
+      popup.classList.add('hidden');
+    }
   });
+
+  // 오늘 하루 보지 않기 버튼 클릭 시
+  function dontShowToday() {
+    const today = new Date().toISOString().split('T')[0]; // 오늘 날짜 (YYYY-MM-DD)
+    localStorage.setItem('dontShowToday_eventPopup', today);
+    const popup = document.getElementById('eventPopup');
+    popup.classList.add('hidden');
+  }
+
+  // 팝업 닫기 버튼 클릭 시
+  function closePopup() {
+    const popup = document.getElementById('eventPopup');
+    popup.classList.add('hidden');
+  }
+
+  // 기존 팝업 닫기 버튼 이벤트 리스너 (중복 방지용 제거)
+  // const closeBtn = document.querySelector(".btn-primary");
+  // const popup = document.querySelector(".popup");
+  // closeBtn.addEventListener("click", function () {
+  //   popup.style.display = "none";
+  // });
 </script>
 </html>

@@ -1,16 +1,12 @@
 package com.ezen.propick.product.dto;
 
 import com.ezen.propick.product.entity.ProductInfo;
-import com.ezen.propick.product.entity.ProductIngredientDetail;
 import lombok.*;
-
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -23,12 +19,16 @@ public class ProductDTO {
     private String productType;  // 제품유형
     private BigDecimal productPrice;  // 제품 가격
     private List<String> productImages;  // 제품 이미지
-    private Map<String, String> nutrients;  // 영양소 정보
-    private List<IngredientWithInfoDTO> ingredientDTOs;  // 성분 정보
+    private List<IngredientWithInfoDTO> ingredientDTOs;  // 상세페이지 성분 정보용
     private Integer calories;  // 칼로리
     private Integer servingSize;  // 1회 섭취량
-    private Double proteinAmount;
+    private Double proteinAmount; // 단백질 함량
     private Double proteinPer100g; // 100g 기준 단백질 함량
     private ProductInfo productInfo;  // ProductInfo를 추가
 
+    // 할인율 (할인된 가격을 계산하기 위해 추가)
+    private Integer discountRate;  // 할인율
+    private BigDecimal discountedPrice;  // 할인된 가격
+
+    private List<ProductIngredientDTO> productIngredients;   // 상품- 성분 등록용
 }

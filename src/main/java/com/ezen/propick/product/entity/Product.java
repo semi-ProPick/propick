@@ -39,13 +39,12 @@ public class Product {
     private List<ProductImage> productImages = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false) // 외래키를 ProductInfo 테이블에 설정
+    @JoinColumn(name = "product_id", nullable = false)
     private ProductInfo productInfo;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductIngredientDetail> productIngredientDetails = new ArrayList<>();
 
-    // 검색 시
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

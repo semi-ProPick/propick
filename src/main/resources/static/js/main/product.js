@@ -1,27 +1,5 @@
-// 기존 코드 유지
-document.querySelectorAll(".category_menu").forEach((item) => {
-  item.addEventListener("click", () => {
-    document.querySelectorAll(".category_menu").forEach((cate) => {
-      cate.classList.remove("active");
-    });
-    item.classList.add("active");
-  });
-});
-
-document.querySelectorAll(".product_cate").forEach((item) => {
-  item.addEventListener("click", () => {
-    document.querySelectorAll(".product_cate").forEach((cate) => {
-      cate.classList.remove("active");
-    });
-    item.classList.add("active");
-  });
-});
-
-// 나머지 기존 코드 유지 (category_wrap, age_category 등)
-
-// 검색 및 페이지네이션 코드 수정
 document.addEventListener("DOMContentLoaded", function () {
-  const searchInput = document.querySelector(".search_input"); // 오타 수정
+  const searchInput = document.querySelector(".search_input");
   const productsWrap = document.querySelector(".products_wrap");
   const searchResultsWrap = document.querySelector(".search_results_wrap");
   const searchResults = document.querySelector(".search_results");
@@ -35,39 +13,45 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // 서버에서 데이터 가져오기 (더미 데이터 대신)
-  fetch(`${contextPath}/api/products`) // contextPath는 HTML에서 Thymeleaf로 주입됨
-      .then(response => response.json())
+  // 제품 데이터 가져오기 (contextPath는 HTML에서 제공)
+  fetch(`${contextPath}/api/product`)
+      .then(response => {
+        if (!response.ok) throw new Error(`Failed to fetch products: ${response.status}`);
+        return response.json();
+      })
       .then(data => {
-        allProducts = data.products || [];
+        allProducts = data || [];
+        console.log("Fetched products:", allProducts);
+        renderProducts(allProducts);
       })
       .catch(error => console.error('Error fetching products:', error));
 
+  // 검색 기능
   searchInput.addEventListener("input", function () {
     const query = searchInput.value.trim().toLowerCase();
     if (query === "") {
       searchResultsWrap.style.display = "none";
       productsWrap.style.display = "block";
       pagination.style.display = "none";
+      renderProducts(allProducts);
       return;
     }
     const filteredProducts = allProducts.filter((product) =>
-        product.name.toLowerCase().includes(query)
+        product.productName.toLowerCase().includes(query)
     );
     currentPage = 1;
     renderProducts(filteredProducts);
   });
 
-  // 북마크 토글 함수 추가
-  const favoriteIcons = document.querySelectorAll(".favorite-icon");
-  favoriteIcons.forEach(icon => {
-    icon.addEventListener("click", function () {
-      toggleFavorite(this);
-    });
-  });
-
+  // 북마크 토글 함수
   function toggleFavorite(element) {
     const productId = element.getAttribute("data-product-id");
+    if (!productId) {
+      console.error("Product ID not found on element:", element);
+      alert("제품 ID를 찾을 수 없습니다.");
+      return;
+    }
+
     const isBookmarked = element.classList.contains("favorited");
     const url = `${contextPath}/api/bookmarks/toggle`;
 
@@ -85,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (response.status === 401) {
             alert("로그인이 필요합니다.");
             window.location.href = `${contextPath}/login`;
-            throw new Error("Unauthorized");
+            return Promise.reject(new Error("Unauthorized"));
           }
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -97,15 +81,16 @@ document.addEventListener("DOMContentLoaded", function () {
             element.classList.toggle("favorited");
             alert(isBookmarked ? "북마크가 해제되었습니다." : "북마크가 등록되었습니다.");
           } else {
-            alert("북마크 업데이트에 실패했습니다: " + (data.message || "알 수 없는 오류"));
+            alert("북마크 처리에 실패했습니다: " + (data.message || "알 수 없는 오류"));
           }
         })
         .catch(error => {
           console.error("Error:", error);
-          alert("북마크 업데이트 중 오류가 발생했습니다: " + error.message);
+          alert("북마크 처리 중 오류가 발생했습니다: " + error.message);
         });
   }
 
+  // 제품 렌더링 함수
   function renderProducts(productArray) {
     searchResults.innerHTML = "";
     pagination.innerHTML = "";
@@ -122,11 +107,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     paginatedProducts.forEach((product) => {
       const li = document.createElement("li");
+      li.className = "product-item";
+      const imageUrl = product.productImages && product.productImages.length > 0
+          ? `${contextPath}${product.productImages[0]}`
+          : `${contextPath}/images/product-img/default.png`;
       li.innerHTML = `
-        <img src="${product.image || `${contextPath}/images/default.png`}" alt="${product.name}" />
-        <p>${product.name}</p>
+        <a href="${contextPath}/products/${product.productId}">
+          <div class="product-images">
+            <img src="${imageUrl}" alt="${product.productName}" onerror="this.src='${contextPath}/images/product-img/default.png'" />
+          </div>
+          <p>${product.productName || '상품명'}</p>
+        </a>
+        <div class="favorite-icon ${product.isBookmarked ? 'favorited' : ''}" data-product-id="${product.productId}">
+          <i class="fas fa-star"></i>
+        </div>
       `;
       searchResults.appendChild(li);
+
+      li.querySelector(".favorite-icon").addEventListener("click", function (e) {
+        e.preventDefault(); // 링크 이동 방지
+        toggleFavorite(this);
+      });
     });
 
     productsWrap.style.display = "none";
@@ -134,10 +135,4 @@ document.addEventListener("DOMContentLoaded", function () {
     pagination.style.display = "block";
     renderPagination(productArray);
   }
-
-  function renderPagination(productArray) {
-    // 기존 코드 유지
-  }
 });
-
-// contextPath는 HTML에서 Thymeleaf로 주입: const contextPath = /*[[${contextPath}]]*/ '';

@@ -6,147 +6,101 @@ import com.ezen.propick.product.dto.ProductListDTO;
 import com.ezen.propick.product.dto.ProductSearchDTO;
 import com.ezen.propick.product.service.MainProductService;
 import com.ezen.propick.product.utils.ImageUtils;
-import com.ezen.propick.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@Profile("user")
 @Controller
 @RequiredArgsConstructor
-@Slf4j
 public class ProductController {
 
     private final MainProductService mainProductService;
     private final BookmarkService bookmarkService;
 
-    private Integer getCurrentUserNo() {
-        try {
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (principal instanceof CustomUserDetails) {
-                return ((CustomUserDetails) principal).getUserNo();
-            }
-            log.warn("No authenticated user found, returning null userNo");
-        } catch (Exception e) {
-            log.error("Error retrieving current userNo: {}", e.getMessage(), e);
-        }
-        return null;
-    }
 
+    // 상품 목록 페이지
     @GetMapping("/products")
-    public String getAllProducts(Model model, HttpServletRequest request) { // HttpServletRequest 추가
-        Integer userNo = getCurrentUserNo();
-        if (userNo == null) {
-            log.warn("User is not authenticated, bookmark status will not be set");
+    public String getAllProducts(@RequestParam(value = "discount", required = false) Boolean discount,Model model) {
+        List<ProductListDTO> products;  // 전체 상품 조회
+
+        if (discount != null && discount) {
+            // 할인된 상품만 조회
+            products = mainProductService.getDiscountedProducts();
+        } else {
+            // 전체 상품 조회
+            products = mainProductService.getAllProducts();
         }
 
-        List<ProductListDTO> products = mainProductService.getAllProducts(userNo);
-        if (products == null) {
-            log.warn("mainProductService.getAllProducts(userNo) returned null!");
-            products = new ArrayList<>();
-        }
-
-        log.info("Number of products retrieved: {}", products.size());
-
+        // 각 상품의 이미지 URL을 디코딩하고, /images/product-img/로 경로 수정
         products.forEach(product -> {
-            log.info("Product: {} - Price: {}", product.getProductName(), product.getProductPrice());
-            List<String> correctedImageUrls = new ArrayList<>();
-            if (product.getProductImages() != null) {
-                for (String imgUrl : product.getProductImages()) {
-                    if (imgUrl == null) {
-                        correctedImageUrls.add("");
-                    } else {
-                        String decodedUrl = ImageUtils.decodeImageUrl(imgUrl);
-                        if (!decodedUrl.startsWith("/images/product-img/")) {
-                            decodedUrl = "/images/product-img/" + decodedUrl;
+            List<String> correctedImageUrls = product.getProductImages().stream()
+                    .map(imgUrl -> {
+                        // 만약 imgUrl이 이미 /images/product-img/로 시작하지 않으면 추가
+                        if (!imgUrl.startsWith("/images/product-img/")) {
+                            return "/images/product-img/" + ImageUtils.decodeImageUrl(imgUrl);
                         }
-                        correctedImageUrls.add(decodedUrl);
-                    }
-                }
-            }
-            product.setProductImages(correctedImageUrls);
-            product.setIsBookmarked(userNo != null && bookmarkService.isBookmarked(userNo, product.getProductId()));
+                        return ImageUtils.decodeImageUrl(imgUrl);  // 이미 경로가 제대로 설정되어 있으면 그대로 사용
+                    })
+                    .collect(Collectors.toList());
+            product.setProductImages(correctedImageUrls);  // 디코딩된 이미지 경로를 설정
         });
+        model.addAttribute("products", products);  // 상품 목록을 모델에 추가
+        model.addAttribute("discount", discount);
+
+        List<ProductListDTO> top3Products = bookmarkService.getTop3BookmarkedProducts();
+        model.addAttribute("top3Products", top3Products);
+
         model.addAttribute("products", products);
-        model.addAttribute("contextPath", request.getContextPath()); // contextPath 추가
-        return "main/product";
+        model.addAttribute("discount", discount);
+
+        return "main/product";  // 상품 목록 페이지 반환 (HTML 뷰)
     }
 
+
+    // 상품 상세 페이지
     @GetMapping("/products/{productId}")
-    public String getProductDetail(@PathVariable Integer productId, Model model, HttpServletRequest request) { // HttpServletRequest 추가
+    public String getProductDetail(@PathVariable Integer productId, Model model) {
+        // 1. 상품 상세 정보를 조회
         ProductDTO productDetail = mainProductService.getProductDetailById(productId);
-        if (productDetail == null) {
-            log.error("Product with id {} not found", productId);
-            return "error/404";
-        }
-        List<String> imageUrls = productDetail.getProductImages();
-        List<String> correctedImageUrls = new ArrayList<>();
-        if (imageUrls != null && !imageUrls.isEmpty()) {
-            for (String imgUrl : imageUrls) {
-                if (imgUrl == null) {
-                    correctedImageUrls.add("");
-                } else {
-                    String decodedUrl = ImageUtils.decodeImageUrl(imgUrl);
-                    if (decodedUrl == null || decodedUrl.isEmpty()) {
-                        decodedUrl = "/images/default.png";
-                    }
-                    if (!decodedUrl.startsWith("/images/product-img/")) {
-                        decodedUrl = "/images/product-img/" + decodedUrl;
-                    }
-                    correctedImageUrls.add(decodedUrl);
-                }
-            }
-        } else {
-            log.warn("Product {} has no images", productId);
-        }
-        productDetail.setProductImages(correctedImageUrls);
+
+        // 2. 성분별 100g당 함량 계산
+        Map<String, Double> ingredientsPer100g = mainProductService.calculateIngredientsPer100g(productDetail.getProductInfo());
+
+        // 3. Model에 product와 proteinPer100g을 추가
         model.addAttribute("product", productDetail);
-        model.addAttribute("proteinPer100g", productDetail.getProteinPer100g());
-        model.addAttribute("contextPath", request.getContextPath()); // contextPath 추가
+        model.addAttribute("ingredientsPer100g", ingredientsPer100g);
+
+        // 4. 상세 페이지로 전달
         return "main/product_detail";
     }
 
+    // 검색
     @GetMapping("/products/search")
-    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword,
-                                 Model model, HttpServletRequest request) { // HttpServletRequest 추가
-        Integer userNo = getCurrentUserNo();
-        if (userNo == null) {
-            log.warn("User is not authenticated, bookmark status will not be set");
+    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        List<ProductSearchDTO> products;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            products = new ArrayList<>();
+        } else {
+            products = mainProductService.getProductBySearchKeyword(keyword); // 검색
         }
 
-        List<ProductSearchDTO> searchResults;
-        if (keyword == null || keyword.trim().isEmpty()) {
-            searchResults = new ArrayList<>();
-        } else {
-            searchResults = mainProductService.getProductBySearchKeyword(keyword);
-        }
-        List<ProductListDTO> products = searchResults.stream()
-                .map(p -> new ProductListDTO(
-                        p.getProductId(),
-                        p.getProductName(),
-                        p.getBrandName(),
-                        "",
-                        p.getProductPrice(),
-                        p.getProductImages()
-                ))
-                .collect(Collectors.toList());
-        if (products == null) {
-            products = new ArrayList<>();
-        }
-        products.forEach(product -> {
-            product.setIsBookmarked(userNo != null && bookmarkService.isBookmarked(userNo, product.getProductId()));
-        });
         model.addAttribute("products", products);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("contextPath", request.getContextPath()); // contextPath 추가
-        return "main/product";
+        return "main/product"; // 검색 결과를 main/product 페이지로 전달
     }
+
+
+
+
 }

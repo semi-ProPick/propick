@@ -30,9 +30,12 @@ spring:
         order_updates: true
 
   server:
+    servlet:
+      context-path: /
     tomcat:
       use-forwarded-headers: true
       max-http-header-size: 8192
+
 
   logging:
     level:
@@ -42,6 +45,7 @@ spring:
       org.springframework.web: DEBUG
       com.ezen.propick: DEBUG
       org.thymeleaf: DEBUG
+      org.springframework.security: DEBUG
 
   web:
     resources:

@@ -1,19 +1,17 @@
 package com.ezen.propick.bookmark.service;
 
-import com.ezen.propick.bookmark.Enum.BookmarkStatus;
 import com.ezen.propick.bookmark.dto.BookmarkDTO;
 import com.ezen.propick.bookmark.entity.Bookmark;
 import com.ezen.propick.bookmark.repository.BookmarkRepository;
+import com.ezen.propick.product.dto.ProductListDTO;
 import com.ezen.propick.product.entity.Product;
 import com.ezen.propick.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,113 +19,103 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookmarkService {
 
-    private static final Logger logger = LoggerFactory.getLogger(BookmarkService.class);
-
     private final BookmarkRepository bookmarkRepository;
     private final ProductRepository productRepository;
 
     @Transactional
     public BookmarkDTO addBookmark(BookmarkDTO bookmarkDTO) {
-        logger.info("Adding bookmark for userNo: {}, productId: {}", bookmarkDTO.getUserNo(), bookmarkDTO.getProductId());
-        if (bookmarkRepository.existsByUserNoAndProductProductId(bookmarkDTO.getUserNo(), bookmarkDTO.getProductId())) {
-            logger.warn("Bookmark already exists for userNo: {}, productId: {}", bookmarkDTO.getUserNo(), bookmarkDTO.getProductId());
-            throw new IllegalStateException("이미 찜한 상품입니다.");
+        Optional<Bookmark> existingBookmark = bookmarkRepository.findByUserNoAndProduct_ProductId(
+                bookmarkDTO.getUserNo(), bookmarkDTO.getProductId());
+
+        if (existingBookmark.isPresent()) {
+            throw new IllegalArgumentException("이미 북마크에 추가된 상품입니다.");
         }
 
         Product product = productRepository.findById(bookmarkDTO.getProductId())
-                .orElseThrow(() -> {
-                    logger.error("Product not found with ID: {}", bookmarkDTO.getProductId());
-                    return new IllegalArgumentException("상품을 찾을 수 없습니다: " + bookmarkDTO.getProductId());
-                });
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
         Bookmark bookmark = Bookmark.builder()
-                .bookmark_status(BookmarkStatus.valueOf(bookmarkDTO.getStatus()))
-                .userNo(bookmarkDTO.getUserNo())
+                .bookmarkStatus("ACTIVE")
+                .userNo(bookmarkDTO.getUserNo()) // String
                 .product(product)
                 .build();
 
-        logger.info("Saving bookmark to DB: {}", bookmark);
         Bookmark savedBookmark = bookmarkRepository.save(bookmark);
-        logger.info("Saved bookmark: {}", savedBookmark);
 
-        return convertToDTO(savedBookmark);
-    }
-
-    public List<BookmarkDTO> getBookmarksByUserNo(Integer userNo) {
-        try {
-            logger.info("Fetching bookmarks for userNo: {}", userNo);
-            List<Bookmark> bookmarks = bookmarkRepository.findByUserNo(userNo);
-            if (bookmarks.isEmpty()) {
-                logger.warn("No bookmarks found for userNo: {}", userNo);
-            }
-            return bookmarks.stream()
-                    .map(this::convertToDTO)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            logger.error("Error fetching bookmarks for userNo {}: {}", userNo, e.getMessage(), e);
-            return Collections.emptyList();
-        }
-    }
-
-    @Transactional
-    public void removeBookmark(Integer bookmarkId) {
-        logger.info("Removing bookmark with ID: {}", bookmarkId);
-        if (!bookmarkRepository.existsById(bookmarkId)) {
-            logger.error("Bookmark not found with ID: {}", bookmarkId);
-            throw new IllegalArgumentException("해당 ID의 즐겨찾기가 존재하지 않습니다: " + bookmarkId);
-        }
-        bookmarkRepository.deleteById(bookmarkId);
-        logger.info("Bookmark removed successfully: {}", bookmarkId);
-    }
-
-    public boolean isBookmarked(Integer userNo, Integer productId) {
-        boolean exists = bookmarkRepository.existsByUserNoAndProductProductId(userNo, productId);
-        logger.info("Checked if productId: {} is bookmarked for userNo: {}, result: {}", productId, userNo, exists);
-        return exists;
-    }
-
-    @Transactional
-    public boolean toggleBookmark(Integer userNo, Integer productId, boolean isBookmarked) {
-        logger.info("Toggling bookmark for userNo: {}, productId: {}, isBookmarked: {}", userNo, productId, isBookmarked);
-        if (isBookmarked) {
-            // 북마크 추가
-            if (bookmarkRepository.existsByUserNoAndProductProductId(userNo, productId)) {
-                logger.warn("Bookmark already exists for userNo: {}, productId: {}", userNo, productId);
-                return true;
-            }
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> {
-                        logger.error("Product not found with ID: {}", productId);
-                        return new IllegalArgumentException("상품을 찾을 수 없습니다: " + productId);
-                    });
-            Bookmark bookmark = Bookmark.builder()
-                    .bookmark_status(BookmarkStatus.ACTIVE)
-                    .userNo(userNo)
-                    .product(product)
-                    .build();
-            bookmarkRepository.save(bookmark);
-            logger.info("Bookmark added for userNo: {}, productId: {}", userNo, productId);
-        } else {
-            // 북마크 제거
-            Optional<Bookmark> bookmarkOpt = bookmarkRepository.findByUserNoAndProductProductId(userNo, productId);
-            if (bookmarkOpt.isPresent()) {
-                bookmarkRepository.delete(bookmarkOpt.get());
-                logger.info("Bookmark removed for userNo: {}, productId: {}", userNo, productId);
-            } else {
-                logger.warn("Bookmark not found for userNo: {}, productId: {}", userNo, productId);
-            }
-        }
-        return true;
-    }
-
-    private BookmarkDTO convertToDTO(Bookmark bookmark) {
         return BookmarkDTO.builder()
-                .id(bookmark.getBookmark_id())
-                .status(bookmark.getBookmark_status().name())
-                .userNo(bookmark.getUserNo())
-                .productId(bookmark.getProduct().getProductId())
-                .productName(bookmark.getProduct().getProductName())
-                .productPrice(bookmark.getProduct().getProductPrice())
+                .bookmarkId(savedBookmark.getBookmarkId())
+                .bookmarkStatus(savedBookmark.getBookmarkStatus())
+                .userNo(savedBookmark.getUserNo())
+                .productId(savedBookmark.getProduct().getProductId())
                 .build();
+    }
+
+    @Transactional
+    public void removeBookmark(String userNo, Integer productId) { // Integer -> String
+        if (userNo == null || productId == null) {
+            throw new IllegalArgumentException("사용자 ID와 상품 ID는 필수입니다.");
+        }
+
+        Bookmark bookmark = bookmarkRepository.findByUserNoAndProduct_ProductId(userNo, productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 북마크를 찾을 수 없습니다: userNo=" + userNo + ", productId=" + productId));
+
+        bookmarkRepository.delete(bookmark);
+    }
+
+    public List<ProductListDTO> getBookmarkedProducts(String userNo) { // Integer -> String
+        List<Bookmark> bookmarks = bookmarkRepository.findByUserNo(userNo);
+        return bookmarks.stream()
+                .filter(bookmark -> "ACTIVE".equals(bookmark.getBookmarkStatus()))
+                .map(bookmark -> {
+                    Product product = bookmark.getProduct();
+                    if (product != null) {
+                        return new ProductListDTO(
+                                product.getProductId(),
+                                product.getProductName(),
+                                product.getBrand() != null ? product.getBrand().getBrandName() : "Unknown Brand",
+                                product.getProductType(),
+                                product.getProductPrice(),
+                                null,
+                                product.getProductImages().stream()
+                                        .map(image -> image.getImageUrl())
+                                        .collect(Collectors.toList())
+                        );
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductListDTO> getTop3BookmarkedProducts() {
+        List<Object[]> topProducts = bookmarkRepository.findTop3ByBookmarkCount();
+
+        List<Integer> productIds = topProducts.stream()
+                .map(obj -> (Integer) obj[0])
+                .collect(Collectors.toList());
+
+        List<Product> products = productRepository.findAllById(productIds);
+
+        return products.stream().map(product -> {
+                    ProductListDTO dto = new ProductListDTO(
+                            product.getProductId(),
+                            product.getProductName(),
+                            product.getBrand() != null ? product.getBrand().getBrandName() : "Unknown Brand",
+                            product.getProductType(),
+                            product.getProductPrice(),
+                            null,
+                            product.getProductImages().stream()
+                                    .map(image -> image.getImageUrl())
+                                    .collect(Collectors.toList())
+                    );
+                    for (Object[] obj : topProducts) {
+                        if (((Integer) obj[0]).equals(product.getProductId())) {
+                            dto.setBookmarkCount(((Long) obj[1]).intValue());
+                            break;
+                        }
+                    }
+                    return dto;
+                }).sorted((p1, p2) -> Integer.compare(p2.getBookmarkCount(), p1.getBookmarkCount()))
+                .collect(Collectors.toList());
     }
 }

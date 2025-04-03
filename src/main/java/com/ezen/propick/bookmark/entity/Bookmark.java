@@ -17,17 +17,16 @@ public class Bookmark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bookmark_id")
-    private Integer bookmark_id;
+    private Integer bookmarkId;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "bookmark_status")
-    private BookmarkStatus bookmark_status;
+    private String bookmarkStatus; // "ACTIVE" 또는 "INACTIVE"
 
-    @Column(name = "user_no")
-    private Integer userNo;
+    @Column(name = "user_no", nullable = false)
+    private String userNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id",  nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
    // referencedColumnName = "product_id"
 }

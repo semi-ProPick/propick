@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class IngredientDTO {
+public class ProductIngredientDTO {
 
     private Integer ingredientId;   // 성분 아이디
-    private String ingredientName;  // 성분명
-    private Integer proteinAmount;  // 단백질 함량
-    private Integer servingSize;  // 1회 섭취량
-    private Integer calories;  // 칼로리, 에너지
+//    private String ingredientName;  // 성분명
+    private Integer ingredientAmount;  // 단백질 함량
+    private String ingredientUnit;
 
 }

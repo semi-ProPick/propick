@@ -23,7 +23,7 @@
                     <span class="group">[</span>맞춤 프로틴<span class="group">]</span> 프로픽
                 </p>
             </div>
-            <form th:action="@{/doLogin}" method="post">
+            <form th:action="@{/user/doLogin}" method="post">
                 <div class="login_id_pwd_box">
                     <label for="insert_id"><p class="lptext">Login</p></label>
                     <input name="username" class="insert" id="insert_id" type="text" placeholder="아이디를 입력해주세요.">
@@ -42,7 +42,7 @@
                 <div class="findorjoin_box">
                     <button class="foj" id="line"><a href="/id_find.html">아이디 찾기</a></button>
                     <button class="foj" id="line1"><a href="/password_find.html">비밀번호 찾기</a></button>
-                    <button class="foj"><a href="/join.html">회원가입</a></button>
+                    <button class="foj"><a href="/user/join">회원가입</a></button>
                 </div>
             </form>
 

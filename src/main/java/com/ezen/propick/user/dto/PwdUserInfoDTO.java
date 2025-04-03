@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginDTO {
+public class PwdUserInfoDTO {
     private String userId;
-    private String userPwd;
-
+    private String userPhone;
 }

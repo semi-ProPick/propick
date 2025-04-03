@@ -1,12 +1,11 @@
-package com.ezen.propick.auth;
+package com.ezen.propick.auth.model;
 
 import com.ezen.propick.user.dto.LoginDTO;
+import com.ezen.propick.user.dto.MemberDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,63 +18,49 @@ import java.util.Collection;
 @AllArgsConstructor
 public class AuthDetails implements UserDetails {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthDetails.class);
-
     private LoginDTO loginDTO;
 
-    public Integer getUserNo() {
-        if (loginDTO != null) {
-            return loginDTO.getUserNo();
-        }
-        logger.warn("loginDTO is null, returning null userNo");
-        return null;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // 사용자의 권한 정보는 없으므로, 빈 권한 리스트를 반환
         return new ArrayList<>();
     }
 
     @Override
     public String getPassword() {
-        if (loginDTO != null) {
-            logger.debug("Returning password for user: {}", loginDTO.getUserId());
-            return loginDTO.getUserPwd();
-        }
-        logger.warn("loginDTO is null, returning null password");
-        return null;
+        System.out.println(loginDTO.getUserPwd());
+        return loginDTO.getUserPwd();  // LoginDTO에서 비밀번호를 가져옴
     }
 
     @Override
     public String getUsername() {
-        if (loginDTO != null) {
-            return loginDTO.getUserId();
-        }
-        logger.warn("loginDTO is null, returning null username");
-        return null;
+        return loginDTO.getUserId();  // LoginDTO에서 아이디를 가져옴
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        logger.debug("isAccountNonExpired called");
-        return true;
+        System.out.println("isAccountNonExpired");
+        return true;  // 계정 만료 여부를 처리
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        logger.debug("isAccountNonLocked called");
-        return true;
+        System.out.println("isAccountNonLocked");
+        return true;  // 계정 잠금 여부를 처리
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        logger.debug("isCredentialsNonExpired called");
-        return true;
+        System.out.println("isCredentialsNonExpired");
+        return true;  // 자격 증명 만료 여부를 처리
     }
 
     @Override
     public boolean isEnabled() {
-        logger.debug("isEnabled called");
-        return true;
+        System.out.println("isEnabled");
+        return true;  // 계정 활성화 여부를 처리
     }
+
+
 }

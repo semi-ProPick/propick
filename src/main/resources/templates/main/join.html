@@ -10,7 +10,7 @@
 </head>
 <body>
 <div th:replace="~{main/mainHeader}"></div>
-<form id="joinForm" action="/join" th:object="${MemberDTO}" method="post">
+<form id="joinForm" action="/user/join" th:object="${MemberDTO}" method="post">
     <div id="pageoutside">
         <div id="header"></div>
         <div id="pageinside">
@@ -111,7 +111,7 @@
             </div>
         </div>
         <div class="joinus_box">
-            <button type="button" id="joinus"  onclick="validateForm()" >회원 가입</button>
+            <button type="submit" id="joinus">회원 가입</button>
             <!--        <button type="submit" id="joinus" >회원 가입</button>-->
             <!--        onclick="validateForm()"-->
         </div>
