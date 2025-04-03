@@ -42,7 +42,6 @@
             <table class="table table-bordered" width="100%" cellpadding="10">
               <thead>
               <tr>
-                <th>선택</th>
                 <th>회원 ID</th>
                 <th>이름</th>
                 <th>전화번호</th>
@@ -52,34 +51,76 @@
               </thead>
               <tbody>
               <tr th:each="member : ${members}">
-                <td><input type="checkbox" th:value="${member.userId}" /></td>
                 <td th:text="${member.userId}">user1</td>
                 <td th:text="${member.userName}">홍길동</td>
                 <td th:text="${member.userPhone}">010-1234-1234</td>
                 <td th:text="${member.userGender}">Male</td>
                 <td>
                   <button><a th:href="@{/update(userId=${member.userId})}">수정</a></button>
-                  <button>삭제</button>
+                  <button type="button" th:attr="onclick='deleteUser(\'' + ${member.userId} + '\')'">삭제</button>
                 </td>
               </tr>
               </tbody>
             </table>
           </div>
           <div class="select_box">
-            <input class="text_box" type="text" placeholder="이름 또는 이메일을 입력" />
-            <button id="user_search">검색</button>
+            <input name="keyword" class="text_box" type="text" placeholder="이름 또는 전화번호를 입력하세요" />
+            <button type="submit" id="user_search">검색</button>
           </div>
         </div>
       </div>
     </div>
+
+
+
     <!-- 푸터 -->
     <div id="footer" th:replace="~{management/footer}"></div>
   </div>
 </div>
 
 </form>
+<script>
+  function deleteUser(userId) {
+    if (confirm(userId + " 회원을 정말 삭제하시겠습니까?")) {
+      fetch(`/delete/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+              .then(response => {
+                if (response.ok) {
+                  alert("회원 삭제가 완료되었습니다.");
+                  // 삭제한 행을 직접 제거 (화면에서 바로 삭제)
+                  document.querySelector(`button[onclick="deleteUser('${userId}')"]`).closest("tr").remove();
+                } else {
+                  alert("삭제 실패. 다시 시도해주세요.");
+                }
+              })
+              .catch(error => console.error('Error:', error));
+    }
+  }
+</script>
 
 
+<!-- 회원 검색 -->
+<!--  회원 조회-->
+<script>
+  fetch('/admin/users/search?keyword=홍길동')
+          .then(response => response.json())
+          .then(data => {
+            let table = document.getElementById("userTable");
+            table.innerHTML = "";
+            data.forEach(user => {
+              let row = `<tr>
+                   <td>${user.id}</td>
+                   <td>${user.userName}</td>
+                   <td>${user.userPhone}</td>
+                 </tr>`;
+              table.innerHTML += row;
+            });
+          });
+</script>
 <!-- Bootstrap core JavaScript-->
 <script>
   fetch("header.html")

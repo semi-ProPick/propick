@@ -90,6 +90,7 @@
         @Transactional
         public void deleteUser(String userId) {
             userRepository.deleteByUserId(userId);
+            userRepository.flush();
         }
 
 
@@ -120,6 +121,11 @@
         @Transactional
         public Optional<User> getUserById(String userId) {
             return userRepository.findByUserId(userId);
+        }
+
+        //관리자가 회원 검색
+        public List<User> searchUsers(String keyword) {
+            return userRepository.findByUserNameContainingOrUserPhoneContaining(keyword, keyword);
         }
     }
 

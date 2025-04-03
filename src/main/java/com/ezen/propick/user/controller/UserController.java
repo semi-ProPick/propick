@@ -19,6 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @Profile("user")
 @Controller
 @RequiredArgsConstructor
@@ -133,7 +136,7 @@ public class UserController {
 
     //회원 탈퇴
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable String userId) {
+    public ResponseEntity<String> deleteByUserId(@PathVariable String userId) {
         userService.deleteUser(userId);
         return ResponseEntity.ok("회원 탈퇴 완료");
     }
@@ -151,7 +154,10 @@ public class UserController {
     }
 
     //회원가입 아이디 중복 체크
-
+    @GetMapping("/search")
+    public List<User> searchUsers(@RequestParam String keyword) {
+        return userService.searchUsers(keyword);
+    }
 }
 
 

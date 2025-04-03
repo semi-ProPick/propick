@@ -32,6 +32,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     //회원 탈퇴
     @Modifying
     @Query("DELETE FROM User u WHERE u.userId = :userId")
+    @Transactional
     void deleteByUserId(String userId);
 
     //관리자 페이지 ==================================================
@@ -49,4 +50,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                                                @Param("userPhone") String userPhone);
 
 
+    List<User> findByUserNameContainingOrUserPhoneContaining(String userName, String userPhone);
 }

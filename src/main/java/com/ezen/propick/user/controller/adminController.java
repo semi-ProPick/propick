@@ -54,12 +54,13 @@ public class adminController {
     }
 
 
-    @PostMapping("/update")
-    public String updateUserInfo(@ModelAttribute User user) {
-        System.out.println("Received Data - userId: " + user.getUserId() +
-                ", userName: " + user.getUserName() +
-                ", userPhone: " + user.getUserPhone());
-        userService.changeUserInfo(user.getUserId(), user.getUserName(), user.getUserPhone());
-        return "redirect:/"; // 수정 후 회원 목록 페이지로 이동
+    @PostMapping("")
+    public String searchUsers(@RequestParam String keyword, Model model) {
+        List<User> users = userService.searchUsers(keyword);
+        model.addAttribute("members", users);
+        return "/management/user";  // 검색된 결과를 반영한 페이지 반환
     }
+
+
+
 }
