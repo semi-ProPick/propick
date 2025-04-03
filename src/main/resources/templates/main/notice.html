@@ -19,17 +19,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <button class="td-btn" data-target="answer1">
-                회원정보 변경은 어디서 하나요?
-              </button>
-              <div class="answer" id="answer1">
-                회원정보 변경은 마이페이지에서 가능합니다.
-              </div>
-            </td>
-          </tr>
-          <tr>
+
+        <tr th:each="notice, iterStat : ${list}">
+          <td>
+            <button class="td-btn" th:attr="data-target='answer' + ${iterStat.index}">
+              <a th:text="${notice.title}">제목</a>
+            </button>
+            <div class="answer" th:id="'answer' + ${iterStat.index}">
+              <a th:text="${notice.contents}"></a>
+            </div>
+          </td>
+        </tr>
+        <tr>
             <td>
               <button class="td-btn" data-target="answer2">
                 비밀번호가 생각나지 않아요?
@@ -152,5 +153,28 @@
       </div>
     </div>
   </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const buttons = document.querySelectorAll(".td-btn");
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const targetId = this.getAttribute("data-target");
+          const answer = document.getElementById(targetId);
+
+          // 현재 클릭한 요소의 내용 보이기/숨기기
+          if (answer.style.display === "block") {
+            answer.style.display = "none";
+          } else {
+            // 다른 열린 요소 닫기 (선택사항)
+            document.querySelectorAll(".answer").forEach(el => el.style.display = "none");
+
+            answer.style.display = "block";
+          }
+        });
+      });
+    });
+  </script>
+
   <script src="/js/main/header.js" defer></script>
 </html>

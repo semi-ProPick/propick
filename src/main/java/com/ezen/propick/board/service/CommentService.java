@@ -36,9 +36,9 @@ public class CommentService {
         UserPostBoard userPostBoard = userPostBoardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패 : 해당 게시글이 존재하지 않습니다. " + id));
 
-        if (userPostBoard.getUser() == null) {
-            throw new IllegalArgumentException("게시글 작성자의 정보가 없습니다. user_no를 확인하세요.");
-        }
+//        if (userPostBoard.getUser() == null) {
+//            throw new IllegalArgumentException("게시글 작성자의 정보가 없습니다. user_no를 확인하세요.");
+//        }
 
         Comment comment = new Comment();
         comment.setUser(user);

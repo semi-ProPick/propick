@@ -22,8 +22,8 @@
 #    url: jdbc:mysql://localhost:3306/testdb
 #    username: test
 #    password: test
-##  profiles:
-##    active: admin
+#  profiles:
+#    active: admin
 #  jpa:
 #    show-sql: true
 #    database: mysql
@@ -31,7 +31,7 @@
 #    properties:
 #      hibernate:
 #        format_sql: true
-
+#
 #  web:
 #    resources:
 #      static-locations: classpath:/static/, classpath:/public/

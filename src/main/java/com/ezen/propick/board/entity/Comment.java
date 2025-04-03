@@ -36,7 +36,7 @@ public class Comment {
 
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_no")
     private User user;
 
     public void update(String contents) {

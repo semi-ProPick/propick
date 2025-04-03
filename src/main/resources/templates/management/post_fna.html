@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Admin</title>
+<!--        <link-->
+<!--            href="vendor/fontawesome-free/css/all.min.css"-->
+<!--            rel="stylesheet"-->
+<!--            type="text/css" />-->
+        <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet" />
+        <link href="/management/sb-admin-2.min.css"
+        rel="stylesheet" />
+        <link rel="stylesheet" href="/management/post.css">
+    </head>
+
+    <body id="page-top">
+    <div id="wrapper">
+        <!-- 사이드바 -->
+        <div id="sidebar" th:replace="~{management/sidebar}"></div>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <!-- 해더 -->
+                <div id="header" th:replace="~{management/header}"></div>
+                <!-- 내용 -->
+      
+                    <div class="container-fluid" id="qna-list">
+                        <h1>게시물 관리 - F&A</h1>
+                        <button class="btn btn-primary" id="qaRegisterBtn">
+                            <a href="/fna/write">등록</a>
+                        </button>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellpadding="10">
+                                    <thead>
+                                        <tr>
+                                            <th>체크박스</th>
+                                            <th>게시글 번호</th>
+                                            <th>작성자</th>
+                                            <th>제목</th>
+                                            <th>권한</th>
+                                            <th>작성일</th>
+                                            <th>조회/삭제</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="fnaBoard : ${list}">
+                                        <th><input type='checkbox'/></th>
+                                        <td th:text="${fnaBoard.id}">게시글 번호</td>
+                                        <th>작성자</th>
+                                        <td>
+                                            <a th:text="${fnaBoard.title}" th:href="@{/fna/view(id=${fnaBoard.id})}">제목</a>
+                                        </td>
+                                        <th>권한</th>
+                                        <td th:text="${#temporals.format(fnaBoard.created_at, 'yy-MM-dd &nbsp;HH:mm')}">작성일</td>
+                                        <th>
+                                            <div class="button-container">
+                                                <button><a th:href="@{/fna/delete(id=${fnaBoard.id})}">삭제</a></button>&nbsp;&nbsp;&nbsp;
+                                                <button><a th:href="@{/fna/modify/{id}(id=${fnaBoard.id})}">수정</a></button>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container-fluid" id="post-detail" style="display: none;">
+                        <h1>게시물 관리 - Q&A </h1>
+                        <div class="post_container"> 
+                            <div class="post_box">
+                                <div class="post_top" id="post-title">제목: </div>
+                                <div class="post_text" id="post-author"></div>
+                            </div>
+                            <div class="post_answerbox">
+                                <div class="post_text">답변을 입력하세요...</div>
+                            </div>
+                        </div>
+                        <div class="button-group mt-3">
+                            <button class="btn btn-primary" id="registerBtn">등록</button>
+                            <button class="btn btn-secondary" id="backBtn">뒤로 가기</button>
+                        </div>
+                    </div>
+
+
+                    </div>
+
+            <div class="pagination">
+                <!--          이전버튼-->
+                <!-- 이전 버튼 -->
+                <button class="pagination-btn prev"
+                        th:disabled="${nowPage == 1}"
+                        th:onclick="'location.href=\'/fna/list?page=' + (${nowPage - 2}) + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+                    ◀
+                </button>
+
+                <!-- 페이지 번호 버튼 -->
+                <th:block th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+                    <button class="pagination-btn"
+                            th:classappend="${pageNum == nowPage} ? 'active'"
+                            th:onclick="'location.href=\'/fna/list?page=' + (${pageNum - 1}) + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+                        [[${pageNum}]]
+                    </button>
+                </th:block>
+
+                <!-- 다음 버튼 -->
+                <button class="pagination-btn next"
+                        th:disabled="${nowPage == endPage}"
+                        th:onclick="'location.href=\'/fna/list?page=' + ${nowPage} + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+                    ▶
+                </button>
+
+            </div>
+                </div>
+            </div>
+        </div>
+            
+
+
+
+
+                <!-- 푸터 -->
+                <div id="footer" th:replace="~{management/footer}"></div>
+        </div>
+        <div id="logout_modal"></div>
+
+
+
+
+        <!--sohye-->
+        <script>
+            document.querySelectorAll(".view-btn").forEach(button => {
+                button.addEventListener("click", function() {
+                    // 게시글 정보 가져오기
+                    const postId = this.getAttribute("data-id");
+                    const postTitle = this.getAttribute("data-title");
+                    const postAuthor = this.getAttribute("data-author");
+        
+                    // 상세 페이지 내용 변경
+                    document.getElementById("post-title").textContent = `제목: ${postTitle}`;
+                    document.getElementById("post-author").textContent = `작성자: ${postAuthor}`;
+        
+                    // 목록 숨기고 상세보기 표시
+                    document.getElementById("qna-list").style.display = "none";
+                    document.getElementById("post-detail").style.display = "block";
+                });
+            });
+        
+            // 뒤로 가기 버튼
+            document.getElementById("backBtn").addEventListener("click", function() {
+                document.getElementById("post-detail").style.display = "none";
+                document.getElementById("qna-list").style.display = "block";
+            });
+        </script>
+
+
+
+        <!-- Bootstrap core JavaScript-->
+        <script>
+            fetch("header.html")
+                .then(res => res.text())
+                .then(
+                    data => (document.getElementById("header").innerHTML = data)
+                );
+
+            fetch("sidebar.html")
+                .then(res => res.text())
+                .then(
+                    data =>
+                        (document.getElementById("sidebar").innerHTML = data)
+                );
+
+            fetch("dashboard.html")
+                .then(res => res.text())
+                .then(
+                    data =>
+                        (document.getElementById("dashboard").innerHTML = data)
+                );
+            fetch("footer.html")
+                .then(res => res.text())
+                .then(
+                    data => (document.getElementById("footer").innerHTML = data)
+                );
+            fetch("logoutModal.html")
+                .then(res => res.text())
+                .then(
+                    data =>
+                        (document.getElementById("logout_modal").innerHTML =
+                            data)
+                );
+        </script>
+
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="/management/sb-admin-2.js"></script>
+
+        <!-- Page level plugins -->
+        <script src="vendor/chart.js/Chart.min.js"></script>
+
+        <!-- Page level custom scripts -->
+        <script src="/management/demo/chart-area-demo.js"></script>
+        <script src="/management/demo/chart-pie-demo.js"></script>
+    </body>
+</html>

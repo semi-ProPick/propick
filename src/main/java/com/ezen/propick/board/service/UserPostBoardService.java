@@ -1,9 +1,10 @@
 package com.ezen.propick.board.service;
 
 import com.ezen.propick.board.entity.UserPostBoard;
-import com.ezen.propick.board.repository.BoardCommentRepository;
 import com.ezen.propick.board.repository.BoardImageRepository;
 import com.ezen.propick.board.repository.UserPostBoardRepository;
+import com.ezen.propick.user.entity.User;
+import com.ezen.propick.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,12 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,32 +22,11 @@ public class UserPostBoardService {
 
     @Autowired
     private final UserPostBoardRepository userPostBoardRepository;
-    private final BoardCommentRepository boardCommentRepository;
+    private final UserRepository userRepository;
     private final BoardImageRepository boardImageRepository;
 
     /* 게시글 작성 */
-//    public void write(UserPostBoard userPostBoard, MultipartFile file) throws Exception{
-//        //파일 저장 경로지정
-//        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\user_post_files";
-//
-//        //랜덤 파일 이름 생성
-//        UUID uuid = UUID.randomUUID();
-//
-//        //파일 앞에 랜덤생성 이름 붙임
-//        String filename = uuid + "_" + file.getOriginalFilename();
-//
-//        File saveFile = new File(projectPath, "name");
-//
-//        file.transferTo(saveFile);
-//
-//        userPostBoard.setFilename(filename);
-//        userPostBoard.setFilepath("/file/" + filename);
-//
-//        userPostBoardRepository.save(userPostBoard);
-//    }
-
-
-    public void write(UserPostBoard userPostBoard, MultipartFile file) throws Exception {
+    public void write(UserPostBoard userPostBoard, MultipartFile file, Integer userNo) throws Exception {
         // 파일 저장 경로 지정
         String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\user_post_files";
 
@@ -76,6 +50,12 @@ public class UserPostBoardService {
         userPostBoard.setFilepath("/user_post_files/" + cleanedFilename);
 
         // DB에 저장
+
+        userPostBoardRepository.save(userPostBoard);
+    }
+
+    /* 게시글 수정 */
+    public void modify(UserPostBoard userPostBoard) {
         userPostBoardRepository.save(userPostBoard);
     }
 
@@ -83,6 +63,11 @@ public class UserPostBoardService {
     /* 게시글 리스트 */
     public Page <UserPostBoard> userPostBoardList(Pageable pageable) {
         return userPostBoardRepository.findAll(pageable);
+    }
+
+    public Page<UserPostBoard> boardSearchList(String searchKeyword, Pageable pageable) {
+
+        return userPostBoardRepository.findByTitleContaining(searchKeyword, pageable);
     }
 
     /* 특정 게시글 불러오기 */
@@ -96,6 +81,7 @@ public class UserPostBoardService {
         userPostBoardRepository.deleteById(id);
     }
 
+    /* 조회수 */
     public UserPostBoard getCount(Integer id) {
         Optional<UserPostBoard> userPostBoard = this.userPostBoardRepository.findById(id);
         if (userPostBoard.isPresent()) {

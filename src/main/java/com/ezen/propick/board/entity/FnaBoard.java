@@ -38,7 +38,7 @@ public class FnaBoard {
 
 
     @PrePersist
-    public void setDefaultPostContents() {
+    public void setDefaultPostAnswer() {
         if (this.answer == null) {
             this.answer = "";  // 기본값 설정
         }
@@ -53,8 +53,6 @@ public class FnaBoard {
 //    @OneToMany(mappedBy = "fnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<UserPostBoardComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "fnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BoardImage> images = new ArrayList<>();
 
     public FnaBoard(String title, String answer) {
         this.title = title;

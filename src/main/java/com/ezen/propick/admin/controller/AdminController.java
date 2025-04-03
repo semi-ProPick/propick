@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AdminController {
     @GetMapping
     public String admin(){
-        return "/management/index";
+        return "/management/post_notice";
     }
 
 }

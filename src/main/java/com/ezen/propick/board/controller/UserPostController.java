@@ -35,8 +35,8 @@ public class UserPostController {
 
     //게시글 작성
     @PostMapping("main/free_write")
-    public String userPostWrite(UserPostBoard userPostBoard, Model model, MultipartFile file) throws Exception{
-        userPostBoardService.write(userPostBoard, file);
+    public String userPostWrite(UserPostBoard userPostBoard, Model model, MultipartFile file, Integer userNo) throws Exception{
+        userPostBoardService.write(userPostBoard, file, userNo);
         System.out.println(userPostBoard.getTitle());
         System.out.println(userPostBoard.getContents());
         model.addAttribute("message","작성 완료!");
@@ -47,25 +47,27 @@ public class UserPostController {
 
 
 
-//    @PostMapping("/main/free_write")
-//    public String createPost(@ModelAttribute UserPostBoard post, RedirectAttributes redirectAttributes) {
-//        userPostBoardRepository.save(post);
-//        redirectAttributes.addFlashAttribute("message", "게시글이 등록되었습니다!");
-//        return "redirect:/main/free_board";
-//    }
 
 
     //작성한 게시글 리스트 출력
     @GetMapping("main/free_board")
-    public String userPostBoardList(Model model, @PageableDefault(page=0, size=10, sort = "id",
-                                    direction = Sort.Direction.DESC) Pageable pageable,
+    public String userPostBoardList(Model model,
+                                    @PageableDefault(page=0, size=10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                    String searchKeyword,
                                     @RequestParam(value = "page", defaultValue = "0") int page) { //url 에서 ?page=1, ?page=0등의 값 받아옴
 
+        Page<UserPostBoard> list = null;
+        //searchKeyword 가 넣이면 원래 페이지 리스트 보여줌
+        if(searchKeyword == null) {
+            list = userPostBoardService.userPostBoardList(pageable);
+
+            //searchKeyword 가 널이 아니면 작성한 검색 메서드 실행 후 페이지 리스트 보여줌
+        } else {
+            list = userPostBoardService.boardSearchList(searchKeyword, pageable);
+        }
         // 현재 페이지를 기반으로 pageable 생성
         pageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
 
-
-        Page<UserPostBoard> list = userPostBoardService.userPostBoardList(pageable);
 
         //현재 페이지 가져오기  페이지는 0에서 시작하기때문에 1 더해줌
         int nowPage = list.getPageable().getPageNumber() + 1;
@@ -94,14 +96,43 @@ public class UserPostController {
         return "/main/Free_boardcm";  //상세페이지 뷰를 담당하는 html 주소
     }
 
+    //삭제
     @GetMapping("main/board_delete")
     public String boardDelete(Integer id){
         userPostBoardService.boardDelete(id);
         return "redirect:free_board";
     }
 
+    //수정 @PathVariable 사용
+    @GetMapping("main/free_modify/{id}")
+    public String boardModify(@PathVariable("id") Integer id, Model model){
 
+        model.addAttribute("userPostBoard", userPostBoardService.boardView(id));
+        return "main/free_modify";
     }
+
+    //수정
+    @PostMapping("/main/free_update/{id}")
+    public String boardUpdate(@PathVariable("id") Integer id, UserPostBoard userPostBoard) {
+
+        //기존 내용 가져옴
+        UserPostBoard boardTemp = userPostBoardService.boardView(id);
+        //위의 인수로 받은 새로운 내용 가져오기-> 덮어씌우기
+        boardTemp.setTitle(userPostBoard.getTitle());
+        boardTemp.setContents(userPostBoard.getContents());
+
+        userPostBoardService.modify(boardTemp);
+
+        return "redirect:/main/free_board";
+    }
+
+    //댓글
+
+
+
+
+
+}
 
 
 

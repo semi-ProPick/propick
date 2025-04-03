@@ -1,6 +1,8 @@
 package com.ezen.propick.board.entity;
 
+import com.ezen.propick.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,6 +48,8 @@ public class UserPostBoard {
 
     @Column(name = ("post_filepath"))
     private String filepath;
+
+
 //    @ManyToMany
 //    Set<UserPostBoard> voter;  //추천수
 
@@ -68,13 +72,19 @@ public class UserPostBoard {
     //하나의 보드가 여러개의 댓글을 가지고 있다.
     // casecade : 저장,병합,삭세,분리 등의 작업을 하면 자동으로 전파됨,
     // orphanRemoval : 연관관계에서 제거하면 자식엔티티 자동 삭제
-//    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<BoardComment> comments = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<BoardImage> images = new ArrayList<>();
+    @OneToMany(mappedBy = "userPostBoard", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OrderBy("id asc")
+    private List<Comment> comments;
+
+//    //user랑 연결
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_no", nullable = false)  // user_no 컬럼 매핑
+//    private User user;
 
 
+
+
+    @Builder
     public UserPostBoard(String title, String contents) {
         this.title=title;
         this.contents=contents;

@@ -1,7 +1,6 @@
 package com.ezen.propick.board.controller;
 
 import com.ezen.propick.board.entity.Notice;
-import com.ezen.propick.board.entity.UserPostBoard;
 import com.ezen.propick.board.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,33 +11,20 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class NoticeController {
-
-    @Autowired
+@RequestMapping("/main/notice")
+public class UserNoticeController {
     private final NoticeService noticeService;
 
-    public NoticeController(NoticeService noticeService) {
+    @Autowired
+    public UserNoticeController(NoticeService noticeService) {
         this.noticeService = noticeService;
     }
 
-    @GetMapping("/notice/write")
-    public String noticeWriteForm() {
-
-        return "/management/post_notice_write";
-    }
-
-    @PostMapping("/notice/writedo")
-    public String noticeWritePro(Notice notice) {
-        noticeService.noticewrite(notice);
-        return "redirect:/notice/list";
-
-    }
-    @GetMapping("/notice/list")
+    @GetMapping("/list")
     public String noticelist(Model model,
                              @PageableDefault(page=0, size=10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                              String searchKeyword,
@@ -68,42 +54,13 @@ public class NoticeController {
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        return "/management/post_notice";
+        return "/main/notice";
     }
 
-    @GetMapping("/notice/view")   //localhost:8081/notice/view?id=1
-    public String noticeView(Model model, Integer id){
-        model.addAttribute("notice", noticeService.noticeView(id));
-        return "/management/post_notice_view";
-    }
-
-    @GetMapping("notice/delete")
-    public String noticeDelete(Integer id){
-        noticeService.noticeDelete(id);
-        return "redirect:list";
-    }
-
-    //수정 @PathVariable 사용
-    @GetMapping("notice/modify/{id}")
-    public String noticeModify(@PathVariable("id") Integer id, Model model){
-
-        model.addAttribute("notice", noticeService.noticeView(id));
-        return "/management/post_notice_modify";
-    }
-
-    //수정
-    @PostMapping("/notice/update/{id}")
-    public String noticeUpdate(@PathVariable("id") Integer id, Notice notice) {
-
-        //기존 내용 가져옴
-        Notice boardTemp = noticeService.noticeView(id);
-        //위의 인수로 받은 새로운 내용 가져오기-> 덮어씌우기
-        boardTemp.setTitle(notice.getTitle());
-        boardTemp.setContents(notice.getContents());
-
-        noticeService.noticewrite(boardTemp);
-
-        return "redirect:/notice/list";
-    }
-
+//    @GetMapping("/notice/view")   //localhost:8081/notice/view?id=1
+//    public String noticeView(Model model, Integer id){
+//        model.addAttribute("notice", noticeService.noticeView(id));
+//        return "/main/notice";
+//    }
 }
+
