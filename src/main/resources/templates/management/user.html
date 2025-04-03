@@ -23,6 +23,42 @@
   <link href="/css/management/sb-admin-2.css" rel="stylesheet" />
   <link href="/css/management/sb-admin-2.min.css" rel="stylesheet" />
   <link href="/css/management/common.css" rel="stylesheet" />
+  <style>
+    .pagination {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .pagination ul {
+      list-style: none;
+      padding: 0;
+      display: inline-block;
+    }
+
+    .pagination li {
+      display: inline;
+      margin: 0 5px;
+    }
+
+    .pagination a {
+      text-decoration: none;
+      padding: 5px 10px;
+      border: 1px solid #007bff;
+      color: #007bff;
+      border-radius: 5px;
+    }
+
+    .pagination a:hover {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .pagination .active {
+      background-color: #007bff;
+      color: white;
+      pointer-events: none;
+    }
+  </style>
 </head>
 
 <body id="page-top">
@@ -62,6 +98,23 @@
               </tr>
               </tbody>
             </table>
+
+            <div class="pagination">
+              <ul>
+                <li th:if="${currentPage > 0}">
+                  <a th:href="@{/(page=${currentPage - 1})}">이전</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                  <a th:href="@{/(page=${i})}" th:text="${i + 1}" th:class="${i == currentPage} ? 'active'"></a>
+                </li>
+                <li th:if="${currentPage < totalPages - 1}">
+                  <a th:href="@{/(page=${currentPage + 1})}">다음</a>
+                </li>
+              </ul>
+            </div>
+
+
+
           </div>
           <div class="select_box">
             <input name="keyword" class="text_box" type="text" placeholder="이름 또는 전화번호를 입력하세요" />

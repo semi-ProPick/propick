@@ -154,10 +154,7 @@ public class UserController {
     }
 
     //회원가입 아이디 중복 체크
-    @GetMapping("/search")
-    public List<User> searchUsers(@RequestParam String keyword) {
-        return userService.searchUsers(keyword);
-    }
+
 }
 
 

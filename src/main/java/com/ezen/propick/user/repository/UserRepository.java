@@ -1,16 +1,16 @@
 package com.ezen.propick.user.repository;
 
 import com.ezen.propick.user.entity.User;
-import org.hibernate.query.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -39,7 +39,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     //모든 회원 조회
     @Transactional
-    List<User> findAll();
+    Page<User> findAll(Pageable pageable);
 
 
     //유저 정보 수정
@@ -50,5 +50,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                                                @Param("userPhone") String userPhone);
 
 
-    List<User> findByUserNameContainingOrUserPhoneContaining(String userName, String userPhone);
+    Page<User> findByUserNameContainingOrUserPhoneContaining(String userName, String userPhone, Pageable pageable);
 }
