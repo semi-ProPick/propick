@@ -30,4 +30,11 @@ public class ProductImage {
     public String getImageUrl() {
         return imgUrl;
     }
+
+    // product와 imgUrl을 받는 생성자 추가
+//    public ProductImage(Product product, String imgUrl, String productImgName) {
+//        this.product = product;
+//        this.imgUrl = imgUrl;
+//        this.productImgName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);  // 이미지 파일 이름을 추출
+//    }
 }

@@ -1,5 +1,6 @@
 package com.ezen.propick.product.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductListDTO {
     // 상품 목록 페이지용 dto
 

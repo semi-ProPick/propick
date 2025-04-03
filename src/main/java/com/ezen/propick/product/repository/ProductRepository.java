@@ -32,4 +32,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.productInfo.discountRate > :discountRate")
     List<Product> findByDiscountRateGreaterThan(double discountRate);
 
+    // 상품 삭제
+    void deleteById(Integer productId);
 }

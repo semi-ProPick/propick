@@ -13,14 +13,28 @@ spring:
         format_sql: true
   web:
     resources:
-      static-locations: classpath:/static/, classpath:/public/, classpath:/resources/, 
-                        classpath:/META-INF/resources/, classpath:/static/management/
+      static-locations: >
+        classpath:/static/,
+        classpath:/public/,
+        classpath:/resources/,
+        classpath:/META-INF/resources/,
+        classpath:/static/management/,
+        file:uploads/,
+        file:/absolute/path/to/uploads/
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
 
-
-# 기본 프로파일을 설정
 #  profiles:
-#    active: user
+#    active: user   # 기본 프로파일 설정
 
-# 또는 관리자로 실행할 때는 'admin'으로 변경
   profiles:
     active: admin
+
+server:
+  tomcat:
+    uri-encoding: UTF-8
+
+# 관리자로 실행 시 주석 해제 후 사용

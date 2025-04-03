@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class ProductIngredientDetail {
 
@@ -31,5 +32,6 @@ public class ProductIngredientDetail {
 
     @Column(name = "ingredient_unit", nullable = false, length = 10)
     private String ingredientUnit;
+
 }
 

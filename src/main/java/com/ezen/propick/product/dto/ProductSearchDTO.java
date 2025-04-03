@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductSearchDTO {
-    // 상품 검색결과 dto
+    // 상품 검색결과용 dto
 
     private String productName; // 상품명
     private BigDecimal productPrice;  // 상품가격

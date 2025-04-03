@@ -85,13 +85,14 @@ public class MainProductService {
         List<ProductIngredientDetail> ingredientDetails = productIngredientDetailRepository.findByProduct(product);
 
 
-        // 4. 성분 정보 DTO 변환
+        // 4. 성분 정보 DTO 변환 (ingredientId 추가)
         List<IngredientWithInfoDTO> ingredientDetailDTOs = ingredientDetails.stream()
-                .map(detail -> new IngredientWithInfoDTO(
-                        detail.getIngredient() != null ? detail.getIngredient().getIngredientName() : "Unknown",
-                        detail.getIngredientAmount() != null ? detail.getIngredientAmount() : BigDecimal.ZERO,
-                        detail.getIngredientUnit() != null ? detail.getIngredientUnit() : "N/A"
-                ))
+                .map(detail -> IngredientWithInfoDTO.builder()
+                        .ingredientId(detail.getIngredient() != null ? detail.getIngredient().getIngredientId() : null)
+                        .ingredientName(detail.getIngredient() != null ? detail.getIngredient().getIngredientName() : "Unknown")
+                        .ingredientAmount(detail.getIngredientAmount() != null ? detail.getIngredientAmount() : BigDecimal.ZERO)
+                        .ingredientUnit(detail.getIngredientUnit() != null ? detail.getIngredientUnit() : "N/A")
+                        .build())
                 .collect(Collectors.toList());
 
         // 5. 100g 기준 단백질 함량 계산
@@ -119,7 +120,7 @@ public class MainProductService {
         return ProductDTO.builder()
                 .productId(product.getProductId())
                 .productName(product.getProductName())
-                .brandName(product.getBrand() != null ? product.getBrand().getBrandName() : "Unknown")
+                .brandName(product.getBrand() != null ? product.getBrand().getBrandName() : "브랜드 이름 없음")
                 .productType(product.getProductType())
                 .productPrice(product.getProductPrice())
                 .discountRate(discountRate)  // 할인율 추가
@@ -163,8 +164,12 @@ public class MainProductService {
                 String ingredientUnit = ingredientDetail.getIngredientUnit();
 
                 // IngredientWithInfoDTO 객체 생성
-                IngredientWithInfoDTO ingredientDTO = new IngredientWithInfoDTO(
-                        ingredientName, ingredientAmount, ingredientUnit);
+                IngredientWithInfoDTO ingredientDTO = IngredientWithInfoDTO.builder()
+                        .ingredientId(ingredientDetail.getIngredient().getIngredientId())
+                        .ingredientName(ingredientName)
+                        .ingredientAmount(ingredientAmount)
+                        .ingredientUnit(ingredientUnit)
+                        .build();
 
                 // 성분량 계산 (100g 기준)
                 BigDecimal ingredientPer100g = ingredientDTO.calculatePer100g(servingSize);

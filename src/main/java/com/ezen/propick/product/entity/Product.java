@@ -42,10 +42,13 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> productImages = new ArrayList<>();
 
+//
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "product_id", nullable = false) // 외래키를 ProductInfo 테이블에 설정
+//    private ProductInfo productInfo;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false) // 외래키를 ProductInfo 테이블에 설정
-    private ProductInfo productInfo;
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProductInfo productInfo; // 비주인
 
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -27,4 +27,8 @@ public class Ingredient {
     private List<ProductIngredientDetail> productIngredientDetails = new ArrayList<>();
 
 
+    @Override
+    public String toString() {
+        return "Ingredient{id=" + ingredientId + ", name='" + ingredientName + "'}";
+    }
 }

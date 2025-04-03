@@ -1,5 +1,6 @@
 package com.ezen.propick.product.dto;
 
+
 public class ProductInfoDTO {
 
     private Integer proteinInfoId;  // 성분아이디
