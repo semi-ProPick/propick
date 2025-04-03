@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,10 +43,8 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> productImages = new ArrayList<>();
 
-//
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "product_id", nullable = false) // 외래키를 ProductInfo 테이블에 설정
-//    private ProductInfo productInfo;
+    @Column(name = "product_created_at" ,nullable = false, updatable = false)
+    private LocalDateTime productCreatedAt;
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProductInfo productInfo; // 비주인

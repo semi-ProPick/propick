@@ -10,6 +10,7 @@ import com.ezen.propick.product.entity.Product;
 import com.ezen.propick.product.entity.ProductImage;
 import com.ezen.propick.product.repository.CategoryRepository;
 import com.ezen.propick.product.repository.IngredientRepository;
+import com.ezen.propick.product.repository.ProductRepository;
 import com.ezen.propick.product.service.AdminProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,22 +39,54 @@ public class AdminProductController {
     private final AdminProductService adminProductService;
     private final IngredientRepository ingredientRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
-    // 상품 목록 조회
+    // 상품 목록 조회 & 상품 검색
     @GetMapping("/products")
-    public String listProducts(@RequestParam(defaultValue = "0") int page, Model model) {
+    public String listOrSearchProducts(@RequestParam(value = "keyword", required = false) String keyword,
+                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "desc") String sortOrder, // 기본값: 최신순
+                                       Model model) {
+        // 정렬 조건 설정 (등록일 기준 정렬)
         // 페이지네이션을 위한 Pageable 객체 생성
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("productId").ascending());
+        Sort sort = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by("productCreatedAt").ascending()
+                : Sort.by("productCreatedAt").descending();
+        Pageable pageable = PageRequest.of(page, 10, sort);
 
-        // 페이지네이션된 상품 목록을 DTO로 변환하여 반환
-        Page<ProductListDTO> productPage = adminProductService.getAllProducts(pageable);
+        Page<ProductListDTO> productPage;
+
+        // 검색어 여부에 따라 검색 또는 전체 조회 실행
+        if (keyword != null && !keyword.isEmpty()) {
+            productPage = adminProductService.searchProducts(keyword, pageable); // 🔍 검색 실행
+        } else {
+            productPage = adminProductService.getAllProducts(pageable); // 📋 전체 조회 실행
+        }
 
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("keyword", keyword); // 검색어 유지
+        model.addAttribute("sortOrder", sortOrder);
 
         return "management/product";  // 상품 목록 페이지로 이동
     }
+
+
+//    @GetMapping("/products")
+//    public String listProducts(@RequestParam(defaultValue = "0") int page, Model model) {
+//        // 페이지네이션을 위한 Pageable 객체 생성
+//        Pageable pageable = PageRequest.of(page, 10, Sort.by("productId").ascending());
+//
+//        // 페이지네이션된 상품 목록을 DTO로 변환하여 반환
+//        Page<ProductListDTO> productPage = adminProductService.getAllProducts(pageable);
+//
+//        model.addAttribute("products", productPage.getContent());
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPages", productPage.getTotalPages());
+//
+//        return "management/product";  // 상품 목록 페이지로 이동
+//    }
 
     // 상품 등록 폼
     @GetMapping("/products/regist")
@@ -125,4 +159,5 @@ public class AdminProductController {
             return "에러 발생";  // 삭제 중 에러 발생 시 에러 페이지로 리다이렉트
         }
     }
+
 }

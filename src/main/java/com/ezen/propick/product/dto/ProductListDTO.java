@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,10 +25,12 @@ public class ProductListDTO {
     private Integer discountRate;  // 할인율
 
     private BigDecimal discountedPrice; // 할인된 가격
+    private LocalDateTime productCreatedAt; // 등록 시간
 
     // 생성자
     public ProductListDTO(Integer productId, String productName, String brandName,
-                          String productType, BigDecimal productPrice, Integer discountRate, List<String> productImages) {
+                          String productType, BigDecimal productPrice, Integer discountRate,
+                          List<String> productImages, LocalDateTime productCreatedAt) {
         this.productId = productId;
         this.productName = productName;
         this.brandName = brandName;
@@ -36,6 +39,7 @@ public class ProductListDTO {
         this.discountRate = discountRate;
         this.productImages = productImages;
         this.discountedPrice = calculateDiscountedPrice(productPrice, discountRate);
+        this.productCreatedAt = productCreatedAt;
     }
 
     // 할인된 가격 계산

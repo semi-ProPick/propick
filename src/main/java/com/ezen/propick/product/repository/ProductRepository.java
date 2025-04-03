@@ -1,11 +1,13 @@
 package com.ezen.propick.product.repository;
 
 import com.ezen.propick.product.entity.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Repository
@@ -32,6 +34,14 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.productInfo.discountRate > :discountRate")
     List<Product> findByDiscountRateGreaterThan(double discountRate);
 
+    // 관리자 검색 기능
+    @Query("SELECT p FROM Product p WHERE p.productName LIKE %:keyword% OR p.brand.brandName LIKE %:keyword% ORDER BY p.productCreatedAt DESC")
+    Page<Product> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
     // 상품 삭제
     void deleteById(Integer productId);
+
+
+
+
 }

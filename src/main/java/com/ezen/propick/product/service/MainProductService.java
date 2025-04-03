@@ -44,7 +44,8 @@ public class MainProductService {
                     discountRate,
                     productImageRepository.findByProduct(product).stream()
                             .map(ProductImage::getImageUrl)
-                            .collect(Collectors.toList())
+                            .collect(Collectors.toList()),
+                    product.getProductCreatedAt()
             );
         }).collect(Collectors.toList());
 
@@ -65,7 +66,8 @@ public class MainProductService {
                     discountRate,
                     productImageRepository.findByProduct(product).stream()
                             .map(ProductImage::getImageUrl)
-                            .collect(Collectors.toList())
+                            .collect(Collectors.toList()),
+                    product.getProductCreatedAt()
             );
         }).collect(Collectors.toList());
     }

@@ -57,7 +57,7 @@ public class ProductUpdateDTO {
     private String ingredientUnit;
     private String ingredientName;
     private BigDecimal ingredientAmount;
-
+    private Integer productIngredientId;  // 각 상품의 연결된 성분들의 아이디
 
 
     @Getter
@@ -71,6 +71,7 @@ public class ProductUpdateDTO {
         private String ingredientName;
         private String ingredientUnit;
         private BigDecimal ingredientAmount;
+        private Integer productIngredientId;
     }
 
 //    public Integer ingredientDetailId() {

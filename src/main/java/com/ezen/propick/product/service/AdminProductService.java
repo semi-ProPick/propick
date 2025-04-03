@@ -7,6 +7,7 @@ import com.ezen.propick.product.utils.ImageUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +46,7 @@ public class AdminProductService {
         return products.map(product -> {
             Integer discountRate = (product.getProductInfo() != null) ? product.getProductInfo().getDiscountRate() : 0;
 
+
             return new ProductListDTO(
                     product.getProductId(),
                     product.getProductName(),
@@ -54,7 +56,30 @@ public class AdminProductService {
                     discountRate,
                     productImageRepository.findByProduct(product).stream()
                             .map(ProductImage::getImageUrl)
-                            .collect(Collectors.toList())
+                            .collect(Collectors.toList()),
+                    product.getProductCreatedAt()
+            );
+        });
+    }
+
+    // 검색
+    public Page<ProductListDTO> searchProducts(String keyword, Pageable pageable) {
+        Page<Product> productPage = productRepository.searchByKeyword(keyword, pageable);
+
+        return productPage.map(product -> {
+            Integer discountRate = (product.getProductInfo() != null) ? product.getProductInfo().getDiscountRate() : 0;
+
+            return new ProductListDTO(
+                    product.getProductId(),
+                    product.getProductName(),
+                    product.getBrand().getBrandName(),
+                    product.getProductType(),
+                    product.getProductPrice(),
+                    discountRate,
+                    productImageRepository.findByProduct(product).stream()
+                            .map(ProductImage::getImageUrl)
+                            .collect(Collectors.toList()),
+                    product.getProductCreatedAt()
             );
         });
     }
@@ -233,14 +258,15 @@ public class AdminProductService {
         productInfoRepository.save(productInfo);
 
         // 성분 업데이트 (삭제하지 않고 유지 가능)
-        updateProductIngredients(product, productDTO.getIngredientDTOs(), deleteIngredientIds);
+        updateProductIngredients(product, productDTO.getIngredientDTOs(),deleteIngredientIds);
 
         // 이미지 업데이트 (삭제하지 않고 유지 가능)
         updateProductImages(product, imageFiles, deleteImgIds);
     }
 
+
     private void updateProductIngredients(Product product, List<ProductUpdateDTO.IngredientWithInfoDTO> ingredientDTOs, List<Integer> deleteIngredientIds) {
-        // ✅ 삭제할 성분 처리
+        // 삭제할 성분 처리
         if (deleteIngredientIds != null && !deleteIngredientIds.isEmpty()) {
             List<ProductIngredientDetail> deleteList = productIngredientDetailRepository.findAllById(deleteIngredientIds);
 
@@ -252,13 +278,13 @@ public class AdminProductService {
             }
         }
 
-        // ✅ 기존 성분 조회 (최종 성분 개수 확인)
+        // 기존 성분 조회 (최종 성분 개수 확인)
         List<ProductIngredientDetail> existingIngredients = productIngredientDetailRepository.findByProduct(product);
         Map<Integer, ProductIngredientDetail> existingMap = existingIngredients.stream()
                 .collect(Collectors.toMap(ProductIngredientDetail::getProductIngredientId, detail -> detail));
 
 
-        // ✅ 새로 추가할 성분 처리
+        // 새로 추가할 성분 처리
         List<ProductIngredientDetail> updatedIngredients = new ArrayList<>();
         if (ingredientDTOs != null && !ingredientDTOs.isEmpty()) {
             for (ProductUpdateDTO.IngredientWithInfoDTO dto : ingredientDTOs) {
@@ -279,7 +305,7 @@ public class AdminProductService {
             }
             productIngredientDetailRepository.saveAll(updatedIngredients);
         }
-        // 🚨 최종 성분 개수 확인
+        // 최종 성분 개수 확인
         System.out.println("📌 최종 성분 개수: " + productIngredientDetailRepository.findByProduct(product).size());
 
     }
@@ -304,7 +330,6 @@ public class AdminProductService {
                                 imageFilePath.getParentFile().mkdirs();
                             }
                             imageFile.transferTo(imageFilePath);
-//                            return new ProductImage(product, imagePath, originalFileName);
                             return ProductImage.builder()
                                     .product(product)
                                     .imgUrl(imagePath)
@@ -330,3 +355,4 @@ public class AdminProductService {
         }
     }
 }
+

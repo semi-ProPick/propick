@@ -18,7 +18,7 @@ public class IngredientWithInfoDTO {
     private BigDecimal ingredientAmount; // 성분량
     private String ingredientUnit;  // 성분단위
 
-
+    private Integer productIngredientId;  // 각 상품의 연결된 성분들의 아이디
 
     // 성분량 + 단위
     public String getIngredientInfo() {
