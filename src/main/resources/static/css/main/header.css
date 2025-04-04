@@ -89,23 +89,6 @@ html, body {
 }
 
 .menu {
-  /* position: absolute; */
-  /* top: 0; */
-  /* left: -25rem;
-  width: 15rem;
-  height: 100vh;
-  background-color: #fff;
-  transition: transform 0.3s ease;
-  z-index: 30; */
-/* 
-  position: fixed;
-    top: 0;
-    left: -100%;  
-    width: 400px;  
-    height: 100%;
-    background-color: #fff;  
-    transition: left 0.3s ease;  
-    z-index: 9;  */
     display: none;
     position: fixed;
     z-index: 999;
@@ -116,6 +99,7 @@ html, body {
     margin: 0 auto;
     height: 100%;
     background-color: #fff;
+    overflow-y: auto;
 }
 
 .menu.open {
