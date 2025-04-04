@@ -27,17 +27,6 @@ public class adminController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-//    @GetMapping
-//    public String getUsers(@RequestParam(defaultValue = "0") int page,
-//                           @RequestParam(defaultValue = "10") int size,
-//                           Model model) {
-//        Page<User> members = userService.findAllUsers(page, size);
-//        model.addAttribute("members", members.getContent());  // 실제 데이터 리스트
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", members.getTotalPages());
-//        return "management/user";
-//    }
-
     @DeleteMapping("/delete/{userId}")
     @ResponseBody
     public ResponseEntity<String> deleteUser(@PathVariable String userId) {
