@@ -34,15 +34,14 @@
 
                     <div class="container-fluid" id = "notice-list">
                         <h1>게시물 관리 - 공지사항</h1>
-                        <button class="btn btn-primary" id="qaRegisterBtn">
-                            <a href="/notice/write">등록</a>
-                        </button>
+                        <form action="/fna/write" method="get">
+                            <button type="submit" class="btn btn-primary" id="qaRegisterBtn">등록</button>
+                        </form>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellpadding="10" >
                                     <thead>
                                         <tr>
-                                            <th>체크박스</th>
                                             <th>게시글 번호</th>
                                             <th>작성자</th>
                                             <th>제목</th>
@@ -54,7 +53,6 @@
 
                                     <tbody>
                                     <tr th:each="notice : ${list}">
-                                        <th><input type='checkbox'/></th>
                                         <td th:text="${notice.id}">게시글 번호</td>
                                         <th>작성자</th>
                                         <td>
@@ -77,7 +75,6 @@
                     </div>
 
         <div class="pagination">
-            <!--          이전버튼-->
             <!-- 이전 버튼 -->
             <button class="pagination-btn prev"
                     th:disabled="${nowPage == 1}"

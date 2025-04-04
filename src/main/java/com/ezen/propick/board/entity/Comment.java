@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "user_post_comments")
 @AllArgsConstructor
-@Data
 @Builder
 public class Comment {
 
@@ -25,23 +24,22 @@ public class Comment {
     @Column(name = "post_comment_contents", columnDefinition = "Text", nullable = false)
     private String contents;
 
-    @Column(name = "post_comment_created_at", nullable = false)
-    @CreatedDate
-    private LocalDateTime created_at = LocalDateTime.now();
+    @Column(name = "post_comment_created_at", nullable = false, updatable = false)
+    private LocalDateTime created_at;
+
+    @PrePersist
+    protected void onCreate() {
+        this.created_at = LocalDateTime.now();
+    }
 
     @ManyToOne
     @JoinColumn(name = "post_id",nullable = false)
     private UserPostBoard userPostBoard;
 
-
-
     @ManyToOne
     @JoinColumn(name = "user_no")
     private User user;
 
-    public void update(String contents) {
-        this.contents = contents;
-    }
 
 }
 

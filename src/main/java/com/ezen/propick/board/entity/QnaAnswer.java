@@ -25,8 +25,9 @@ public class QnaAnswer {
     private LocalDateTime created_at = LocalDateTime.now();
 
     @Column(name = "q_n_a_comments_contents", nullable = false)
-    private String comments_contents;
+    private String answer;
 
+    @ManyToOne
     @JoinColumn(name = "q_n_a_id")
-    private Integer qna_id;
+    private QnaBoard qnaBoard;
 }

@@ -20,7 +20,6 @@
     <div class="upload-section">
         <div class="upload-box1">
             <img th:src="@{/user_post_files/{filename}(filename=${userPostBoard.filename})}" alt="Uploaded Image"/>
-
         </div>
     </div>
     <div class="button-container">
@@ -32,8 +31,8 @@
     <div class="comment-section">
         <h3>댓글</h3>
         <div class="comment-input-box">
-            <textarea class="comment-box" placeholder="댓글을 입력하세요..."></textarea>
-            <button class="comment-submit-button" onclick="submitComment()">등록</button>
+            <textarea id="comment-box" class="comment-box" placeholder="댓글을 입력하세요..."></textarea>
+            <button class="comment-submit-button" id="comment-submit-button" type="submit" onclick="submitComment()">등록</button>
         </div>
     </div>
 
@@ -52,6 +51,58 @@
     </div>
 
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("comment-submit-button").addEventListener("click", function() {
+            console.log("댓글 등록 버튼 클릭됨!"); // 콘솔 확인
+
+            submitComment(); // 댓글 등록 함수 호출
+        });
+    });
+
+    function submitComment() {
+        console.log("submitComment 함수 실행됨!"); // 콘솔 확인
+
+        let commentContents = document.getElementById("comment-box").value;
+        let postId = 1;  // 실제 게시글 ID로 변경해야 함 (예: URL에서 가져오기)
+
+        if (!commentContents.trim()) {
+            alert("댓글을 입력하세요!");
+            return;
+        }
+
+        let requestData = {
+            contents: commentContents
+        };
+
+
+        fetch(`/main/Free_boardcm/${postId}/comments`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(requestData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("서버 오류 발생!");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("댓글 등록 성공:", data);
+                alert("댓글이 등록되었습니다!");
+                location.reload();  // 댓글 목록 새로고침
+            })
+            .catch(error => {
+                console.error("댓글 등록 실패:", error);
+                alert("댓글 등록에 실패했습니다.");
+            });
+    }
+</script>
+
 
 <script src="/js/main/free_boardcm.js"></script>
 <script src="/js/main/header.js" defer></script>

@@ -38,71 +38,78 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellpadding="10">
                                     <thead>
                                         <tr>
-                                            <th>체크박스</th>
                                             <th>게시글 번호</th>
                                             <th>작성자</th>
                                             <th>제목</th>
-                                            <th>권한</th>
                                             <th>작성일</th>
+                                            <th>답변여부</th>
                                             <th>조회/삭제</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <th><input type='checkbox'/></th>  
-                                            <td>1</td>
-                                            <td>홍길동</td>
-                                            <td>홍길동전</td>
-                                            <td>관리자</td>
-                                            <td>2025-02-28</td>
-                                            <th>
-                                                <button class="view-btn" data-id="1" data-title="홍길동전" data-author="홍길동">조회</button>
-                                                &nbsp;&nbsp;&nbsp;<input type="button" value="삭제">
-                                            </th>
-                                        </tr>
+                                    <tr th:each="qnaBoard : ${list}">
+                                        <td th:text="${qnaBoard.id}">게시글 번호</td>
+                                        <th>작성자</th>
+                                        <td>
+                                            <a th:text="${qnaBoard.title}" th:href="@{/qna/view(id=${qnaBoard.id})}">제목</a>
+                                        </td>
+                                        <td th:text="${#temporals.format(qnaBoard.created_at, 'yy-MM-dd &nbsp;HH:mm')}">작성일</td>
+                                        <td th:text="${qnaBoard.isAnswered() ? '완료' : '미완료'}"
+                                            th:classappend="${!qnaBoard.isAnswered()} ? 'text-danger-light' : ''">
+                                        </td>
+
+                                        <th>
+                                            <div class="button-container">
+                                                <button><a th:href="@{/qna/delete(id=${qnaBoard.id})}">삭제</a></button>&nbsp;&nbsp;&nbsp;
+                                                <button><a th:href="@{/qna/answer/{id}(id=${qnaBoard.id})}">답변</a></button>
+                                            </div>
+                                        </th>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
-                    <div class="container-fluid" id="post-detail" style="display: none;">
-                        <h1>게시물 관리 - Q&A </h1>
-                        <div class="post_container"> 
-                            <div class="post_box">
-                                <div class="post_top" id="post-title">제목: </div>
-                                <div class="post_text" id="post-author"></div>
-                            </div>
-                            <div class="post_answerbox">
-                                <div class="post_text">답변을 입력하세요...</div>
-                            </div>
-                        </div>
-                        <div class="button-group mt-3">
-                            <button class="btn btn-primary" id="registerBtn">등록</button>
-                            <button class="btn btn-secondary" id="backBtn">뒤로 가기</button>
-                        </div>
-                    </div>
 
 
 
 
-                    </div>
+    <div class="pagination">
+        <!-- 이전 버튼 -->
+        <button class="pagination-btn prev"
+                th:disabled="${nowPage == 1}"
+                th:onclick="'location.href=\'/qna/list?page=' + (${nowPage - 2}) + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+            ◀
+        </button>
 
+        <!-- 페이지 번호 버튼 -->
+        <th:block th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+            <button class="pagination-btn"
+                    th:classappend="${pageNum == nowPage} ? 'active'"
+                    th:onclick="'location.href=\'/qna/list?page=' + (${pageNum - 1}) + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+                [[${pageNum}]]
+            </button>
+        </th:block>
 
-                </div>
+        <!-- 다음 버튼 -->
+        <button class="pagination-btn next"
+                th:disabled="${nowPage == endPage}"
+                th:onclick="'location.href=\'/qna/list?page=' + ${nowPage} + (${searchKeyword} != null ? '&searchKeyword=' + ${searchKeyword} : '') + '\''">
+            ▶
+        </button>
+
+    </div>
             </div>
-        </div>
-            
 
 
-
+            </div>
+    </div>
 
                 <!-- 푸터 -->
                 <div id="footer" th:replace="~{management/footer}"></div>
-        </div>
-        <div id="logout_modal"></div>
 
-
+                <div id="logout_modal"></div>
 
 
         <!--sohye-->

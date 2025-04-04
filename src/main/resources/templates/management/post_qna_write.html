@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Admin</title>
+<!--        <link-->
+<!--            href="vendor/fontawesome-free/css/all.min.css"-->
+<!--            rel="stylesheet"-->
+<!--            type="text/css" />-->
+        <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet" />
+        <link href="/management/sb-admin-2.min.css"
+        rel="stylesheet" />
+        <link rel="stylesheet" href="/management/post.css">
+    </head>
+
+    <body id="page-top">
+        <div id="wrapper">
+            <!-- 사이드바 -->
+            <div id="sidebar" th:replace="~{management/sidebar}"></div>
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <!-- 해더 -->
+                    <div id="header" th:replace="~{management/header}"></div>
+                    <!-- 내용 -->
+                        <div class="container-fluid" id="post-detail">
+                            <h1 class="text-left mb-4">게시물 관리 - 문의사항</h1>
+                            <div class="post_container p-4 shadow-lg rounded bg-white">
+                                <div class="post_box">
+                                    <label for="post-title" class="form-label fw-bold">문의제목</label>
+                                    <h1
+                                            name="title"
+                                            type="text"
+                                            class="form-control rounded-3 p-2"
+                                            id="post-title"
+                                            th:text="${qnaBoard.title}"
+                                    ></h1>
+
+                                    <label for="post-author" class="form-label fw-bold mt-3">문의내용</label>
+                                    <textarea
+                                            name="answer"
+                                            class="form-control rounded-3 p-3"
+                                            id="post-author"
+                                            placeholder="답변을 입력하세요"
+                                            rows="5"
+                                            th:text="${qnaBoard.contents}"
+                                    ></textarea>
+                                </div>
+                            </div>
+                            <div class="post_container p-4 shadow-lg rounded bg-white mt-4">
+                                <h3 class="mb-3">답변 작성</h3>
+                                <form th:action="@{'/qna/answer/' + ${qnaBoard.id}}" method="post">
+                                    <div class="mb-3">
+                                        <label for="newAnswerContent" class="form-label fw-bold">새로운 답변</label>
+                                        <textarea class="form-control" id="newAnswerContent" name="answer" rows="5" placeholder="답변을 입력하세요" required></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-center gap-3 mt-4">
+                                        <button type="submit" class="btn btn-primary">답변 등록</button> &nbsp;&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-secondary px-4 py-2 rounded-3 shadow-sm" id="backBtn">뒤로 가기</button>
+                                    </div>
+                                </form>
+
+                                <h3 class="mt-5">기존 답변</h3>
+                                <div th:each="answer : ${qnaAnswer}" class="mb-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <textarea class="form-control" rows="3" readonly>[[${answer.answer}]]</textarea>
+                                        <form th:action="@{'/qna/answer/delete/' + ${answer.id}}" method="post">
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                    style="height: 38px; white-space: nowrap; padding: 0 10px;"
+                                            >삭제</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 푸터 -->
+        <div id="footer" th:replace="~{management/footer}"></div>
+
+        <div id="logout_modal"></div>
+
+
+
+        
+        <!--sohye-->
+        <script>
+            document.querySelectorAll(".view-btn").forEach(button => {
+                button.addEventListener("click", function() {
+                    // 게시글 정보 가져오기
+                    const postId = this.getAttribute("data-id");
+                    const postTitle = this.getAttribute("data-title");
+                    const postAuthor = this.getAttribute("data-author");
+        
+                    // 상세 페이지 내용 변경
+                    document.getElementById("post-title").textContent = `제목: ${postTitle}`;
+                    document.getElementById("post-author").textContent = `권한: ${postAuthor}`;
+        
+                    // 목록 숨기고 상세보기 표시
+                    document.getElementById("notice-list").style.display = "none";
+                    document.getElementById("post-detail").style.display = "block";
+                });
+            });
+
+                // 뒤로 가기 버튼
+                document.getElementById("backBtn").addEventListener("click", function() {
+                document.getElementById("post-detail").style.display = "none";
+                document.getElementById("notice-list").style.display = "block";
+            });
+        </script>
+
+        <!-- Bootstrap core JavaScript-->
+        <script>
+            fetch("header.html")
+                .then(res => res.text())
+                .then(
+                    data => (document.getElementById("header").innerHTML = data)
+                );
+
+            fetch("sidebar.html")
+                .then(res => res.text())
+                .then(
+                    data =>
+                        (document.getElementById("sidebar").innerHTML = data)
+                );
+
+            fetch("dashboard.html")
+                .then(res => res.text())
+                .then(
+                    data =>
+                        (document.getElementById("dashboard").innerHTML = data)
+                );
+            fetch("footer.html")
+                .then(res => res.text())
+                .then(
+                    data => (document.getElementById("footer").innerHTML = data)
+                );
+            fetch("logoutModal.html")
+                .then(res => res.text())
+                .then(
+                    data =>
+                        (document.getElementById("logout_modal").innerHTML =
+                            data)
+                );
+        </script>
+
+        <script> //뒤로가기 버튼
+            document.getElementById("pinStatusCheckbox").addEventListener("change", function() {
+                document.getElementById("pinStatusHidden").value = this.checked ? "true" : "false";
+            });
+
+        document.getElementById("backBtn").addEventListener("click", function(event) {
+            event.preventDefault();
+            window.history.back();
+        });
+        </script>
+
+
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="/management/sb-admin-2.js"></script>
+
+        <!-- Page level plugins -->
+        <script src="vendor/chart.js/Chart.min.js"></script>
+
+        <!-- Page level custom scripts -->
+        <script src="/management/demo/chart-area-demo.js"></script>
+        <script src="/management/demo/chart-pie-demo.js"></script>
+    </body>
+</html>

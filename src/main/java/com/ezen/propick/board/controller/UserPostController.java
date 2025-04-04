@@ -1,7 +1,12 @@
 package com.ezen.propick.board.controller;
 
+import com.ezen.propick.board.dto.CommentRequestDTO;
+import com.ezen.propick.board.dto.CommentResponseDTO;
+import com.ezen.propick.board.dto.UserPostResponseDTO;
+import com.ezen.propick.board.entity.Comment;
 import com.ezen.propick.board.entity.UserPostBoard;
 import com.ezen.propick.board.repository.UserPostBoardRepository;
+import com.ezen.propick.board.service.CommentService;
 import com.ezen.propick.board.service.UserPostBoardService;
 import lombok.RequiredArgsConstructor;
 
@@ -11,12 +16,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -25,6 +35,8 @@ public class UserPostController {
     private final UserPostBoardService userPostBoardService;
     @Autowired
     private UserPostBoardRepository userPostBoardRepository;
+    @Autowired
+    private CommentService commentService;
 
 
     //@GetMapping("주소부분 쓰기")
@@ -40,7 +52,6 @@ public class UserPostController {
         System.out.println(userPostBoard.getTitle());
         System.out.println(userPostBoard.getContents());
         model.addAttribute("message","작성 완료!");
-//        model.addAttribute("list", userPostBoardService.userPostBoardList());
         model.addAttribute("searchUrl","/main/free_board");
         return "/main/postmessage";
     }
@@ -89,12 +100,30 @@ public class UserPostController {
     @GetMapping("/main/Free_boardcm")  //이 경로로 왔을때 상세 페이지 조회됨
     @Transactional
     public String boardView(Integer id, Model model){
+
         model.addAttribute("userPostBoard",userPostBoardService.boardView(id));
 
         UserPostBoard userPostBoard = userPostBoardRepository.findById(id).get();
         userPostBoard.setCountview(userPostBoard.getCountview() + 1 );
         return "/main/Free_boardcm";  //상세페이지 뷰를 담당하는 html 주소
     }
+
+    @PostMapping("/main/Free_boardcm/{id}/comments")
+    public ResponseEntity<Comment> save(
+            @PathVariable Integer id,
+            @RequestBody CommentRequestDTO requestDTO,
+            Principal principal) {
+
+        if (principal == null || principal.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 인증되지 않은 경우
+        }
+
+        Comment savedComment = commentService.commentSave(id, requestDTO, principal.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
+    }
+
+
+
 
     //삭제
     @GetMapping("main/board_delete")

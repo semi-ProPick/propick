@@ -50,7 +50,6 @@ public class UserPostBoardService {
         userPostBoard.setFilepath("/user_post_files/" + cleanedFilename);
 
         // DB에 저장
-
         userPostBoardRepository.save(userPostBoard);
     }
 

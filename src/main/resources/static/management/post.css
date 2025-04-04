@@ -101,6 +101,11 @@ body {
     font-size: 15px;
     text-align: left;
 }
+
+.text-danger-light {
+    color: #f5b5b5 !important; /* 연한 빨강 */
+}
+
 .button-group {
     display: flex;
     gap: 20px; /* 踰꾪듉 媛꾧꺽 */

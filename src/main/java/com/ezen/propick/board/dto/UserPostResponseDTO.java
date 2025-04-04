@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class UserPostResponseDTO {
@@ -23,6 +25,8 @@ public class UserPostResponseDTO {
     private LocalDateTime created_at;
 
     private LocalDateTime updated_at;
+    private List<CommentResponseDTO> comments;
+
 
     public UserPostResponseDTO(UserPostBoard entitiy){
         this.id = entitiy.getId();
@@ -30,6 +34,8 @@ public class UserPostResponseDTO {
         this.contents = entitiy.getContents();
         this.created_at = entitiy.getCreated_at();
         this.updated_at = entitiy.getUpdated_at();
+        this.comments = entitiy.getComments().stream().map(CommentResponseDTO::new).collect(Collectors.toList());
+
     }
 
 }

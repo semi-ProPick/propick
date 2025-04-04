@@ -59,6 +59,8 @@ public class UserFnaController {
             return "/main/f&q_board";
         }
 
+
+
 //    @GetMapping("/notice/view")   //localhost:8081/notice/view?id=1
 //    public String noticeView(Model model, Integer id){
 //        model.addAttribute("notice", noticeService.noticeView(id));

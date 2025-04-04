@@ -16,15 +16,14 @@
   <p th:utext="${qnaBoard.contents}" class="content-box">내용을 입력하십시요</p>
   <div class="upload-section">
     <div class="upload-box1">
-      <img th:src="@{/qna_post_files/{filename}(filename=${qnaBoard.filename})}" alt="Uploaded Image"/>
-
+      <img th:src="@{/q&a_post_files/{filename}(filename=${qnaBoard.filename})}" alt="Uploaded Image"/>
     </div>
   </div>
 
   <div class="separator1"></div>
   <div class="button-container">
-    <button type="submit">문의수정</button>
-    <button class="cancel-btn">문의취소</button>
+    <button type="submit"><a th:href="@{/main/qna_modify/{id}(id=${qnaBoard.id})}">문의수정</a></button>
+    <button class="cancel-btn"><a th:href="@{/main/qna_board_delete(id=${qnaBoard.id})}">문의삭제</a></button>
   </div>
 
 <div id="uploadModal" class="modal">

@@ -45,6 +45,12 @@ public class QnaBoard {
     @Column(name = ("post_filepath"))
     private String filepath;
 
+    @Column(name = "is_answered")
+    private boolean isAnswered;
+
+//    @OneToMany(mappedBy = "qnaBoard", cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+//    private QnaAnswer qnaAnswer;
+
 //    @OneToMany(mappedBy = "qnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<UserPostBoardComment> comments = new ArrayList<>();
 

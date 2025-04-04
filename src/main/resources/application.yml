@@ -42,8 +42,8 @@
           url: jdbc:mysql://localhost:3306/ppdb
           username: propick
           password: propick
-#        profiles:
-#          active: admin  # 기본 프로파일 설정
+        profiles:
+          active: admin  # 기본 프로파일 설정
         jpa:
           show-sql: true
           database: mysql
