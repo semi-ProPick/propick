@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q&A게시판-문의글쓰기상세-개인페이지</title>
+  <link rel="stylesheet" href="/css/main/boardcm.css">
+  <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+</head>
+<body>
+<div id="header"></div>
+
+<h1 class="title-box" th:text="${qnaBoard.title}"></h1>
+
+  <div class="separator"></div>
+  <p th:utext="${qnaBoard.contents}" class="content-box">내용을 입력하십시요</p>
+  <div class="upload-section">
+    <div class="upload-box1">
+      <img th:src="@{/q&a_post_files/{filename}(filename=${qnaBoard.filename})}" alt="Uploaded Image"/>
+    </div>
+  </div>
+
+  <div class="separator1"></div>
+  <div class="button-container">
+    <button type="submit"><a th:href="@{/main/qna_modify/{id}(id=${qnaBoard.id})}">문의수정</a></button>
+    <button class="cancel-btn"><a th:href="@{/main/qna_board_delete(id=${qnaBoard.id})}">문의삭제</a></button>
+  </div>
+
+<div id="uploadModal" class="modal">
+  <div class="modal-content">
+    문의 되었습니다<br><br>
+    빠른 시일 내에 답변 드리겠습니다
+  </div>
+</div>
+
+<div id="cancelModal" class="modal2" style="display: none;">
+  <div class="modal-content">
+    취소하시겠습니까?<br>
+    <button class="yes-btn"><a th:href="@{/main/qna_board_delete(id=${qnaBoard.id})}">예</a></button>
+    <button class="no-btn">취소</button>
+  </div>
+</div>
+<script src="/js/main/q&a_write.js"></script>
+<script src="/js/main/header.js" defer></script>
+</body>
+</html>

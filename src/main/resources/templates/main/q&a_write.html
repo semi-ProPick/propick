@@ -1,28 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Q&A게시판-문의글쓰기</title>
-    <link rel="stylesheet" href="/css/boardcm.css">
-    <link rel="stylesheet" href="css/header.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/boardcm.css">
+    <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
 </head>
 <body>
-    <div id="header"></div>
-    <input type="text" class="title-box" placeholder="제목을 입력하세요"></input>
+    <div id="header">
+        <div th:replace="~{main/mainHeader}"></div></div>
+
+    <form action="/main/q&a_write" method="post" enctype="multipart/form-data">
+        <input name="title" type="text" class="title-box" placeholder="제목을 입력하세요"></input>
     <div class="separator"></div>
-    <textarea class="content-box" placeholder="내용을 입력하십시요"></textarea>
-    <div class="upload-section">
-        <div class="upload-box">
-            <img src="upload-icon.png" alt="">
-            <span>사진 (0/5)</span>
+    <textarea name="contents" class="content-box" placeholder="내용을 입력하십시요"></textarea>
+        <div class="upload-section">
+            <div class="upload-box">
+                <!-- label을 사용하여 아이콘을 클릭하면 file input이 활성화되도록 연결 -->
+                <label for="file-upload">
+                    <img src="/images/main/upload_icon.png" alt="Upload Icon">
+                </label>
+                <!-- file input 요소 -->
+                <input type="file" id="file-upload" name= "file" style="display: none;">
+            </div>
         </div>
-    </div>
+
     <div class="separator1"></div>
     <div class="button-container">
-        <button>문의하기</button>
+        <button type="submit">문의하기</button>
         <button class="cancel-btn">취소</button>
     </div>
+
+    </form>
     <div id="uploadModal" class="modal">
         <div class="modal-content">
             문의 되었습니다<br><br>
@@ -30,14 +40,15 @@
         </div>
     </div>
 
-    <div id="cancelModal" class="modal2">
+    <div id="cancelModal" class="modal2" style="display: none;">
         <div class="modal-content">
             취소하시겠습니까?<br>
             <button class="yes-btn">예</button>
             <button class="no-btn">취소</button>
         </div>
     </div>
-    <script src="/js/q&a_write.js"></script>
-    <script src="/js/header.js" defer></script>
+
+    <script src="/js/main/q&a_write.js"></script>
+    <script src="/js/main/header.js" defer></script>
 </body>
 </html>

@@ -50,21 +50,36 @@ body {
 
 .post_container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: left;
-    flex-direction: row;
-    padding: 10px;
+    justify-content: flex-start;
     flex-direction: column;
-    margin-bottom: 20px;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
 }
+
 .post_box {
-    width: 1000px;
-    height: 300px;
-    border: 2px solid #d9d9d9;
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
+    width: 100%;
+}
+
+.post_top, .post_text {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.form-control {
+    border: 2px solid #ddd;
+    transition: border 0.3s ease-in-out;
+}
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+.btn {
+    font-size: 1.1rem;
 }
 .post_top {
     background-color: #d9d9d9;
@@ -86,6 +101,11 @@ body {
     font-size: 15px;
     text-align: left;
 }
+
+.text-danger-light {
+    color: #f5b5b5 !important; /* 연한 빨강 */
+}
+
 .button-group {
     display: flex;
     gap: 20px; /* 踰꾪듉 媛꾧꺽 */
@@ -95,4 +115,11 @@ body {
     display: flex;
     gap: 10px;
     align-items: center;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
