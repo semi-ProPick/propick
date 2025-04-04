@@ -21,9 +21,14 @@ public class SurveyResponseOption {
     @JoinColumn(name = "response_id", nullable = false)
     private SurveyResponse response;
 
-
+    @Column(name = "free_text_answer")
+    private String freeTextAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_id", nullable = false)
     private SurveyOptions option;
+    @ManyToOne
+    @JoinColumn(name="question_id")
+    private SurveyQuestions question;
+
 }

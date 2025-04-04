@@ -27,6 +27,9 @@ public class SurveyOptions {
     @JoinColumn(name = "question_id", nullable = false)
     private SurveyQuestions questionId;
 
+    @Column(name = "option_code")
+    private String optionCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_option_id", nullable = true)
     private SurveyOptions parentOption;

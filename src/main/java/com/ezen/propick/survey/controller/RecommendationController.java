@@ -3,10 +3,12 @@ package com.ezen.propick.survey.controller;
 import com.ezen.propick.auth.model.AuthDetails;
 import com.ezen.propick.survey.dto.result.RecommendationResponseDTO;
 import com.ezen.propick.survey.dto.result.SurveyRecommendationResultDTO;
+import com.ezen.propick.survey.dto.result.SurveyResultInputDTO;
+import com.ezen.propick.survey.engine.ProteinRecommendationEngine;
 import com.ezen.propick.survey.entity.Recommendation;
 import com.ezen.propick.survey.repository.RecommendationRepository;
-import com.ezen.propick.survey.service.SurveyAnalysisService;
 
+import com.ezen.propick.survey.service.SurveyResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +26,9 @@ import java.util.Map;
 public class RecommendationController {
 
     private final RecommendationRepository recommendationRepository;
-    private final SurveyAnalysisService surveyAnalysisService;
+    private final SurveyResponseService surveyResponseService;
+    private final ProteinRecommendationEngine recommendationEngine;
+
     /**
      * 특정 설문 응답 ID에 기반한 단백질 추천 결과를 조회하는 API
      *
@@ -34,18 +38,17 @@ public class RecommendationController {
     @GetMapping("/{surveyResponseId}")
     public ResponseEntity<RecommendationResponseDTO> getRecommendation(
             @PathVariable Integer surveyResponseId,
-            @AuthenticationPrincipal AuthDetails user) {
-
-        // ✅ 로그인 사용자 ID (문자열 userId)
-        String userId = user.getLoginDTO().getUserId();
-
+            @AuthenticationPrincipal AuthDetails userDetails
+    ) {
+        String userId = userDetails.getUserId();
         // ✅ 추천 정보 조회 (응답 ID + 유저 ID 기준)
         Recommendation recommendation = recommendationRepository
                 .findByResponseId_ResponseIdAndUser_UserId(surveyResponseId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("추천 정보를 찾을 수 없거나 권한이 없습니다."));
 
         // 설문 분석 결과를 받아오기
-        SurveyRecommendationResultDTO analysisDto = surveyAnalysisService.analyzeSurvey(surveyResponseId);
+        SurveyResultInputDTO inputDto = surveyResponseService.getSurveyResultInputDTO(surveyResponseId);
+        SurveyRecommendationResultDTO analysisDto = recommendationEngine.generate(inputDto);
 
         // 건강 상태별 가중치 계산 (변수로 저장하여 중복 호출 방지)
         Map<String, Integer> healthScores = calculateHealthConditionScores(analysisDto.getHealthConcerns());

@@ -160,19 +160,3 @@ document.getElementById('view3').addEventListener('click', function(){
     }
 });
 
-//설문조사 결과 확인을 위해 필요
-document.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const redirect = params.get("redirect");
-
-    const joinLink = document.getElementById("join-link");
-    if (joinLink) {
-        joinLink.addEventListener("click", () => {
-            if (redirect) {
-                window.location.href = `/join.html?redirect=${encodeURIComponent(redirect)}`;
-            } else {
-                window.location.href = `/join.html`;
-            }
-        });
-    }
-});

@@ -326,18 +326,34 @@ function collectSurveyAnswers() {
 
     return { surveyId: 1, answers };
 }
+
 document.getElementById("submit_btn").addEventListener("click", async () => {
     const inputData = collectSurveyAnswers();
-    localStorage.setItem("surveyData", JSON.stringify(inputData));  // 설문 응답 백업
+    const loginCheck = await fetch("/api/user/me", { credentials: "include" });
 
-    // 기존 응답 ID 제거 (중복 저장 방지)
-    localStorage.removeItem("surveyResponseId");
+    if (loginCheck.status === 401) {
+        localStorage.setItem("surveyData", JSON.stringify(inputData));
+        localStorage.setItem("redirectAfterLogin", "/survey_result");
+        alert("로그인이 필요합니다.");
+        window.location.href = "/login.html";
+        return;
+    }
 
-    // 설문 응답 임시 저장
-    localStorage.setItem("surveyData", JSON.stringify(inputData));
+    const res = await fetch("/api/survey-responses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(inputData),
+    });
 
-    // 로그인 후 결과 페이지로 이동
-    window.location.href = "/user/login?redirect=/survey_result";
+    if (!res.ok) {
+        alert("설문 저장에 실패했습니다.");
+        return;
+    }
+
+    const result = await res.json();
+    localStorage.setItem("surveyResponseId", result.responseId);
+    window.location.href = "/survey_result";
 });
 
 // 페이지 로딩 시 설문 구조 및 option 매핑 초기화

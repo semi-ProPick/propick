@@ -1,12 +1,14 @@
 package com.ezen.propick.survey.dto.result;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
 
 @Getter
+@Builder
 @AllArgsConstructor
 /*
 * ProteinRecommendationEngine이 분석을 완료한 후, 최종적인 분석 결과를 담는 DT

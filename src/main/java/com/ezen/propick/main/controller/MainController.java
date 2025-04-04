@@ -10,4 +10,10 @@ public class MainController {
     public String mainPage() {
         return "main/main"; // templates/main.html을 의미
     }
+
+    @GetMapping("/mypage")
+    public String mypage() {
+            return "/main/mypage";
+        }
+
 }

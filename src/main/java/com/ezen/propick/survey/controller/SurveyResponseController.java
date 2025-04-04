@@ -1,19 +1,21 @@
 package com.ezen.propick.survey.controller;
 
 import com.ezen.propick.auth.model.AuthDetails;
+import com.ezen.propick.survey.dto.survey.SurveyResponseDTO;
 import com.ezen.propick.survey.dto.survey.SurveyResponseIdDTO;
 import com.ezen.propick.survey.dto.survey.SurveyResponseRequestDTO;
 import com.ezen.propick.survey.dto.survey.SurveyResponseUserDTO;
 import com.ezen.propick.survey.service.SurveyResponseService;
 import com.ezen.propick.survey.service.SurveyResponseUserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/api/survey-responses")
 @RequiredArgsConstructor
@@ -29,13 +31,16 @@ public class SurveyResponseController {
     * ResponseEntity<Void>	응답 바디 없음 (상태 코드만 보냄)
     * */
 
-        // [1] 설문 응답 저장
+
+
+        //[1] 설문 응답 저장
         @PostMapping
         public ResponseEntity<SurveyResponseIdDTO> saveSurveyResponse(
                 @RequestBody SurveyResponseRequestDTO requestDto,
                 @AuthenticationPrincipal AuthDetails userDetails
         ) {
-            String userId = userDetails.getUserId(); // 문자열 로그인 ID
+            String userId = userDetails.getUserId();
+            log.info("📝 설문 저장 요청 userId={}, surveyId={}", userId, requestDto.getSurveyId());
             Integer responseId = surveyResponseService.saveSurveyResponse(requestDto, userId);
             return ResponseEntity.ok(new SurveyResponseIdDTO(responseId));
         }

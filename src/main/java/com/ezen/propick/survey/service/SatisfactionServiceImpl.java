@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SatisfactionServiceImpl implements SatisfactionService {
+public class    SatisfactionServiceImpl implements SatisfactionService {
 
     private final SatisfactionRepository satisfactionRepository;
     private final SurveyResponseRepository surveyResponseRepository;

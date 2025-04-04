@@ -42,7 +42,6 @@ public class User {
     @Column(name = "user_birth", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date userBirth;
-    private Date userBirth;
     @Column(name = "user_role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role userRole = Role.User;

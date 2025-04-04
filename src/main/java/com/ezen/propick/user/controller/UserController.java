@@ -32,6 +32,8 @@ public class UserController {
     }
 
 
+
+
     //     회원가입 페이지를 보여주는 메서드
     @GetMapping("/join")
     public String join(Model model) {
