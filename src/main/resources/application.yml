@@ -13,10 +13,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  profiles:
-    active: admin
 #  profiles:
-#    active: user
+#    active: admin
+  profiles:
+    active: user
 logging:
   level:
     org.springframework: INFO

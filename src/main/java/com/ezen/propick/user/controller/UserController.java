@@ -32,10 +32,10 @@ public class UserController {
     //로그인페이지 반환
 
     //메인페이지
-    @GetMapping
-    public String index(Model model) {
-        return "main/main";
-    }
+//    @GetMapping
+//    public String index(Model model) {
+//        return "main/main";
+//    }
 
     //마이페이지
     @GetMapping("/mypage")

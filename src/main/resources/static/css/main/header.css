@@ -198,7 +198,7 @@ html, body {
   align-items: center;
 
 }
-#logoutBtn{
+.logoutBtn{
   border:none;
   background-color: #b5c3b3;
   font-size: 15px;

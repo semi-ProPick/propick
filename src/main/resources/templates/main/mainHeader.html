@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <link rel="stylesheet" th:href="@{/css/main/header.css}" type="text/css" />
 </head>
@@ -9,8 +9,9 @@
   </div>
   <div class="logo"><a th:href="@{/}" class="propick-logo">propick</a></div>
   <div class="user_icon">
-    <form id="logoutBtnBox" th:action="@{/user/logout}" th:method="post">
-      <button id="logoutBtn">logout</button>
+    <a class="logoutBtn" href="/user/login" sec:authorize="!isAuthenticated()">login</a>
+    <form id="logoutBtnBox" sec:authorize="isAuthenticated()" th:action="@{/user/logout}" th:method="post">
+      <button class="logoutBtn">logout</button>
     </form>
   <a th:href="@{/user/mypage}">
     <img src="/images/main/user.png" alt="" />
