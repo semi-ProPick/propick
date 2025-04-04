@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -141,11 +142,27 @@ public class UserController {
         return ResponseEntity.ok("회원 탈퇴 완료");
     }
 
+//    @DeleteMapping("/me")
+//    public ResponseEntity<String> deleteCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+//        userService.deleteUser(userDetails.getUsername());  // 현재 로그인된 유저 탈퇴
+//        return ResponseEntity.ok("회원 탈퇴 완료");
+//    }
+
     @DeleteMapping("/me")
-    public ResponseEntity<String> deleteCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        userService.deleteUser(userDetails.getUsername());  // 현재 로그인된 유저 탈퇴
-        return ResponseEntity.ok("회원 탈퇴 완료");
+    public ResponseEntity<String> deleteCurrentUser(@AuthenticationPrincipal UserDetails userDetails,
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse response) {
+        // 1. 회원 탈퇴 처리
+        userService.deleteUser(userDetails.getUsername());
+
+        // 2. 로그아웃 처리
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+
+        return ResponseEntity.ok("회원 탈퇴 완료 및 로그아웃 완료");
     }
+
+
 
     @RequestMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
