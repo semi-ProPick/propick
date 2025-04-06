@@ -17,9 +17,6 @@ public class ProductInfo {
     @Column(name = "product_info_id")
     private Integer productInfoId;
 
-//    @OneToOne(mappedBy = "productInfo", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Product product; // Product와 양방향 관계 설정
-
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
@@ -33,7 +30,7 @@ public class ProductInfo {
     @Column(name = "calories", nullable = false)
     private Integer calories;         // 칼로리(에너지)
 
-    @Column(name = "nutrients", nullable = false, length = 100, columnDefinition = "TEXT")
+    @Column(name = "nutrients", length = 100, columnDefinition = "TEXT")
     private String nutrients;  // 영양소
 
     @Column(name = "protein_amount")

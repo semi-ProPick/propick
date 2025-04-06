@@ -1,6 +1,7 @@
 package com.ezen.propick.product.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Table(name = "ingredient")
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Ingredient {
 
     @Id
@@ -27,8 +28,4 @@ public class Ingredient {
     private List<ProductIngredientDetail> productIngredientDetails = new ArrayList<>();
 
 
-    @Override
-    public String toString() {
-        return "Ingredient{id=" + ingredientId + ", name='" + ingredientName + "'}";
-    }
 }

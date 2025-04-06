@@ -15,11 +15,11 @@ import java.util.List;
 public class ProductSearchDTO {
     // 상품 검색결과용 dto
 
+    private Integer productId;  // 상품아이디
     private String productName; // 상품명
     private BigDecimal productPrice;  // 상품가격
     private List<String> productImages;  // 상품 이미지
-    private Integer productId;
-    private String brandName;
+    private String brandName; // 브랜드명
 
     private Integer discountRate;  // 할인율
     private BigDecimal discountedPrice; // 할인된 가격

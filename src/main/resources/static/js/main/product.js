@@ -172,3 +172,94 @@ document.addEventListener("DOMContentLoaded", function () {
     pagination.appendChild(nextButton);
   }
 });
+
+// 상품 상세 이미지 swiper
+document.addEventListener("DOMContentLoaded", function () {
+  let swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,  // 한 번에 하나의 이미지만 보이도록 설정
+    loop: true,  // 무한 루프
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+  });
+})
+
+document.addEventListener('DOMContentLoaded', function () {
+  const categoryMenus = document.querySelectorAll('.category_menu'); // 상단 카테고리
+  const categoryWraps = document.querySelectorAll('.category_wrap ul li'); // 하단 카테고리
+  const discountButtons = document.querySelectorAll("a[href='/products?discount=true']"); // 할인 버튼 (상단 + 하단)
+  const allMenuItem = document.querySelector(".category_menu.all"); // 전체보기 버튼
+
+  //  모든 카테고리에 클릭 이벤트 추가 (수정: id → dataset.category)
+  [...categoryMenus, ...categoryWraps].forEach(item => {
+    item.addEventListener('click', function () {
+      activateCategory(item);
+      const selectedCategory = item.dataset.category; // ⬅️ 여기 수정!
+      filterProductsByCategory(selectedCategory);
+    });
+  });
+
+  // 할인 버튼 클릭 시
+  discountButtons.forEach(button => {
+    button.parentElement.addEventListener("click", (event) => {
+      event.preventDefault();
+      activateDiscountCategory();
+      window.location.href = "/products?discount=true";
+    });
+  });
+
+  // 전체보기 클릭 시
+  if (allMenuItem) {
+    allMenuItem.addEventListener("click", (event) => {
+      event.preventDefault();
+      activateCategory(allMenuItem);
+      window.location.href = "/products";
+    });
+  }
+
+  // 클릭한 카테고리로 이동
+  function filterProductsByCategory(categoryId) {
+    const params = new URLSearchParams(window.location.search);
+    const isDiscount = params.get("discount") === "true";
+
+    let url = `/products?category=${categoryId}`;
+    if (isDiscount) {
+      url += "&discount=true";
+    }
+
+    window.location.href = url;
+  }
+
+  // 클릭한 항목 active 적용
+  function activateCategory(selectedItem) {
+    [...categoryMenus, ...categoryWraps].forEach(item => item.classList.remove("active"));
+    selectedItem.classList.add("active");
+  }
+
+  // 할인 버튼 active 적용
+  function activateDiscountCategory() {
+    [...categoryMenus, ...categoryWraps].forEach(item => item.classList.remove("active"));
+    discountButtons.forEach(button => button.parentElement.classList.add("active"));
+  }
+
+  // 페이지 로드시 현재 URL 기준으로 active 적용 (수정: id → data-category)
+  const urlParams = new URLSearchParams(window.location.search);
+
+  if (urlParams.get("discount") === "true") {
+    activateDiscountCategory();
+  }
+
+  const selectedCategoryId = urlParams.get("category");
+  if (selectedCategoryId) {
+    const categoryElement = document.querySelector(`[data-category="${selectedCategoryId}"]`); // ⬅️ 여기 수정!
+    if (categoryElement) {
+      activateCategory(categoryElement);
+    }
+  }
+});
+

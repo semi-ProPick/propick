@@ -6,6 +6,7 @@ import lombok.*;
 @Entity
 @Table(name = "product_category")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
@@ -25,6 +26,7 @@ public class ProductCategory {
     @JoinColumn(name = "category_id",nullable = false)
     private Category category;
 
+    // 자주 쓰는 필드만 받기 위한 생성자
     public ProductCategory(Product product, Category category) {
         this.product = product;
         this.category = category;

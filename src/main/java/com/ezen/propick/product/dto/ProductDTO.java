@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ProductDTO {
-    // 상품 상세페이지용 dto
+    // 상품 dto
 
-    private Integer productId;
+    private Integer productId;    // 상품 아이디
     private String productName;  // 제품명
     private String brandName;  // 브랜드명
     private String productType;  // 제품유형
@@ -31,5 +31,6 @@ public class ProductDTO {
     // 할인율 (할인된 가격을 계산하기 위해 추가)
     private Integer discountRate;  // 할인율
     private BigDecimal discountedPrice;  // 할인된 가격
+    private List<Integer> categoryIds;  // 카테고리 아이디 리스트
 
 }

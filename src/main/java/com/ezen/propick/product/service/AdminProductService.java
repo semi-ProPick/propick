@@ -3,7 +3,6 @@ package com.ezen.propick.product.service;
 import com.ezen.propick.product.dto.*;
 import com.ezen.propick.product.entity.*;
 import com.ezen.propick.product.repository.*;
-import com.ezen.propick.product.utils.ImageUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,10 +15,6 @@ import com.ezen.propick.product.dto.ProductUpdateDTO;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +41,10 @@ public class AdminProductService {
         return products.map(product -> {
             Integer discountRate = (product.getProductInfo() != null) ? product.getProductInfo().getDiscountRate() : 0;
 
+            // 카테고리명 리스트 추출
+            List<String> categoryNames = product.getProductCategories().stream()
+                    .map(pc -> pc.getCategory().getCategoryName())
+                    .collect(Collectors.toList());
 
             return new ProductListDTO(
                     product.getProductId(),
@@ -57,7 +56,8 @@ public class AdminProductService {
                     productImageRepository.findByProduct(product).stream()
                             .map(ProductImage::getImageUrl)
                             .collect(Collectors.toList()),
-                    product.getProductCreatedAt()
+                    product.getProductCreatedAt(),
+                    categoryNames
             );
         });
     }
@@ -69,6 +69,11 @@ public class AdminProductService {
         return productPage.map(product -> {
             Integer discountRate = (product.getProductInfo() != null) ? product.getProductInfo().getDiscountRate() : 0;
 
+            // 카테고리명 리스트 추출
+            List<String> categoryNames = product.getProductCategories().stream()
+                    .map(pc -> pc.getCategory().getCategoryName())
+                    .collect(Collectors.toList());
+
             return new ProductListDTO(
                     product.getProductId(),
                     product.getProductName(),
@@ -79,7 +84,8 @@ public class AdminProductService {
                     productImageRepository.findByProduct(product).stream()
                             .map(ProductImage::getImageUrl)
                             .collect(Collectors.toList()),
-                    product.getProductCreatedAt()
+                    product.getProductCreatedAt(),
+                    categoryNames
             );
         });
     }
@@ -87,6 +93,8 @@ public class AdminProductService {
     // 상품 등록
     @Transactional
     public void registerProduct(ProductCreateDTO productDTO, List<MultipartFile> imageFiles) {
+
+        // 등록되어 있는 브랜드를 찾거나 새로 등록
         Brand brand = brandRepository.findByBrandName(productDTO.getBrandName())
                 .orElseGet(() -> {
                     Brand newBrand = Brand.builder()
@@ -98,6 +106,7 @@ public class AdminProductService {
         Integer servingSize = productDTO.getServingSize() != null ? productDTO.getServingSize() : 1;
         Integer discountRate = productDTO.getDiscountRate() != null ? productDTO.getDiscountRate() : 0;
 
+        // 상품 저장
         Product product = Product.builder()
                 .productName(productDTO.getProductName())
                 .productType(productDTO.getProductType())
@@ -106,6 +115,7 @@ public class AdminProductService {
                 .build();
         productRepository.save(product);
 
+        // 상품 상세 정보 저장
         ProductInfo productInfo = ProductInfo.builder()
                 .discountRate(discountRate)
                 .servingSize(servingSize)
@@ -114,11 +124,25 @@ public class AdminProductService {
                 .build();
         productInfoRepository.save(productInfo);
 
+        // 카테고리 저장
         if (productDTO.getCategoryIds() != null && !productDTO.getCategoryIds().isEmpty()) {
-            List<Category> categories = categoryRepository.findAllById(productDTO.getCategoryIds());
-            if (categories.size() != productDTO.getCategoryIds().size()) {
-                throw new IllegalArgumentException("일부 카테고리를 찾을 수 없습니다.");
+
+            // 중복 제거
+            List<Integer> uniqueCategoryIds = productDTO.getCategoryIds().stream()
+                    .distinct()  // 중복 제거
+                    .collect(Collectors.toList());
+
+            // 카테고리 조회
+            List<Category> categories = categoryRepository.findAllById(uniqueCategoryIds);
+
+
+            // 일부 카테고리를 찾지 못한 경우 예외 발생
+            if (categories.size() != uniqueCategoryIds.size()) {
+                throw new IllegalArgumentException(" 일부 카테고리를 찾을 수 없습니다. 요청한 ID: "
+                        + uniqueCategoryIds + ", 찾은 ID: " + categories.stream().map(Category::getCategoryId).toList());
             }
+
+            // ProductCategory 객체 생성 및 저장
             List<ProductCategory> productCategories = categories.stream()
                     .map(category -> ProductCategory.builder()
                             .product(product)
@@ -199,14 +223,15 @@ public class AdminProductService {
        ProductInfo productInfo = optionProductInfo.orElse(new ProductInfo());
 
        List<ProductIngredientDetail> ingredientDetails = productIngredientDetailRepository.findByProduct(product);
-       List<ProductUpdateDTO.IngredientWithInfoDTO> ingredientDTOs = ingredientDetails.stream()
-               .map(detail -> ProductUpdateDTO.IngredientWithInfoDTO.builder() // 수정
-                       .ingredientId(detail.getIngredient().getIngredientId())
-                       .ingredientName(detail.getIngredient().getIngredientName())
-                       .ingredientAmount(detail.getIngredientAmount())
-                       .ingredientUnit(detail.getIngredientUnit())
-                       .build())
-               .collect(Collectors.toList());
+        List<ProductUpdateDTO.IngredientWithInfoDTO> ingredientDTOs = ingredientDetails.stream()
+                .map(detail -> new ProductUpdateDTO.IngredientWithInfoDTO(
+                        detail.getIngredient().getIngredientId(),
+                        detail.getIngredient().getIngredientName(),
+                        detail.getIngredientUnit(),
+                        detail.getIngredientAmount(),
+                        detail.getProductIngredientId()  // 마지막 값 추가
+                ))
+                .collect(Collectors.toList());
 
        return ProductUpdateDTO.builder()
                .productId(product.getProductId())
@@ -214,8 +239,17 @@ public class AdminProductService {
                .brandName(product.getBrand() !=null ? product.getBrand().getBrandName() : "브랜드 이름 없음")
                .productType(product.getProductType())
                .productPrice(product.getProductPrice())
-               .productImages(product.getProductImages().stream().map(ProductImage::getImageUrl)
-                       .collect(Collectors.toList()))
+               .productImages(
+                       product.getProductImages().stream()
+                               .map(image -> {
+                                   ProductImageDTO dto = new ProductImageDTO();
+                                   dto.setProductImageId(image.getProductImgId());
+                                   dto.setProductImgUrl(image.getImageUrl());
+                                   dto.setProductImgName(image.getProductImgName());
+                                   return dto;
+                               })
+                               .collect(Collectors.toList())
+               )
                .ingredientDTOs(ingredientDTOs)
                .calories(productInfo.getCalories())
                .servingSize(productInfo.getServingSize())
@@ -264,52 +298,50 @@ public class AdminProductService {
         updateProductImages(product, imageFiles, deleteImgIds);
     }
 
-
+    // 성분 (추가,수정,삭제)
     private void updateProductIngredients(Product product, List<ProductUpdateDTO.IngredientWithInfoDTO> ingredientDTOs, List<Integer> deleteIngredientIds) {
-        // 삭제할 성분 처리
+        // 삭제
         if (deleteIngredientIds != null && !deleteIngredientIds.isEmpty()) {
-            List<ProductIngredientDetail> deleteList = productIngredientDetailRepository.findAllById(deleteIngredientIds);
-
-            if (!deleteList.isEmpty()) {
-                productIngredientDetailRepository.deleteAll(deleteList);
-                System.out.println("✅ 성분 삭제 완료: " + deleteList.size() + "개 삭제됨");
-            } else {
-                System.out.println("⚠ 삭제할 성분이 없음");
-            }
+            productIngredientDetailRepository.deleteAllById(deleteIngredientIds);
         }
 
-        // 기존 성분 조회 (최종 성분 개수 확인)
-        List<ProductIngredientDetail> existingIngredients = productIngredientDetailRepository.findByProduct(product);
-        Map<Integer, ProductIngredientDetail> existingMap = existingIngredients.stream()
+        // 기존 성분 목록 가져오기
+        List<ProductIngredientDetail> existing = productIngredientDetailRepository.findByProduct(product);
+        Map<Integer, ProductIngredientDetail> existingMap = existing.stream()
                 .collect(Collectors.toMap(ProductIngredientDetail::getProductIngredientId, detail -> detail));
 
+        List<ProductIngredientDetail> toSave = new ArrayList<>();
 
-        // 새로 추가할 성분 처리
-        List<ProductIngredientDetail> updatedIngredients = new ArrayList<>();
-        if (ingredientDTOs != null && !ingredientDTOs.isEmpty()) {
-            for (ProductUpdateDTO.IngredientWithInfoDTO dto : ingredientDTOs) {
-                if (dto.getIngredientId() == null || dto.getIngredientAmount() == null) {
-                    System.out.println("⚠ 필수 값 누락: " + dto);
-                    continue;
-                }
+        for (ProductUpdateDTO.IngredientWithInfoDTO dto : ingredientDTOs) {
+            if (dto.getIngredientId() == null || dto.getIngredientAmount() == null) continue;
 
-                Ingredient ingredient = ingredientRepository.findById(dto.getIngredientId())
-                        .orElseThrow(() -> new IllegalArgumentException("성분을 찾을 수 없습니다: " + dto.getIngredientId()));
+            ProductIngredientDetail detail;
 
-                ProductIngredientDetail detail = existingMap.getOrDefault(dto.getIngredientDetailId(), new ProductIngredientDetail());
+            if (dto.getProductIngredientId() != null && existingMap.containsKey(dto.getProductIngredientId())) {
+                // 기존 객체 업데이트
+                detail = existingMap.get(dto.getProductIngredientId());
+            } else {
+                // 새 객체 생성
+                detail = new ProductIngredientDetail();
                 detail.setProduct(product);
+                Ingredient ingredient = ingredientRepository.findById(dto.getIngredientId())
+                        .orElseThrow(() -> new RuntimeException("성분 없음: " + dto.getIngredientId()));
                 detail.setIngredient(ingredient);
-                detail.setIngredientAmount(dto.getIngredientAmount());
-                detail.setIngredientUnit(dto.getIngredientUnit());
-                updatedIngredients.add(detail);
-            }
-            productIngredientDetailRepository.saveAll(updatedIngredients);
-        }
-        // 최종 성분 개수 확인
-        System.out.println("📌 최종 성분 개수: " + productIngredientDetailRepository.findByProduct(product).size());
 
+            }
+
+            // 수정값 덮어쓰기
+            detail.setIngredientAmount(dto.getIngredientAmount());
+            detail.setIngredientUnit(dto.getIngredientUnit());
+
+            toSave.add(detail);
+        }
+
+        productIngredientDetailRepository.saveAll(toSave);
     }
 
+
+    // 이미지 수정 (추가, 삭제)
     private void updateProductImages(Product product, List<MultipartFile> imageFiles, List<Integer> deleteImageIds) {
         // 이미지 삭제
         if (deleteImageIds != null && !deleteImageIds.isEmpty()) {
@@ -342,6 +374,29 @@ public class AdminProductService {
                     })
                     .collect(Collectors.toList());
             productImageRepository.saveAll(productImages);
+        }
+    }
+    // 카테고리 수정(추가 ,삭제)
+    @Transactional
+    public void updateProductCategories(Integer productId, List<Integer> categoryIds) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다."));
+
+        // 선택된 카테고리가 null or 비어 있으면 아무것도 안 함 (기존 유지)
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            return;
+        }
+
+        // 기존 연결 제거
+        productCategoryRepository.deleteByProduct(product);
+
+        // 새로 선택된 카테고리 등록
+        for (Integer categoryId : categoryIds) {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new RuntimeException("해당 카테고리가 존재하지 않습니다."));
+
+            ProductCategory productCategory = new ProductCategory(product, category);
+            productCategoryRepository.save(productCategory);
         }
     }
 

@@ -10,7 +10,5 @@ import java.util.Optional;
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Integer> {
 
-    // 특정 성분명으로 검색
-    Optional<Ingredient> findByIngredientName(String ingredientName);
 }
 

@@ -6,7 +6,6 @@ import com.ezen.propick.product.dto.ProductSearchDTO;
 import com.ezen.propick.product.service.MainProductService;
 import com.ezen.propick.product.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,25 +25,20 @@ public class ProductController {
 
     private final MainProductService mainProductService;
 
-
-    // 상품 목록 페이지
+    // 상품 목록 페이지 요청
     @GetMapping("/products")
-    public String getAllProducts(@RequestParam(value = "discount", required = false) Boolean discount,Model model) {
-        List<ProductListDTO> products;  // 전체 상품 조회
+    public String getAllProducts(@RequestParam(value = "category", required = false) Integer categoryId,
+                                 @RequestParam(value = "discount", required = false) Boolean discount,
+                                 Model model) {
 
-        if (discount != null && discount) {
-            // 할인된 상품만 조회
-            products = mainProductService.getDiscountedProducts();
-        } else {
-            // 전체 상품 조회
-            products = mainProductService.getAllProducts();
-        }
+        // 조건에 따라 필터링된 상품 조회
+        List<ProductListDTO> products = mainProductService.getDiscountedCategoryProducts(categoryId, discount);
 
         // 각 상품의 이미지 URL을 디코딩하고, /images/product-img/로 경로 수정
         products.forEach(product -> {
             List<String> correctedImageUrls = product.getProductImages().stream()
                     .map(imgUrl -> {
-                        // 만약 imgUrl이 이미 /images/product-img/로 시작하지 않으면 추가
+                        // 만약 imgUrl이 /images/product-img/로 시작하지 않으면 추가
                         if (!imgUrl.startsWith("/images/product-img/")) {
                             return "/images/product-img/" + ImageUtils.decodeImageUrl(imgUrl);
                         }
@@ -54,40 +48,45 @@ public class ProductController {
             product.setProductImages(correctedImageUrls);  // 디코딩된 이미지 경로를 설정
         });
         model.addAttribute("products", products);  // 상품 목록을 모델에 추가
-        model.addAttribute("discount", discount);
+        model.addAttribute("discount", discount);  // 할인되는 정보 추가
+        model.addAttribute("categoryId", categoryId); // 카테고리 아이디 추가
         return "main/product";  // 상품 목록 페이지 반환 (HTML 뷰)
     }
 
 
-    // 상품 상세 페이지
+    // 각 상품 클릭시 상세 페이지로 이동 시 요청
     @GetMapping("/products/{productId}")
     public String getProductDetail(@PathVariable Integer productId, Model model) {
-        // 1. 상품 상세 정보를 조회
+        // 상품 상세 정보를 조회
         ProductDTO productDetail = mainProductService.getProductDetailById(productId);
 
-        // 2. 성분별 100g당 함량 계산
+        // 성분별 100g당 함량 계산
         Map<String, Double> ingredientsPer100g = mainProductService.calculateIngredientsPer100g(productDetail.getProductInfo());
 
-        // 3. Model에 product와 proteinPer100g을 추가
+        // Model에 product와 proteinPer100g을 추가
         model.addAttribute("product", productDetail);
         model.addAttribute("ingredientsPer100g", ingredientsPer100g);
 
-        // 4. 상세 페이지로 전달
+        // 상세 페이지로 전달
         return "main/product_detail";
     }
 
-        // 검색
+    // 검색창에 입력하고 검색 버튼 눌렀을 때 요청
     @GetMapping("/products/search")
-    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword,  // 검색어가 없어도 요청 가능 (required = false)
+                                 Model model) { // 뷰에 데이터를 넘겨주기 위해 모델 사용
+
+        // 검색 결과를 담을 DTO 리스트 선언
         List<ProductSearchDTO> products;
 
+        // 검색어가 없거나 공백만 있는 경우 → 결과는 빈 리스트로 초기화
         if (keyword == null || keyword.trim().isEmpty()) {
             products = new ArrayList<>();
-        } else {
+        } else {  // 검색어가 존재하면 → 서비스 메서드 getProductBySearchKeyword() 호출해서 결과 조회
             products = mainProductService.getProductBySearchKeyword(keyword); // 검색
         }
 
-        model.addAttribute("products", products);
+        model.addAttribute("products", products);  //검색 결과를 모델에 담아서 뷰에 전달
         return "main/product"; // 검색 결과를 main/product 페이지로 전달
     }
 

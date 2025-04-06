@@ -13,12 +13,11 @@ import java.math.RoundingMode;
 public class IngredientWithInfoDTO {
     // 성분 등록, 조회용
 
-    private Integer ingredientId;
+    private Integer ingredientId;  //성분 아이디
     private String ingredientName; // 성분명
     private BigDecimal ingredientAmount; // 성분량
     private String ingredientUnit;  // 성분단위
-
-    private Integer productIngredientId;  // 각 상품의 연결된 성분들의 아이디
+    private Integer productIngredientId; // 상품의 성분 아이디
 
     // 성분량 + 단위
     public String getIngredientInfo() {

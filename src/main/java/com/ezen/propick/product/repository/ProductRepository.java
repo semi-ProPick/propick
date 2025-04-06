@@ -29,16 +29,24 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p JOIN p.productIngredientDetails pid JOIN pid.ingredient i WHERE i.ingredientName LIKE %:keyword%")
     List<Product> findByIngredientNameContaining(@Param("keyword") String keyword);
 
-
-    // 할인하는 상품 조회
+    // 전체 상품 중 할인 상품 조회
     @Query("SELECT p FROM Product p WHERE p.productInfo.discountRate > :discountRate")
     List<Product> findByDiscountRateGreaterThan(double discountRate);
+
+    // 카테고리별로 상품 조회
+    @Query("SELECT DISTINCT p FROM Product p JOIN p.productCategories pc WHERE pc.category.categoryId = :categoryId")
+    List<Product> findByCategoryId(@Param("categoryId") Integer categoryId);
+
+    // 할인 + 카테고리 상품 조회
+    @Query("SELECT DISTINCT p FROM Product p JOIN p.productCategories pc " +
+            "WHERE p.productInfo.discountRate > 0 AND pc.category.categoryId = :categoryId")
+    List<Product> findDiscountedProductsByCategoryId(@Param("categoryId") Integer categoryId);
 
     // 관리자 검색 기능
     @Query("SELECT p FROM Product p WHERE p.productName LIKE %:keyword% OR p.brand.brandName LIKE %:keyword% ORDER BY p.productCreatedAt DESC")
     Page<Product> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
-    // 상품 삭제
+    // 관리자 상품 삭제
     void deleteById(Integer productId);
 
 

@@ -26,37 +26,69 @@ public class MainProductService {
     private final ProductIngredientDetailRepository productIngredientDetailRepository;
 
     // 전체 상품 목록 조회
-    public List<ProductListDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();  // DB에서 모든 상품 조회
+//    public List<ProductListDTO> getAllProducts() {
+//        List<Product> products = productRepository.findAll();  // DB에서 모든 상품 조회
+//
+//        // 상품 목록을 DTO로 변환
+//        return products.stream().map(product -> {
+//            Integer discountRate = (product.getProductInfo() != null && product.getProductInfo().getDiscountRate() != null)
+//                    ? product.getProductInfo().getDiscountRate() : 0;
+//
+//            // 카테고리명 리스트 조회
+//            List<String> categoryNames = product.getProductCategories().stream()
+//                    .map(productcate -> productcate.getCategory().getCategoryName())
+//                    .collect(Collectors.toList());
+//
+//
+//            return new ProductListDTO(
+//                    product.getProductId(),
+//                    product.getProductName(),
+//                    product.getBrand().getBrandName(),
+//                    product.getProductType(),
+//                    product.getProductPrice(),
+//                    discountRate,
+//                    productImageRepository.findByProduct(product).stream()
+//                            .map(ProductImage::getImageUrl)
+//                            .collect(Collectors.toList()),
+//                    product.getProductCreatedAt(),
+//                    categoryNames
+//            );
+//        }).collect(Collectors.toList());
+//
+//    }
 
-        // 상품 목록을 DTO로 변환
+    // 할인이 적용된 상품들 중 카테고리 별로 조회
+    public List<ProductListDTO> getDiscountedCategoryProducts(Integer categoryId, Boolean discount) {
+
+        List<Product> products;
+
+        if (discount != null && discount) {
+            if (categoryId != null) {
+                // 할인 + 카테고리 상품 조회
+                products = productRepository.findDiscountedProductsByCategoryId(categoryId);
+            } else {
+                // 할인 되는 상품 조회
+                products = productRepository.findByDiscountRateGreaterThan(0);
+            }
+        } else {
+            if (categoryId != null) {
+                // 카테고리 해당 되는 상품 조회
+                products = productRepository.findByCategoryId(categoryId);
+            } else {
+                // 전체 상품 조회
+                products = productRepository.findAll();
+            }
+        }
+
         return products.stream().map(product -> {
-            Integer discountRate = (product.getProductInfo() != null && product.getProductInfo().getDiscountRate() != null)
-                    ? product.getProductInfo().getDiscountRate()
-                    : 0;
-
-            return new ProductListDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getBrand().getBrandName(),
-                    product.getProductType(),
-                    product.getProductPrice(),
-                    discountRate,
-                    productImageRepository.findByProduct(product).stream()
-                            .map(ProductImage::getImageUrl)
-                            .collect(Collectors.toList()),
-                    product.getProductCreatedAt()
-            );
-        }).collect(Collectors.toList());
-
-    }
-
-    // 할인 상품만 조회
-    public List<ProductListDTO> getDiscountedProducts() {
-        List<Product> products = productRepository.findByDiscountRateGreaterThan(0);  // 할인율이 0보다 큰 상품 조회
-
-        return products.stream().map(product -> {
+            // 할인율 있으면 정보 가져오고 없으면 0 을 반환
             Integer discountRate = (product.getProductInfo() != null) ? product.getProductInfo().getDiscountRate() : 0;
+
+            // 카테고리명 리스트 조회
+            List<String> categoryNames = product.getProductCategories().stream()
+                    .map(pc -> pc.getCategory().getCategoryName())
+                    .collect(Collectors.toList());
+
             return new ProductListDTO(
                     product.getProductId(),
                     product.getProductName(),
@@ -67,7 +99,8 @@ public class MainProductService {
                     productImageRepository.findByProduct(product).stream()
                             .map(ProductImage::getImageUrl)
                             .collect(Collectors.toList()),
-                    product.getProductCreatedAt()
+                    product.getProductCreatedAt(),
+                    categoryNames
             );
         }).collect(Collectors.toList());
     }
@@ -97,18 +130,8 @@ public class MainProductService {
                         .build())
                 .collect(Collectors.toList());
 
-        // 5. 100g 기준 단백질 함량 계산
-        Double proteinPer100g = 0.0;
-        if (productInfo != null) {
-            // ingredientsPer100g을 계산하고 단백질 정보를 가져오기
-            Map<String, Double> ingredientPer100gMap = calculateIngredientsPer100g(productInfo);
 
-            // "단백질" 성분이 맵에 존재하면, 해당 값을 proteinPer100g에 할당
-//            if (ingredientPer100gMap.containsKey("단백질")) {
-//                proteinPer100g = ingredientPer100gMap.get("단백질");
-//            }
-        }
-        // 할인율과 할인가격 계산
+        // 5. 할인율과 할인가격 계산
         Integer discountRate = productInfo.getDiscountRate();
         BigDecimal productPrice = product.getProductPrice();
         BigDecimal discountedPrice = productPrice;
@@ -134,7 +157,7 @@ public class MainProductService {
                 .calories(productInfo.getCalories())  // 이미 null 체크가 되어 있으므로 직접 호출
                 .servingSize(productInfo.getServingSize())  // 동일하게 null 처리 없이 사용
                 .proteinAmount(productInfo.getProteinAmount())  // 단백질 함량
-                .proteinPer100g(proteinPer100g)  // 계산된 100g 기준 단백질 함량 추가
+                //.proteinPer100g(proteinPer100g)  // 계산된 100g 기준 단백질 함량 추가
                 .productInfo(productInfo)  // productInfo 포함
                 .build();
 
@@ -213,10 +236,10 @@ public class MainProductService {
 
             // ProductSearchDTO 생성
             ProductSearchDTO productSearchDTO = new ProductSearchDTO(
+                    product.getProductId(),
                     product.getProductName(),
                     product.getProductPrice(),
                     imageUrls,
-                    product.getProductId(),
                     product.getBrand().getBrandName(),
                     product.getProductInfo().getDiscountRate(),  // 할인율
                     null // 할인된 가격은 null로 초기화
