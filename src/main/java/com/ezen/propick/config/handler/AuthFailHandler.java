@@ -19,21 +19,24 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        // 디버깅 로그 추가
+        System.out.println("인증 실패: " + exception.getClass().getSimpleName() + " - " + exception.getMessage());
+        exception.printStackTrace();
 
         String errorMessage = "";
 
         if (exception instanceof BadCredentialsException) {
             errorMessage = "아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.";
-
         } else if (exception instanceof InternalAuthenticationServiceException) {
             errorMessage = "서버에서 오류가 발생하였습니다. 관리자에게 문의해 주세요.";
-
+            System.out.println("InternalAuthenticationServiceException 원인: " + exception.getCause());
+            if (exception.getCause() != null) {
+                System.out.println("원인 예외: " + exception.getCause().getClass().getSimpleName() + " - " + exception.getCause().getMessage());
+            }
         } else if (exception instanceof UsernameNotFoundException) {
             errorMessage = "존재하지 않는 ID입니다.";
-
         } else if (exception instanceof AuthenticationCredentialsNotFoundException) {
             errorMessage = "인증 요청이 거부되었습니다.";
-
         } else {
             errorMessage = "알 수 없는 오류로 로그인 요청을 처리할 수 없습니다. 관리자에게 문의해 주세요.";
         }
@@ -44,5 +47,4 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
 
         super.onAuthenticationFailure(request, response, exception);
     }
-
 }

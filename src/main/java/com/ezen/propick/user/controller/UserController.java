@@ -1,15 +1,18 @@
 package com.ezen.propick.user.controller;
 
-import com.ezen.propick.auth.model.AuthDetails;
+
+import com.ezen.propick.auth.AuthDetails;
 import com.ezen.propick.user.dto.*;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +20,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @Profile("user")
 @Controller
 @RequiredArgsConstructor
@@ -27,10 +33,10 @@ public class UserController {
     //로그인페이지 반환
 
     //메인페이지
-    @GetMapping
-    public String index(Model model) {
-        return "main/main";
-    }
+//    @GetMapping
+//    public String index(Model model) {
+//        return "main/main";
+//    }
 
     //마이페이지
     @GetMapping("/mypage")
@@ -131,7 +137,7 @@ public class UserController {
 
     //회원 탈퇴
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable String userId) {
+    public ResponseEntity<String> deleteByUserId(@PathVariable String userId) {
         userService.deleteUser(userId);
         return ResponseEntity.ok("회원 탈퇴 완료");
     }

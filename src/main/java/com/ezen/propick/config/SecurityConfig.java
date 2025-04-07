@@ -38,29 +38,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/", "/user/login", "/user/register", "/static/**").permitAll();
-            auth.anyRequest().authenticated();
+            // 로그인, 회원가입, 실패 페이지, 메인 페이지는 모두 허용
+            auth.requestMatchers("/**").permitAll();
+            auth.requestMatchers("/bookmark/add").authenticated(); // 북마크 등록 URL 예시
+
+            // 그 외의 요청은 인증이 필요
+            auth.anyRequest().authenticated();  // 모든 요청은 인증을 요구
         }).formLogin(login -> {
-            login.loginPage("/user/login");
+            login.loginPage("/user/login");  // 로그인 페이지 경로
             login.loginProcessingUrl("/user/doLogin");
-            login.successHandler((request, response, authentication) -> {
-                // ✅ 로그인 성공 시 userId를 세션에 저장
-                request.getSession().setAttribute("userId", authentication.getName());
-                response.sendRedirect("/"); // 로그인 성공 후 메인 페이지로 이동
-            });
-            login.failureHandler(authFailHandler);
+//            login.usernameParameter("username");
+//            login.passwordParameter("password");
+            login.defaultSuccessUrl("/", true);  // 로그인 성공 후 메인 페이지로 이동
+            login.failureHandler(authFailHandler);  // 로그인 실패 시 처리할 핸들러
         }).logout(logout -> {
             logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"));
+            logout.deleteCookies("JSESSIONID");
             logout.invalidateHttpSession(true);
-            logout.addLogoutHandler((request, response, authentication) -> {
-                // ✅ 로그아웃 시 userId 세션 제거
-                request.getSession().removeAttribute("userId");
-            });
-            logout.logoutSuccessUrl("/user/login");
+            logout.logoutSuccessUrl("/user/login");  // 로그아웃 후 메인 페이지로 이동
         }).sessionManagement(session -> {
-            session.sessionFixation().newSession();  // ✅ 로그인할 때 새로운 세션 생성
-            session.maximumSessions(1).maxSessionsPreventsLogin(true);
-        }).csrf(csrf -> csrf.disable());
+            session.maximumSessions(1);  // 세션 하나만 허용
+            session.invalidSessionUrl("/");  // 잘못된 세션은 메인 페이지로 이동
+        }).csrf(csrf -> csrf.disable());  // CSRF 비활성화
 
         return http.build();
     }

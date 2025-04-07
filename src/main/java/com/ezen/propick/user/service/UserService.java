@@ -9,7 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Date;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -89,13 +92,15 @@ public class UserService {
     @Transactional
     public void deleteUser(String userId) {
         userRepository.deleteByUserId(userId);
+        userRepository.flush();
     }
 
 
     //회원 관리 페이지 =================================================
     //데이터에 있는 유저 정보 테이블 형식으로 띄우기
-    public List<User> findAllUsers(){
-        return userRepository.findAll();
+    public Page<User> findAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
     }
 
 
@@ -120,4 +125,11 @@ public class UserService {
     public Optional<User> getUserById(String userId) {
         return userRepository.findByUserId(userId);
     }
+
+    //관리자가 회원 검색
+    public Page<User> searchUsers(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findByUserNameContainingOrUserPhoneContaining(keyword, keyword, pageable);
+    }
+
 }

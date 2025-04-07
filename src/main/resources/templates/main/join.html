@@ -58,7 +58,7 @@
 
             <div id="userbirth_box">
                 <label for="insert_birth"><p>생년월일</p></label>
-                <input class="insert" id="insert_birth" type="text" th:field="*{userBirth}" placeholder="생년월일을 입력해주세요. ex.990101">
+                <input class="insert" id="insert_birth" type="text" th:field="*{userBirth}" placeholder="생년월일을 입력해주세요. ex.0000-00-00">
                 <p id="error_message6"></p>
             </div>
 
@@ -111,7 +111,7 @@
             </div>
         </div>
         <div class="joinus_box">
-            <button type="submit" id="joinus">회원 가입</button>
+            <button type="button" id="joinus"  onclick="validateForm()" >회원 가입</button>
             <!--        <button type="submit" id="joinus" >회원 가입</button>-->
             <!--        onclick="validateForm()"-->
         </div>

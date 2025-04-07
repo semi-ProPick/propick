@@ -5,17 +5,14 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ProductDTO {
-    // 상세페이지용 dto
-
     private Integer productId;
     private String productName;  // 제품명
-    private String brandName;  // 브랜드명
+    private String brandName;    // 브랜드명
     private String productType;  // 제품유형
     private BigDecimal productPrice;  // 제품 가격
     private List<String> productImages;  // 제품 이미지
@@ -24,11 +21,8 @@ public class ProductDTO {
     private Integer servingSize;  // 1회 섭취량
     private Double proteinAmount; // 단백질 함량
     private Double proteinPer100g; // 100g 기준 단백질 함량
-    private ProductInfo productInfo;  // ProductInfo를 추가
-
-    // 할인율 (할인된 가격을 계산하기 위해 추가)
+    private ProductInfo productInfo;  // ProductInfo
     private Integer discountRate;  // 할인율
     private BigDecimal discountedPrice;  // 할인된 가격
-
-    private List<ProductIngredientDTO> productIngredients;   // 상품- 성분 등록용
+    private List<ProductIngredientDTO> productIngredients;   // 상품-성분 등록용
 }

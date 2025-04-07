@@ -7,15 +7,19 @@
   <div class="menu_icon">
     <div></div>
   </div>
-  <div class="logo"><a th:href="@{/}" class="propick-logo">propick</a></div>  <div class="user_icon">
-    <a th:href="@{/mypage}">
+  <div class="logo"><a th:href="@{/}" class="propick-logo">propick</a></div>
+  <div class="user_icon">
+    <form id="logoutBtnBox" th:action="@{/user/logout}" th:method="post">
+      <button id="logoutBtn">logout</button>
+    </form>
+    <a th:href="@{/user/mypage}">
       <img src="/images/main/user.png" alt="" />
     </a>
   </div>
   <div class="menu">
     <ul>
       <li>
-        <a th:href="@{/recommend}">맞춤 프로틴 추천<span id="hot">HOT</span></a>
+        <a th:href="@{/main/recommend}">맞춤 프로틴 추천<span id="hot">HOT</span></a>
       </li>
       <li><a th:href="@{/products}">전체 상품 보기</a></li>
       <li><a th:href="@{/mypage}">마이페이지</a></li>
@@ -30,13 +34,13 @@
       <li class="submenu">
         <a href="#">게시판</a>
         <ul class="submenu_list">
-          <li><a th:href="@{/announcement}">공지사항게시판</a></li>
-          <li><a th:href="@{/faboard}">F&A 게시판</a></li>
-          <li><a th:href="@{/qaboard}">Q&A 게시판</a></li>
-          <li><a th:href="@{/free_board}">자유게시판</a></li>
+          <li><a th:href="@{/main/announcement}">공지사항게시판</a></li>
+          <li><a th:href="@{/main/fqBoard}">F&A 게시판</a></li>
+          <li><a th:href="@{/main/qaBoard}">Q&A 게시판</a></li>
+          <li><a th:href="@{/main/freeBoard}">자유게시판</a></li>
         </ul>
       </li>
-      <li><a th:href="@{user/join}">회원가입</a></li>
+      <li><a th:href="@{/user/join}">회원가입</a></li>
     </ul>
   </div>
 </header>

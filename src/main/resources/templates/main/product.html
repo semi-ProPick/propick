@@ -7,6 +7,20 @@
   <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <title>상품</title>
+  <style>
+    .bookmark-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .bookmark-icon i {
+      color: black; /* 기본 색상 */
+    }
+    .bookmark-icon.bookmarked i {
+      color: yellow; /* 북마크된 상태 색상 */
+    }
+  </style>
 </head>
 <body>
 <div id="header" th:replace="~{main/mainHeader}"></div>
@@ -61,9 +75,7 @@
     </div>
   </div>
   <div class="recomment_wrap">
-    <img src="/images/main/mark.png" alt="" />
     <p>내 몸에 꼭 맞는 프로틴 추천받기</p>
-    <img src="/images/main/mark.png" alt="" />
   </div>
   <div class="survey_wrap">
     <div class="survey_btn">
@@ -83,12 +95,12 @@
                  src="/images/default_image.png" alt="기본 이미지" />
             <p th:text="${product.productName} + ' (' + ${product.brandName} + ')'"></p>
             <p th:if="${product.discountedPrice != null and product.discountRate > 0}">
-              <span style="text-decoration: line-through; font-size: 15px;" th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
-              <span style="color: red; font-weight: bold;" th:text="${#numbers.formatInteger(product.discountedPrice, 3, 'COMMA')} + '원'"></span>
+              <span style="text-decoration: line-through; font-size: 15px;" th:text="${product.productPrice} + '원'"></span>
+              <span style="color: red; font-weight: bold;" th:text="${product.discountedPrice} + '원'"></span>
               <span style="font-size: 15px;" th:text="'(' + ${product.discountRate} + '% 할인)'"></span>
             </p>
             <p th:unless="${product.discountedPrice != null and product.discountRate > 0}"
-               th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></p>
+               th:text="${product.productPrice} + '원'"></p>
           </a>
         </li>
         <!-- TOP 3 상품이 없을 경우 -->
@@ -108,20 +120,17 @@
             </div>
             <div class="product-price">
               <p th:if="${product.discountedPrice != null and product.discountRate > 0}">
-                <span style="text-decoration: line-through; font-size: 15px;" th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
-                <span style="color: red; font-weight: bold;" th:text="${#numbers.formatInteger(product.discountedPrice, 3, 'COMMA')} + '원'"></span>
+                <span style="text-decoration: line-through; font-size: 15px;" th:text="${product.productPrice} + '원'"></span>
+                <span style="color: red; font-weight: bold;" th:text="${product.discountedPrice} + '원'"></span>
                 <span style="font-size: 15px;" th:text="'(' + ${product.discountRate} + '% 할인)'"></span>
               </p>
               <p th:unless="${product.discountedPrice != null and product.discountRate > 0}"
-                 th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></p>
+                 th:text="${product.productPrice} + '원'"></p>
             </div>
           </a>
-          <form th:action="@{/bookmark/add}" method="post" class="bookmark-form">
-            <input type="hidden" name="productId" th:value="${product.productId}" />
-            <button type="submit" class="bookmark-icon">
-              <i class="fas fa-bookmark"></i>
-            </button>
-          </form>
+          <button class="bookmark-icon" th:data-product-id="${product.productId}" th:classappend="${product.bookmarked} ? 'bookmarked' : ''">
+            <i class="fas fa-bookmark"></i>
+          </button>
         </li>
         <li th:if="${products == null or #lists.size(products) == 0}">
           <p>상품이 없습니다.</p>
@@ -139,7 +148,71 @@
 <script src="/js/main/header.js" defer></script>
 <script src="/js/main/product.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    // 북마크 버튼 클릭 이벤트
+    document.querySelectorAll(".bookmark-icon").forEach(button => {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        const productId = this.getAttribute("data-product-id");
+        console.log("북마크 클릭한 상품 ID:", productId);
+        const isBookmarked = this.classList.contains("bookmarked");
+
+        if (isBookmarked) {
+          // 북마크 삭제 요청 (DELETE)
+          fetch(`/bookmark/remove/${productId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+          })
+                  .then(response => {
+                    if (!response.ok) throw new Error("북마크 삭제 요청 실패");
+                    return response.json();
+                  })
+                  .then(data => {
+                    if (data.success) {
+                      this.classList.remove("bookmarked");
+                      window.location.href = window.location.href;
+                    } else {
+                      alert(data.error || "북마크 삭제에 실패했습니다.");
+                      if (data.error === "로그인이 필요합니다.") {
+                        window.location.href = "/user/login";
+                      }
+                    }
+                  })
+                  .catch(error => {
+                    console.error("북마크 삭제 실패:", error);
+                    alert("북마크 삭제 중 오류가 발생했습니다.");
+                  });
+        } else {
+          // 북마크 추가 요청 (POST)
+          fetch("/bookmark/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `productId=${productId}`
+          })
+                  .then(response => {
+                    if (!response.ok) throw new Error("북마크 추가 요청 실패");
+                    return response.json();
+                  })
+                  .then(data => {
+                    if (data.success) {
+                      this.classList.add("bookmarked");
+                      window.location.href = window.location.href;
+                    } else {
+                      alert(data.error || "북마크 추가에 실패했습니다.");
+                      if (data.error === "로그인이 필요합니다.") {
+                        window.location.href = "/user/login";
+                      }
+                    }
+                  })
+                  .catch(error => {
+                    console.error("북마크 추가 실패:", error);
+                    alert("북마크 추가 중 오류가 발생했습니다.");
+                  });
+        }
+      });
+    });
+
+    // 카테고리 관련 이벤트 리스너
     const categoryMenus = document.querySelectorAll('.category_menu');
     const categoryWraps = document.querySelectorAll('.category_wrap ul li');
     const discountButtons = document.querySelectorAll("a[href='/products?discount=true']");

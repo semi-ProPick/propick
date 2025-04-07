@@ -8,6 +8,17 @@
   <link rel="stylesheet" th:href="@{/css/main/header.css}" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <title>즐겨찾기</title>
+  <style>
+    .favorite_star {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .favorite_star i {
+      color: yellow; /* 북마크된 상태 색상 */
+    }
+  </style>
 </head>
 <body>
 <header id="header" class="header_wrap" th:replace="~{main/mainHeader}"></header>
@@ -60,20 +71,15 @@
       return;
     }
 
-    fetch('/bookmark/remove', {
-      method: 'POST',
+    fetch(`/bookmark/remove/${productId}`, {
+      method: 'DELETE',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest'
-      },
-      body: 'productId=' + productId
+      }
     })
             .then(response => {
               if (!response.ok) {
-                const contentType = response.headers.get('Content-Type');
-                if (!contentType || !contentType.includes('application/json')) {
-                  throw new Error('서버 응답이 올바르지 않습니다.');
-                }
                 throw new Error('요청이 실패했습니다: ' + response.status);
               }
               return response.json();
@@ -81,16 +87,17 @@
             .then(data => {
               if (data.success) {
                 productElement.remove();
-                alert(data.message);
+                alert(data.message || '북마크가 해제되었습니다.');
               } else {
-                alert(data.error);
+                alert(data.error || '북마크 제거에 실패했습니다.');
                 if (data.error === '로그인이 필요합니다.') {
                   window.location.href = '/user/login';
                 }
               }
             })
             .catch(error => {
-              alert(error.message);
+              console.error('북마크 제거 실패:', error);
+              alert('북마크 제거 중 오류가 발생했습니다: ' + error.message);
             });
   }
 </script>

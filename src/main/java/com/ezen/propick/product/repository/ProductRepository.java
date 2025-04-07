@@ -11,26 +11,25 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    // 상품명으로 검색
-    @Query("SELECT p FROM Product p JOIN FETCH p.productImages pi WHERE p.productName LIKE %:keyword%")
+    // 상품명으로 검색 (대소문자 무시)
+    @Query("SELECT p FROM Product p JOIN FETCH p.productImages pi WHERE UPPER(p.productName) LIKE UPPER(CONCAT('%', :keyword, '%'))")
     List<Product> findByProductNameContaining(@Param("keyword") String keyword);
 
-    // 브랜드명으로 검색
-    @Query("SELECT p FROM Product p JOIN FETCH p.productImages pi WHERE p.brand.brandName LIKE %:keyword%")
+    // 브랜드명으로 검색 (대소문자 무시)
+    @Query("SELECT p FROM Product p JOIN FETCH p.productImages pi WHERE UPPER(p.brand.brandName) LIKE UPPER(CONCAT('%', :keyword, '%'))")
     List<Product> findByBrandNameContaining(@Param("keyword") String keyword);
 
-    // 프로틴유형으로 검색
-    @Query("SELECT p FROM Product p WHERE p.productType LIKE %:keyword%")
+    // 프로틴 유형으로 검색 (대소문자 무시)
+    @Query("SELECT p FROM Product p WHERE UPPER(p.productType) LIKE UPPER(CONCAT('%', :keyword, '%'))")
     List<Product> findByProductTypeContaining(@Param("keyword") String keyword);
 
-    // 성분명으로 검색
-    @Query("SELECT p FROM Product p JOIN p.productIngredientDetails pid JOIN pid.ingredient i WHERE i.ingredientName LIKE %:keyword%")
+    // 성분명으로 검색 (대소문자 무시)
+    @Query("SELECT p FROM Product p JOIN p.productIngredientDetails pid JOIN pid.ingredient i WHERE UPPER(i.ingredientName) LIKE UPPER(CONCAT('%', :keyword, '%'))")
     List<Product> findByIngredientNameContaining(@Param("keyword") String keyword);
-
 
     // 할인하는 상품 조회
     @Query("SELECT p FROM Product p WHERE p.productInfo.discountRate > :discountRate")
-    List<Product> findByDiscountRateGreaterThan(double discountRate);
+    List<Product> findByDiscountRateGreaterThan(@Param("discountRate") double discountRate);
 
     // 상품 삭제
     void deleteById(Integer productId);

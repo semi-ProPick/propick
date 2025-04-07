@@ -1,19 +1,20 @@
 package com.ezen.propick.product.service;
 
-import com.ezen.propick.product.dto.IngredientWithInfoDTO;
-import com.ezen.propick.product.dto.ProductDTO;
-import com.ezen.propick.product.dto.ProductListDTO;
-import com.ezen.propick.product.dto.ProductSearchDTO;
-import com.ezen.propick.product.entity.*;
-import com.ezen.propick.product.repository.ProductImageRepository;
-import com.ezen.propick.product.repository.ProductInfoRepository;
-import com.ezen.propick.product.repository.ProductIngredientDetailRepository;
+import com.ezen.propick.product.dto.*;
+import com.ezen.propick.product.entity.Product;
+import com.ezen.propick.product.entity.ProductInfo;
+import com.ezen.propick.product.entity.ProductIngredientDetail;
+import com.ezen.propick.product.entity.ProductImage;
 import com.ezen.propick.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,205 +22,204 @@ import java.util.stream.Collectors;
 public class MainProductService {
 
     private final ProductRepository productRepository;
-    private final ProductImageRepository productImageRepository;
-    private final ProductInfoRepository productInfoRepository;
-    private final ProductIngredientDetailRepository productIngredientDetailRepository;
 
-    // 전체 상품 목록 조회
+    // 모든 상품 조회
     public List<ProductListDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();  // DB에서 모든 상품 조회
-
-        // 상품 목록을 DTO로 변환
-        return products.stream().map(product -> {
-            Integer discountRate = (product.getProductInfo() != null && product.getProductInfo().getDiscountRate() != null)
-                    ? product.getProductInfo().getDiscountRate()
-                    : 0;
-
-            return new ProductListDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getBrand().getBrandName(),
-                    product.getProductType(),
-                    product.getProductPrice(),
-                    discountRate,
-                    productImageRepository.findByProduct(product).stream()
-                            .map(ProductImage::getImageUrl)
-                            .collect(Collectors.toList())
-            );
-        }).collect(Collectors.toList());
-
-    }
-
-    // 할인 상품만 조회
-    public List<ProductListDTO> getDiscountedProducts() {
-        List<Product> products = productRepository.findByDiscountRateGreaterThan(0);  // 할인율이 0보다 큰 상품 조회
-
-        return products.stream().map(product -> {
-            Integer discountRate = (product.getProductInfo() != null) ? product.getProductInfo().getDiscountRate() : 0;
-            return new ProductListDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getBrand().getBrandName(),
-                    product.getProductType(),
-                    product.getProductPrice(),
-                    discountRate,
-                    productImageRepository.findByProduct(product).stream()
-                            .map(ProductImage::getImageUrl)
-                            .collect(Collectors.toList())
-            );
-        }).collect(Collectors.toList());
-    }
-
-    // 선택한 상품 상세 페이지 조회
-    public ProductDTO getProductDetailById(Integer productId) {
-        // 1. 상품 조회
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다: " + productId));
-
-        // 2. 상품 상세 정보 조회
-        Optional<ProductInfo> optionalProductInfo = productInfoRepository.findByProduct(product);
-        ProductInfo productInfo = optionalProductInfo.orElse(new ProductInfo()); // null 체크 후 사용
-
-
-        // 3. 상품 성분 정보 조회
-        List<ProductIngredientDetail> ingredientDetails = productIngredientDetailRepository.findByProduct(product);
-
-
-        // 4. 성분 정보 DTO 변환
-        List<IngredientWithInfoDTO> ingredientDetailDTOs = ingredientDetails.stream()
-                .map(detail -> new IngredientWithInfoDTO(
-                        detail.getIngredient() != null ? detail.getIngredient().getIngredientName() : "Unknown",
-                        detail.getIngredientAmount() != null ? detail.getIngredientAmount() : BigDecimal.ZERO,
-                        detail.getIngredientUnit() != null ? detail.getIngredientUnit() : "N/A"
-                ))
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(this::convertToProductListDTO)
                 .collect(Collectors.toList());
-
-        // 5. 100g 기준 단백질 함량 계산
-        Double proteinPer100g = 0.0;
-        if (productInfo != null) {
-            // ingredientsPer100g을 계산하고 단백질 정보를 가져오기
-            Map<String, Double> ingredientPer100gMap = calculateIngredientsPer100g(productInfo);
-
-            // "단백질" 성분이 맵에 존재하면, 해당 값을 proteinPer100g에 할당
-//            if (ingredientPer100gMap.containsKey("단백질")) {
-//                proteinPer100g = ingredientPer100gMap.get("단백질");
-//            }
-        }
-        // 할인율과 할인가격 계산
-        Integer discountRate = productInfo.getDiscountRate();
-        BigDecimal productPrice = product.getProductPrice();
-        BigDecimal discountedPrice = productPrice;
-
-        if (discountRate != null && discountRate > 0) {
-            BigDecimal discountAmount = productPrice.multiply(BigDecimal.valueOf(discountRate).divide(BigDecimal.valueOf(100)));
-            discountedPrice = productPrice.subtract(discountAmount);  // 할인된 가격 계산
-        }
-
-        // 6. ProductDTO 생성 및 반환
-        return ProductDTO.builder()
-                .productId(product.getProductId())
-                .productName(product.getProductName())
-                .brandName(product.getBrand() != null ? product.getBrand().getBrandName() : "Unknown")
-                .productType(product.getProductType())
-                .productPrice(product.getProductPrice())
-                .discountRate(discountRate)  // 할인율 추가
-                .discountedPrice(discountedPrice)  // 할인된 가격 추가
-                .productImages(product.getProductImages().stream()
-                        .map(image -> image.getImageUrl())
-                        .collect(Collectors.toList()))
-                .ingredientDTOs(ingredientDetailDTOs)
-                .calories(productInfo.getCalories())  // 이미 null 체크가 되어 있으므로 직접 호출
-                .servingSize(productInfo.getServingSize())  // 동일하게 null 처리 없이 사용
-                .proteinAmount(productInfo.getProteinAmount())  // 단백질 함량
-                .proteinPer100g(proteinPer100g)  // 계산된 100g 기준 단백질 함량 추가
-                .productInfo(productInfo)  // productInfo 포함
-                .build();
-
     }
 
-
-    // 각 성분의 100g당 함량 계산
-    public Map<String, Double> calculateIngredientsPer100g(ProductInfo productInfo) {
-        // 1회 섭취량 (Serving Size) 가져오기
-        Integer servingSize = productInfo.getServingSize();
-
-        if (servingSize == null || servingSize <= 0) {
-            return Collections.emptyMap(); // 섭취량이 없거나 잘못된 경우 빈 맵 반환
-        }
-
-        // 결과를 담을 맵 (성분명 -> 100g 기준 성분량)
-        Map<String, Double> ingredientPer100gMap = new HashMap<>();
-
-        // 2. 성분 정보 조회 (모든 성분에 대해 계산)
-        List<ProductIngredientDetail> ingredientDetails = productIngredientDetailRepository.findByProduct(productInfo.getProduct());
-
-        for (ProductIngredientDetail ingredientDetail : ingredientDetails) {
-            String ingredientName = ingredientDetail.getIngredient().getIngredientName();
-            BigDecimal ingredientAmount = ingredientDetail.getIngredientAmount();
-
-            // 성분량이 없으면 무시
-            if (ingredientAmount != null && ingredientAmount.compareTo(BigDecimal.ZERO) > 0) {
-                // 성분 단위를 안전하게 가져오기
-                String ingredientUnit = ingredientDetail.getIngredientUnit();
-
-                // IngredientWithInfoDTO 객체 생성
-                IngredientWithInfoDTO ingredientDTO = new IngredientWithInfoDTO(
-                        ingredientName, ingredientAmount, ingredientUnit);
-
-                // 성분량 계산 (100g 기준)
-                BigDecimal ingredientPer100g = ingredientDTO.calculatePer100g(servingSize);
-
-                // 맵에 성분명과 100g 기준 함량을 추가
-                ingredientPer100gMap.put(ingredientName, ingredientPer100g.doubleValue());
-            }
-        }
-
-        // 3. 결과 반환
-        return ingredientPer100gMap;
+    // 할인된 상품 조회
+    public List<ProductListDTO> getDiscountedProducts() {
+        List<Product> products = productRepository.findByDiscountRateGreaterThan(0);
+        return products.stream()
+                .map(this::convertToProductListDTO)
+                .collect(Collectors.toList());
     }
 
+    // 상품 상세 조회
+    public ProductDTO getProductDetailById(Integer productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다: productId=" + productId));
+        return convertToProductDTO(product);
+    }
 
     // 검색
     public List<ProductSearchDTO> getProductBySearchKeyword(String keyword) {
-        // 상품명
-        List<Product> productsByName = productRepository.findByProductNameContaining(keyword);
-        // 브랜드명
-        List<Product> productsByBrand = productRepository.findByBrandNameContaining(keyword);
-        // 프로틴 유형
-        List<Product> productsByType = productRepository.findByProductTypeContaining(keyword);
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return List.of(); // 빈 리스트 반환
+        }
 
-        // 성분명
-        List<Product> productByIngredient = productRepository.findByIngredientNameContaining(keyword);
+        // 상품명, 브랜드명, 프로틴 유형, 성분명으로 검색
+        Set<Product> matchedProducts = new HashSet<>();
 
-        Set<Product> mergedProducts = new HashSet<>();
+        // 상품명으로 검색
+        List<Product> byProductName = productRepository.findByProductNameContaining(keyword);
+        matchedProducts.addAll(byProductName);
 
-        mergedProducts.addAll(productsByName);
-        mergedProducts.addAll(productsByBrand);
-        mergedProducts.addAll(productsByType);
-        mergedProducts.addAll(productByIngredient);
+        // 브랜드명으로 검색
+        List<Product> byBrandName = productRepository.findByBrandNameContaining(keyword);
+        matchedProducts.addAll(byBrandName);
 
-        return mergedProducts.stream().map(product -> {
-            List<String> imageUrls = product.getProductImages()
-                    .stream()
-                    .map(ProductImage::getImageUrl)
-                    .collect(Collectors.toList());
+        // 프로틴 유형으로 검색
+        List<Product> byProductType = productRepository.findByProductTypeContaining(keyword);
+        matchedProducts.addAll(byProductType);
 
-            // ProductSearchDTO 생성
-            ProductSearchDTO productSearchDTO = new ProductSearchDTO(
-                    product.getProductName(),
-                    product.getProductPrice(),
-                    imageUrls,
-                    product.getProductId(),
-                    product.getBrand().getBrandName(),
-                    product.getProductInfo().getDiscountRate(),  // 할인율
-                    null // 할인된 가격은 null로 초기화
-            );
+        // 성분명으로 검색
+        List<Product> byIngredientName = productRepository.findByIngredientNameContaining(keyword);
+        matchedProducts.addAll(byIngredientName);
 
-            // 할인된 가격 계산
-            productSearchDTO.calculateDiscountedPrice();
+        return matchedProducts.stream()
+                .map(this::convertToProductSearchDTO)
+                .collect(Collectors.toList());
+    }
 
-            return productSearchDTO;
-        }).collect(Collectors.toList());
+    // 성분별 100g당 함량 계산
+    public Map<String, BigDecimal> calculateIngredientsPer100g(ProductInfo productInfo, List<ProductIngredientDetail> ingredientDetails) {
+        if (productInfo == null || ingredientDetails == null || ingredientDetails.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<String, BigDecimal> ingredientsPer100g = new HashMap<>();
+
+        // servingSize를 기준으로 100g당 함량 계산
+        Integer servingSize = productInfo.getServingSize();
+        if (servingSize == null || servingSize <= 0) {
+            servingSize = 100; // 기본값
+        }
+
+        // ProductIngredientDetail에서 성분별 함량 계산
+        for (ProductIngredientDetail detail : ingredientDetails) {
+            String ingredientName = detail.getIngredient() != null ? detail.getIngredient().getIngredientName() : null;
+            BigDecimal ingredientAmount = detail.getIngredientAmount(); // 총 함량
+            String unit = detail.getIngredientUnit(); // 단위 (g 또는 mg)
+
+            if (ingredientName == null || ingredientAmount == null || unit == null) {
+                continue; // 데이터가 누락된 경우 건너뜀
+            }
+
+            // 단위 변환: mg → g
+            BigDecimal amountInGrams;
+            if ("mg".equalsIgnoreCase(unit)) {
+                amountInGrams = ingredientAmount.divide(BigDecimal.valueOf(1000), 2, BigDecimal.ROUND_HALF_UP); // mg을 g으로 변환
+            } else if ("g".equalsIgnoreCase(unit)) {
+                amountInGrams = ingredientAmount; // g 단위 그대로 사용
+            } else {
+                continue; // 지원하지 않는 단위는 건너뜀
+            }
+
+            // 100g당 함량 계산: (amount / servingSize) * 100
+            BigDecimal amountPer100g = amountInGrams
+                    .divide(BigDecimal.valueOf(servingSize), 2, BigDecimal.ROUND_HALF_UP)
+                    .multiply(BigDecimal.valueOf(100));
+            ingredientsPer100g.put(ingredientName, amountPer100g);
+        }
+
+        // proteinAmount는 별도로 계산
+        if (productInfo.getProteinAmount() != null) {
+            BigDecimal proteinPer100g = BigDecimal.valueOf(productInfo.getProteinAmount())
+                    .divide(BigDecimal.valueOf(servingSize), 2, BigDecimal.ROUND_HALF_UP)
+                    .multiply(BigDecimal.valueOf(100));
+            ingredientsPer100g.put("Protein", proteinPer100g);
+        }
+
+        return ingredientsPer100g;
+    }
+
+    // Product -> ProductListDTO 변환
+    public ProductListDTO convertToProductListDTO(Product product) {
+        // ProductInfo에서 discountRate 가져오기
+        Integer discountRate = null;
+        ProductInfo productInfo = product.getProductInfo();
+        if (productInfo != null) {
+            discountRate = productInfo.getDiscountRate();
+        }
+
+        return new ProductListDTO(
+                product.getProductId(),
+                product.getProductName(),
+                product.getBrand() != null ? product.getBrand().getBrandName() : "Unknown Brand",
+                product.getProductType(),
+                product.getProductPrice(),
+                discountRate,
+                product.getProductImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    // Product -> ProductDTO 변환
+    private ProductDTO convertToProductDTO(Product product) {
+        ProductInfo productInfo = product.getProductInfo();
+        Integer discountRate = productInfo != null ? productInfo.getDiscountRate() : null;
+        BigDecimal discountedPrice = null;
+
+        // 할인된 가격 계산
+        if (discountRate != null && discountRate > 0 && product.getProductPrice() != null) {
+            BigDecimal price = product.getProductPrice();
+            BigDecimal discount = price.multiply(BigDecimal.valueOf(discountRate)).divide(BigDecimal.valueOf(100));
+            discountedPrice = price.subtract(discount);
+        }
+
+        // 성분 정보 매핑
+        List<ProductIngredientDetail> ingredientDetails = product.getProductIngredientDetails();
+        List<IngredientWithInfoDTO> ingredientDTOs = ingredientDetails.stream()
+                .map(detail -> {
+                    String ingredientName = detail.getIngredient() != null ? detail.getIngredient().getIngredientName() : null;
+                    BigDecimal ingredientAmount = detail.getIngredientAmount();
+                    String unit = detail.getIngredientUnit();
+
+                    return IngredientWithInfoDTO.builder()
+                            .ingredientName(ingredientName)
+                            .ingredientAmount(ingredientAmount)
+                            .ingredientUnit(unit)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        // ProductIngredientDTO 매핑
+        List<ProductIngredientDTO> productIngredients = ingredientDetails.stream()
+                .map(detail -> ProductIngredientDTO.builder()
+                        .ingredientId(detail.getIngredient() != null ? detail.getIngredient().getIngredientId() : null)
+                        .ingredientAmount(detail.getIngredientAmount() != null ? detail.getIngredientAmount().intValue() : null)
+                        .ingredientUnit(detail.getIngredientUnit())
+                        .build())
+                .collect(Collectors.toList());
+
+        // 100g당 단백질 함량 계산
+        Double proteinPer100g = null;
+        if (productInfo != null && productInfo.getProteinAmount() != null && productInfo.getServingSize() != null && productInfo.getServingSize() > 0) {
+            proteinPer100g = (productInfo.getProteinAmount() / productInfo.getServingSize()) * 100;
+        }
+
+        return ProductDTO.builder()
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .brandName(product.getBrand() != null ? product.getBrand().getBrandName() : "Unknown Brand")
+                .productType(product.getProductType())
+                .productPrice(product.getProductPrice())
+                .productImages(product.getProductImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .collect(Collectors.toList()))
+                .ingredientDTOs(ingredientDTOs)
+                .calories(productInfo != null ? productInfo.getCalories() : null)
+                .servingSize(productInfo != null ? productInfo.getServingSize() : null)
+                .proteinAmount(productInfo != null ? productInfo.getProteinAmount() : null)
+                .proteinPer100g(proteinPer100g)
+                .productInfo(productInfo)
+                .discountRate(discountRate)
+                .discountedPrice(discountedPrice)
+                .productIngredients(productIngredients)
+                .build();
+    }
+
+    // Product -> ProductSearchDTO 변환
+    private ProductSearchDTO convertToProductSearchDTO(Product product) {
+        ProductSearchDTO dto = new ProductSearchDTO();
+        dto.setProductId(product.getProductId());
+        dto.setProductName(product.getProductName());
+        return dto;
     }
 }
-

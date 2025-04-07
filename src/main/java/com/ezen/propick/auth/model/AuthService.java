@@ -1,6 +1,7 @@
-package com.ezen.propick.auth.model.service;
+package com.ezen.propick.auth.model;
 
-import com.ezen.propick.auth.model.AuthDetails;
+
+import com.ezen.propick.auth.AuthDetails;
 import com.ezen.propick.user.dto.LoginDTO;
 import com.ezen.propick.user.dto.MemberDTO;
 import com.ezen.propick.user.service.UserService;

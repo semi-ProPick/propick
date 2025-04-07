@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -18,12 +18,12 @@
         </div>
         <div id="notimg_box">
             <div class="slogan_box">
-                <h2 id="title">propick</h2>
+                <h2 ><a href="/" id="title">propick</a></h2>
                 <p>건강한 나를 위한 <br>
                     <span class="group">[</span>맞춤 프로틴<span class="group">]</span> 프로픽
                 </p>
             </div>
-            <form th:action="@{/user/doLogin}" method="post">
+            <form id="loginForm" th:action="@{/user/doLogin}" method="post">
                 <div class="login_id_pwd_box">
                     <label for="insert_id"><p class="lptext">Login</p></label>
                     <input name="username" class="insert" id="insert_id" type="text" placeholder="아이디를 입력해주세요.">
@@ -34,14 +34,14 @@
                 </div>
 
                 <div class="login_box">
-                    <button type="submit" id="welecome" >로그인</button>
+                    <button type="button" id="welecome" onclick="validateForm()" >로그인</button>
                     <!--                onclick="validateForm()"-->
                     <!--                th:href="@{/}"-->
                 </div>
 
                 <div class="findorjoin_box">
-                    <button class="foj" id="line"><a href="/id_find.html">아이디 찾기</a></button>
-                    <button class="foj" id="line1"><a href="/password_find.html">비밀번호 찾기</a></button>
+                    <button class="foj" id="line"><a href="/user/findpwd">아이디 찾기</a></button>
+                    <button class="foj" id="line1"><a href="/user/findpwd">비밀번호 찾기</a></button>
                     <button class="foj"><a href="/user/join">회원가입</a></button>
                 </div>
             </form>
@@ -50,5 +50,13 @@
     </div>
 </div>
 <script src="/js/main/new-login.js"></script>
+<script>
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
+    };
+</script>
 </body>
 </html>

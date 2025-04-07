@@ -1,7 +1,7 @@
 package com.ezen.propick.bookmark.entity;
 
-import com.ezen.propick.bookmark.Enum.BookmarkStatus;
 import com.ezen.propick.product.entity.Product;
+import com.ezen.propick.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,13 +20,13 @@ public class Bookmark {
     private Integer bookmarkId;
 
     @Column(name = "bookmark_status")
-    private String bookmarkStatus; // "ACTIVE" 또는 "INACTIVE"
+    private String bookmarkStatus;
 
-    @Column(name = "user_no", nullable = false)
-    private String userNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_no")
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
     private Product product;
-   // referencedColumnName = "product_id"
 }

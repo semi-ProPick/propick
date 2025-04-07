@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ProductListDTO {
-    // 상품 목록 페이지용 dto
+    // 상품 목록 페이지용 DTO
 
     private Integer productId;
     private String productName;
@@ -22,6 +22,7 @@ public class ProductListDTO {
     private Integer discountRate;  // 할인율
     private Integer bookmarkCount;
     private BigDecimal discountedPrice; // 할인된 가격
+    private boolean bookmarked; // 북마크 상태 추가
 
     // 생성자
     public ProductListDTO(Integer productId, String productName, String brandName,
@@ -44,5 +45,4 @@ public class ProductListDTO {
         BigDecimal discountAmount = productPrice.multiply(BigDecimal.valueOf(discountRate).divide(BigDecimal.valueOf(100)));
         return productPrice.subtract(discountAmount);
     }
-
 }

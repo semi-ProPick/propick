@@ -12,8 +12,10 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 30000
       leak-detection-threshold: 60000
+
   thymeleaf:
     cache: false
+
   jpa:
     database: mysql
     show-sql: true
@@ -33,9 +35,11 @@ spring:
     servlet:
       context-path: /
     tomcat:
+      basedir: none
       use-forwarded-headers: true
       max-http-header-size: 8192
-
+      session:
+        persistent: false
 
   logging:
     level:
@@ -45,7 +49,7 @@ spring:
       org.springframework.web: DEBUG
       com.ezen.propick: DEBUG
       org.thymeleaf: DEBUG
-      org.springframework.security: DEBUG
+      org.springframework.security: TRACE  # Spring Security 로그 상세 출력
 
   web:
     resources:

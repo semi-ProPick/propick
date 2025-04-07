@@ -1,4 +1,4 @@
-package com.ezen.propick.auth.model;
+package com.ezen.propick.auth;
 
 import com.ezen.propick.user.dto.LoginDTO;
 import com.ezen.propick.user.dto.MemberDTO;

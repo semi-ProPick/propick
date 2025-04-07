@@ -2,20 +2,22 @@ package com.ezen.propick.bookmark.controller;
 
 import com.ezen.propick.bookmark.dto.BookmarkDTO;
 import com.ezen.propick.bookmark.service.BookmarkService;
-import com.ezen.propick.product.dto.ProductDTO;
 import com.ezen.propick.product.dto.ProductListDTO;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Profile("user")
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/bookmark")
@@ -23,42 +25,60 @@ public class BookmarkController {
 
     private final BookmarkService bookmarkService;
 
-    @PostMapping("/add")
-    public String addBookmark(HttpSession session,
-                              @RequestParam("productId") Integer productId,
-                              RedirectAttributes redirectAttributes) {
-        String userId = (String) session.getAttribute("userId"); // String 그대로 사용
-        if (userId == null) {
-            redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
-            return "redirect:/user/login";
+    private String getCurrentUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String userId = ((UserDetails) principal).getUsername();
+            System.out.println("SecurityContextHolder에서 가져온 userId: " + userId);
+            return userId;
         }
-        BookmarkDTO bookmarkDTO = BookmarkDTO.builder()
-                .userNo(userId) // Integer 대신 String으로
-                .productId(productId)
-                .bookmarkStatus("ACTIVE")
-                .build();
-        try {
-            BookmarkDTO result = bookmarkService.addBookmark(bookmarkDTO);
-            redirectAttributes.addFlashAttribute("message", "북마크가 추가되었습니다!");
-            return "redirect:/products";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/products";
-        }
+        System.out.println("SecurityContextHolder에서 userId를 가져올 수 없음: principal=" + principal);
+        return null;
     }
 
-    @PostMapping("/remove")
+    @PostMapping("/add")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> removeBookmark(HttpSession session,
-                                                              @RequestParam("productId") Integer productId) {
-        String userId = (String) session.getAttribute("userId"); // Integer 대신 String
+    public ResponseEntity<Map<String, Object>> addBookmark(@RequestParam("productId") Integer productId) {
         Map<String, Object> response = new HashMap<>();
+        String userId = getCurrentUserId();
+
         if (userId == null) {
             response.put("success", false);
             response.put("error", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        BookmarkDTO bookmarkDTO = BookmarkDTO.builder()
+                .userId(userId)
+                .productId(productId)
+                .bookmarkStatus("ACTIVE")
+                .build();
+
+        try {
+            BookmarkDTO savedBookmark = bookmarkService.addBookmark(bookmarkDTO);
+            response.put("success", true);
+            response.put("message", "북마크가 추가되었습니다!");
+            response.put("bookmark", savedBookmark);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
-        // 나머지 로직은 서비스에 맞게 조정
+    }
+
+    @DeleteMapping("/remove/{productId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> removeBookmark(@PathVariable("productId") Integer productId) {
+        Map<String, Object> response = new HashMap<>();
+        String userId = getCurrentUserId();
+
+        if (userId == null) {
+            response.put("success", false);
+            response.put("error", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
         try {
             bookmarkService.removeBookmark(userId, productId);
             response.put("success", true);
@@ -70,24 +90,23 @@ public class BookmarkController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-    @GetMapping("/top3")
-    @ResponseBody
-    public ResponseEntity<List<ProductListDTO>> getTop3BookmarkedProducts() {
-        List<ProductListDTO> top3Products = bookmarkService.getTop3BookmarkedProducts();
-        return ResponseEntity.ok(top3Products);
-    }
 
     @GetMapping("/list")
-    public String getBookmarkList(HttpSession session, Model model) {
-        String userId = (String) session.getAttribute("userId"); // Integer -> String
-
+    public String getBookmarkList(Model model) {
+        String userId = getCurrentUserId();
         if (userId == null) {
             return "redirect:/user/login";
         }
-
+        System.out.println("현재 사용자 ID: " + userId);
         List<ProductListDTO> bookmarkedProducts = bookmarkService.getBookmarkedProducts(userId);
-        model.addAttribute("bookmarkedProducts", bookmarkedProducts);
-
+        System.out.println("북마크된 상품 개수: " + (bookmarkedProducts != null ? bookmarkedProducts.size() : "NULL"));
+        System.out.println("북마크된 상품 리스트: " + bookmarkedProducts);
+        model.addAttribute("bookmarkedProducts", bookmarkedProducts != null ? bookmarkedProducts : List.of());
         return "main/favorite";
+    }
+
+    @GetMapping("/mypage/bookmark")
+    public String getBookmarkListRedirect() {
+        return "redirect:/bookmark/list";
     }
 }

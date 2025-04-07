@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -30,13 +32,14 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     //회원 탈퇴
     @Modifying
     @Query("DELETE FROM User u WHERE u.userId = :userId")
+    @Transactional
     void deleteByUserId(String userId);
 
     //관리자 페이지 ==================================================
 
     //모든 회원 조회
     @Transactional
-    List<User> findAll();
+    Page<User> findAll(Pageable pageable);
 
 
     //유저 정보 수정
@@ -47,4 +50,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                                               @Param("userPhone") String userPhone);
 
 
+    Page<User> findByUserNameContainingOrUserPhoneContaining(String userName, String userPhone, Pageable pageable);
 }
