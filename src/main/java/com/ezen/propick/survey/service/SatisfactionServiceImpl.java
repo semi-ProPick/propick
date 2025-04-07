@@ -9,6 +9,7 @@ import com.ezen.propick.survey.repository.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class    SatisfactionServiceImpl implements SatisfactionService {
                 .surveyId(survey)
                 .response(response)
                 .satisfactionScore(dto.getSatisfactionScore())
+                .satisfactionCreatedAt(LocalDateTime.now())
                 .build();
 
         satisfactionRepository.save(satisfaction);

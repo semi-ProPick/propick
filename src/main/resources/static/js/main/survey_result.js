@@ -1,11 +1,22 @@
 console.log("✅ result.js loaded. current page:", window.location.pathname);
+function updateUserInfo({ gender, age, bmi, bmiStatus }) {
+    const infoText = document.getElementById("user_info_text");
+    const genderText = gender === "FEMALE" ? "여성" : gender === "MALE" ? "남성" : "기타";
+
+    if (infoText) {
+        infoText.innerText = `성별: ${genderText}   |   나이: ${age}세   |   BMI: ${bmi} (${bmiStatus})`;
+    }
+}
+
 
 
 document.addEventListener("DOMContentLoaded", async () => {
     let surveyResponseId = localStorage.getItem("surveyResponseId");
+    console.log(" surveyResponseId:", surveyResponseId);
     const savedData = localStorage.getItem("surveyData");
+    const parsedData = savedData ? JSON.parse(savedData) : null;
 
-    // [1] 설문 응답 저장
+    // ✅ 1. 로컬스토리지 + 로그인 완료 후 → 자동 전송
     if (savedData && !surveyResponseId) {
         try {
             const res = await fetch("/api/survey-responses", {
@@ -16,11 +27,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
 
             if (res.ok) {
-                const result = await res.json();
-                surveyResponseId = result.responseId;
+                const resultData = await res.json();
+                console.log("추천 결과:", resultData);
+                console.log("healthConditions:", resultData.healthConditions);
+                console.log("recommendedTypeScores:", resultData.recommendedTypeScores);
+                console.log("intakeTimingRatio:", resultData.intakeTimingRatio);
+                surveyResponseId = resultData.responseId;
                 localStorage.setItem("surveyResponseId", surveyResponseId);
                 localStorage.removeItem("surveyData");
-                console.log("✅ 설문 저장 완료:", surveyResponseId);
+                console.log("설문 저장 완료:", surveyResponseId);
             } else {
                 alert("설문 저장 실패");
                 return;
@@ -30,33 +45,74 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
     }
-
-    // [2] 설문 응답 ID가 없으면 종료
+    // ✅ 2. 백엔드 세션 기반 임시 데이터 복원 시도
+    // ✅ 세션 복원 시도
     if (!surveyResponseId) {
-        alert("설문 결과를 불러올 수 없습니다.");
-        return;
+        try {
+            const sessionRes = await fetch("/api/temp-survey", {
+                credentials: "include"
+            });
+
+            if (sessionRes.ok && sessionRes.status !== 204) {
+                const sessionData = await sessionRes.json();
+
+                const res = await fetch("/api/survey-responses", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(sessionData)
+                });
+
+                if (res.ok) {
+                    const result = await res.json();
+                    surveyResponseId = result.responseId;
+                    localStorage.setItem("surveyResponseId", surveyResponseId);
+                    console.log("세션에서 설문 복원 후 저장 완료:", surveyResponseId);
+                } else {
+                    alert("세션 복원 설문 저장 실패");
+                    return;
+                }
+            } else {
+                console.log("세션에서 복원할 설문 데이터 없음");
+            }
+        } catch (err) {
+            console.error("세션 설문 복원 중 오류:", err);
+        }
     }
 
-    // [3] 추천 결과 불러오기
+// ✅ 추천 호출 전에 필수 체크
+    if (!surveyResponseId) {
+        alert("설문 결과를 불러올 수 없습니다. 다시 설문을 진행해주세요.");
+        return;
+    }
+    // ✅ 3. 추천 결과 데이터 불러오기 및 화면 렌더링
     try {
-        const res = await fetch(`/api/recommendations/${surveyResponseId}`, {
-            credentials: "include",
-        });
+        const res = await fetch(`/api/recommendations/${surveyResponseId}`);
+        if (res.ok) {
+            const resultData = await res.json();
 
-        if (!res.ok) throw new Error(`추천 결과 API 실패 (status: ${res.status})`);
+            const userName = resultData.name || localStorage.getItem("userName") || "고객";
+            document.getElementById("user_result_title").innerHTML = `${userName}님의 <br /> 프로틴 추천 결과`;
 
-        const data = await res.json();
-        const userName = localStorage.getItem("userName") || "고객";
-        document.querySelector("#user_result_title").innerHTML = `${userName}님의 <br /> 프로틴 추천 결과`;
+            // 사용자 정보 업데이트
+            updateUserInfo({
+                gender: resultData.gender,
+                age: resultData.age,
+                bmi: resultData.bmi,
+                bmiStatus: resultData.bmiStatus
+            });
 
-        updateUserInfo(data);
-        visualizeResult(data);
-        document.getElementById('productName').innerText = `추천 제품: ${data.productName}`;
+            // 결과 시각화
+            visualizeResult(resultData);
+        } else {
+            alert("추천 결과를 불러오는 데 실패했습니다.");
+        }
     } catch (err) {
-        alert("설문 결과를 불러올 수 없습니다.");
-        console.error("결과 불러오기 실패:", err);
-        return;
+        console.error("추천 결과 호출 오류:", err);
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
     }
+
+
 
     // [4] 만족도 팝업 처리
     const closeBtn = document.querySelector(".close_btn3");
@@ -69,18 +125,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // [5] 별점 클릭 이벤트
     let selectedRating = 0;
+
     document.querySelectorAll(".star").forEach(star => {
         star.addEventListener("click", () => {
             selectedRating = parseInt(star.dataset.value);
+
+            // ⭐ 기존 selected → filled로 클래스 변경
             document.querySelectorAll(".star").forEach(s => {
-                s.classList.remove("selected");
+                s.classList.remove("filled");
                 if (parseInt(s.dataset.value) <= selectedRating) {
-                    s.classList.add("selected");
+                    s.classList.add("filled");
                 }
             });
+
+            console.log("⭐ 선택된 별점:", selectedRating);
         });
     });
-
     // [6] 만족도 제출
     document.querySelector('.end_btn').addEventListener('click', async () => {
         const score = selectedRating;
@@ -105,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 body: JSON.stringify(dto)
             });
             alert("설문이 저장되었습니다!");
-            window.location.href = "/store";
+            window.location.href = "/main";
         } catch (err) {
             alert("저장 중 오류가 발생했습니다.");
             console.error(err);
@@ -114,48 +174,85 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-// 사용자 정보 표시
-function updateUserInfo(data) {
-    const userText = `성별: ${data.gender} | 나이: ${data.age}세 | BMI: ${data.bmi} (${data.bmiStatus})`;
-    document.getElementById("user_info_text").innerText = userText;
-}
 
 // 전역 차트 객체
 let healthChart, proteinChart, intakeChart;
 
 // 결과 시각화 함수
 function visualizeResult(data) {
-    // 건강 상태 차트
-    const healthLabels = Object.keys(data.healthConditions);
-    const healthScores = Object.values(data.healthConditions);
+    // ✨ JSON 형태일 경우를 대비해 파싱
+    const safeParse = (obj) => {
+        if (typeof obj === "string") {
+            try {
+                return JSON.parse(obj);
+            } catch (e) {
+                console.warn("JSON 파싱 실패:", obj);
+                return {};
+            }
+        }
+        return obj;
+    };
+
+    const labels = ["소화 장", "피부 질환", "신장 부담", "수면 장애", "관절 건강", "간 건강", "혈관 건강"];
+    const parsed = safeParse(data.healthConditions);
+
+// 전체 데이터 그대로
+    const fullData = labels.map(label => parsed[label] || 0);
+
+// 상위 3개만 추출해서 연결할 값 구성
+    const sorted = labels.map(label => ({ label, value: parsed[label] || 0 }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 3);
+
+// 상위 3개 연결용 데이터: 나머지는 0
+    const top3Data = labels.map(label => {
+        return sorted.find(item => item.label === label) ? parsed[label] : 0;
+    });
+
     const ctx1 = document.getElementById('health_conditions_chart').getContext('2d');
     if (healthChart) healthChart.destroy();
+
     healthChart = new Chart(ctx1, {
         type: 'radar',
         data: {
-            labels: healthLabels,
-            datasets: [{
-                label: '건강 상태 점수',
-                data: healthScores,
-                backgroundColor: 'rgba(155, 114, 207, 0.7)',
-                borderColor: '#C6B8F9',
-                pointBackgroundColor: '#231A3F'
-            }]
+            labels,
+            datasets: [
+                {
+                    label: '건강 상태 점수',
+                    data: fullData,
+                    backgroundColor: 'rgba(155, 114, 207, 0.7)',
+                    borderColor: '#C6B8F9',
+                    pointBackgroundColor: '#231A3F'
+                },
+                {
+                    label: '강조된 상위 3개',
+                    data: top3Data,
+                    backgroundColor: 'rgba(155, 114, 207, 0.5)', // 기존색 유지
+                    borderColor: '#231A3F',
+                    pointBackgroundColor: '#231A3F',
+                    borderWidth: 2,
+                    fill: true
+                }
+            ]
         },
         options: {
             responsive: false,
             plugins: {
                 title: { display: true, text: '건강 상태 유형' },
-                legend: { labels: { font: { size: 12 } } }
+                legend: { display: false }  // 원하면 보여줘도 돼
             },
-            scale: {
-                ticks: { min: 0, max: 100, stepSize: 20 }
+            scales: {
+                r: {
+                    min: 0,
+                    max: 100,
+                    ticks: { stepSize: 20, display: false }
+                }
             }
         }
     });
 
     // 단백질 유형 차트
-    const sortedTypes = Object.entries(data.recommendedTypeScores || {}).sort((a, b) => b[1] - a[1]);
+    const sortedTypes = Object.entries(safeParse(data.recommendedTypeScores || {})).sort((a, b) => b[1] - a[1]);
     const typeLabels = sortedTypes.map(([k]) => k);
     const typeScores = sortedTypes.map(([_, v]) => v);
     const ctx2 = document.getElementById('protein_type_chart').getContext('2d');
@@ -181,8 +278,9 @@ function visualizeResult(data) {
     // 섭취 타이밍 차트
     const ctx3 = document.getElementById('protein_intake_chart').getContext('2d');
     if (intakeChart) intakeChart.destroy();
-    const timingLabels = Object.keys(data.intakeTimingRatio || {});
-    const timingValues = Object.values(data.intakeTimingRatio || {});
+    const timingLabels = Object.keys(safeParse(data.intakeTimingRatio));
+    const timingValues = Object.values(safeParse(data.intakeTimingRatio));
+
     intakeChart = new Chart(ctx3, {
         type: 'doughnut',
         data: {

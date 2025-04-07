@@ -28,4 +28,10 @@ public class RecommendationDTO {
 
     @Size(max = 1000, message = "경고 메시지는 1000자를 초과할 수 없습니다.")
     private String recommendationWarning;
+
+    private BigDecimal bmi;              // BMI 수치
+    private String bmiStatus;            // 저체중/정상 등
+    private String timingRatioJson;      // 섭취 타이밍 비율 (JSON)
+    private String proteinStatsJson;     // 단백질 추천 통계 (JSON)
+    private String healthConcernsJson;   // 건강 고민 목록 (JSON)
 }

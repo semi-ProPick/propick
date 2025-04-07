@@ -6,30 +6,38 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
-
+/* 분석 로직 결과를 담은 중간 결과
+ * 컨트롤러(RecommendationController)가 프론트로 반환하는 구조.
+ */
 @Getter
 @Builder
 @AllArgsConstructor
-/*
-* ProteinRecommendationEngine이 분석을 완료한 후, 최종적인 분석 결과를 담는 DT
-* 설문 분석 API (/api/survey-analysis/{responseId})의 반환값으로 제공
-* 프론트엔드에서 사용자가 결과 페이지를 볼 때 직접 표시될 내용들입니다.
-* BMI, 추천 단백질 유형, 섭취량, 타이밍, 건강 주의사항 등을 시각화하기 위해 사용됩니다.
-* */
 public class SurveyRecommendationResultDTO {
+
     private String name;
     private String gender;
     private int age;
+
+    // BMI 정보
     private double bmi;
     private String bmiStatus;
+
+    // 단백질 섭취량 (최소/최대)
     private double minIntakeGram;
     private double maxIntakeGram;
+
+    // 단백질 추천/회피 유형
     private List<String> recommendedTypes;
     private List<String> avoidTypes;
-    private String intakeTiming;
-    private List<String> warningMessages;
-    private Map<String, Integer> healthConcerns;
-    Map<String, Integer> proteinRecommendationStats;
-    private Map<String, Integer> intakeTimingRatio;
 
+    // 섭취 타이밍
+    private String intakeTiming;
+
+    // 주의 메시지
+    private List<String> warningMessages;
+
+    // 🔥 추가 정보들: 모두 저장용으로 JSON 변환 가능
+    private Map<String, Integer> healthConcerns;               // 건강 고민
+    private Map<String, Integer> proteinRecommendationStats;   // 단백질 추천 통계
+    private Map<String, Integer> timingRatio;                  // 섭취 시간대 비율
 }

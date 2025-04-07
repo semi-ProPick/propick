@@ -15,37 +15,51 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "/survey_start.html";
         });
     }
-
-    // API로 설문 목록 불러오기
+// ✅ API 호출
     fetch("/api/survey-responses/my_survey")
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                if (res.status === 401) {
+                    alert("로그인이 필요합니다.");
+                    window.location.href = "/user/login?redirect=/survey_mypage";
+                    return;
+                }
+                throw new Error(`HTTP 오류: ${res.status}`);
+            }
+            return res.json();
+        })
         .then(data => {
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 popupEmpty.classList.add("active");
                 return;
             }
-
-            data.forEach(item => {
-                const li = document.createElement("li");
-                li.className = "survey_item";
-                li.innerHTML = `
-                    <label>
-                        <input type="checkbox" class="survey_checkbox" data-id="${item.responseId}" />
-                        <span class="survey_title clickable" data-id="${item.responseId}">
-                            ${item.surveyTitle}
-                        </span>
-                    </label>
-                    <span class="date">${item.responseDate}</span>
-                `;
-                surveyList.appendChild(li);
-            });
-
-            addSurveyEventListeners();
+            renderSurveyList(data);
         })
         .catch(err => {
             console.error("설문 목록 로딩 실패:", err);
         });
 
+    // ✅ 리스트 렌더링 함수
+    function renderSurveyList(data) {
+        data.forEach(item => {
+            const li = document.createElement("li");
+            li.className = "survey_item";
+            li.innerHTML = `
+                <label>
+                    <input type="checkbox" class="survey_checkbox" data-id="${item.responseId}" />
+                    <span class="survey_title clickable" data-id="${item.responseId}">
+                        ${item.surveyTitle} (${item.purpose || ''}${item.mainConcerns?.length ? ', ' + item.mainConcerns.join(', ') : ''})
+                    </span>
+                </label>
+                <span class="date">${item.responseDate}</span>
+            `;
+            surveyList.appendChild(li);
+        });
+
+        addSurveyEventListeners(); // ✅ 렌더링 후 이벤트 등록
+    }
+
+    // ✅ 이벤트 등록 함수
     function addSurveyEventListeners() {
         selectAll.addEventListener("change", () => {
             document.querySelectorAll(".survey_checkbox").forEach(cb => {
@@ -56,10 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".survey_title").forEach(el => {
             el.addEventListener("click", e => {
                 const id = e.target.dataset.id;
-                localStorage.setItem("surveyResponseId", id);
-                window.location.href = "/survey_result.html";
+                localStorage.setItem("surveyResponseId", id);  // 저장
+                window.location.href = "/survey_result";  // 결과 페이지 이동
             });
         });
+
 
         deleteBtn.addEventListener("click", () => {
             const selected = document.querySelectorAll(".survey_checkbox:checked");

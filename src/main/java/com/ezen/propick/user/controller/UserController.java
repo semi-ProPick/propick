@@ -19,6 +19,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -42,8 +46,15 @@ public class UserController {
     }
     //회원가입 처리
     @PostMapping("/join")
-    public String join(@ModelAttribute MemberDTO memberDTO, BindingResult bindingResult) {
+    public String join(@ModelAttribute MemberDTO memberDTO,
+                       @RequestParam(required = false) String redirect,
+                       BindingResult bindingResult) {
         userService.createMember(memberDTO);
+
+        if (redirect != null && !redirect.isBlank()) {
+            return "redirect:/user/login?redirect=" + URLEncoder.encode(redirect, StandardCharsets.UTF_8);
+        }
+
         return "redirect:/user/login";
     }
 

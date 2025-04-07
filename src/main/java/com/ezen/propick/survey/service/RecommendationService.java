@@ -2,8 +2,6 @@ package com.ezen.propick.survey.service;
 
 import com.ezen.propick.product.entity.Product;
 import com.ezen.propick.product.repository.ProductRepository;
-import com.ezen.propick.survey.dto.result.SurveyRecommendationResultDTO;
-import com.ezen.propick.survey.dto.result.SurveyResultInputDTO;
 import com.ezen.propick.survey.engine.ProteinRecommendationEngine;
 import com.ezen.propick.survey.entity.Recommendation;
 import com.ezen.propick.survey.entity.SurveyResponse;
@@ -13,56 +11,48 @@ import com.ezen.propick.survey.repository.RecommendationRepository;
 import com.ezen.propick.survey.repository.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class RecommendationService {
 
-    private final ProteinRecommendationEngine recommendationEngine;
     private final RecommendationRepository recommendationRepository;
     private final SurveyResponseRepository responseRepository;
-    private final ProductRepository productRepository; // 제품 추천 로직이 있을 경우 사용
+    private final ProductRepository productRepository;
 
     /**
-     * 설문 응답 ID와 입력 DTO를 바탕으로 분석 결과 생성 → 추천 정보 저장
+     * ✅ 최소 정보만 저장하는 추천 저장 로직
      * @param surveyResponseId 설문 응답 ID
-     * @param inputDto         분석을 위한 입력 데이터
-     * @param productId        추천 제품 ID
-     * @param userId           로그인한 사용자 ID
-     * @return Recommendation 저장된 엔티티
+     * @param productId 추천 제품 ID (nullable 허용)
+     * @param userId 로그인한 사용자 ID
      */
 
     public Recommendation createAndSaveRecommendation(
             Integer surveyResponseId,
-            SurveyResultInputDTO inputDto,
             Integer productId,
-            String userId // ✅ 문자열 기반 로그인 ID
+            String userId
     ) {
-        // 1. 분석 결과 생성
-        SurveyRecommendationResultDTO result = recommendationEngine.generate(inputDto);
-
-        // 2. 설문 응답 엔티티 조회
+        // 설문 응답 조회
         SurveyResponse response = responseRepository.findById(surveyResponseId)
                 .orElseThrow(() -> new IllegalArgumentException("설문 응답을 찾을 수 없습니다."));
 
+        // 2. 제품 조회 (nullable 허용)
+        Product recommendedProduct = null;
+        if (productId != null) {
+            recommendedProduct = productRepository.findById(productId)
+                    .orElseThrow(() -> new IllegalArgumentException("추천할 제품을 찾을 수 없습니다."));
+        }
 
-        // 3. 추천할 제품 조회 ***추후 제품 추천 로직 으로 바꾸기
-        Product recommendedProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("추천할 제품을 찾을 수 없습니다."));
-
-        // Recommendation 저장
+        // 3. Recommendation 저장
         Recommendation recommendation = Recommendation.builder()
                 .responseId(response)
                 .user(response.getUser())
                 .productId(recommendedProduct)
-                .recommendationIntakeAmount(BigDecimal.valueOf(result.getMinIntakeGram()))
-                .recommendationWarning(String.join(";", result.getWarningMessages()))
                 .build();
 
 
-        // DB에 추천 결과 저장
         return recommendationRepository.save(recommendation);
     }
 
@@ -73,18 +63,80 @@ public class RecommendationService {
         try {
             return ProteinType.valueOf(type);
         } catch (Exception e) {
-            throw new IllegalArgumentException("❌ 유효하지 않은 단백질 타입: " + type);
+            return ProteinType.WPI; // 기본값
         }
     }
 
     /**
      * 섭취 타이밍 String → RecommendationTiming Enum 변환
      */
-    private RecommendationTiming convertToTiming(String timing) {
-        try {
-            return RecommendationTiming.valueOf(timing);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("❌ 유효하지 않은 섭취 타이밍: " + timing);
+    private RecommendationTiming convertToTiming(String timingText) {
+        if (timingText == null) return RecommendationTiming.아침;
+
+        if (timingText.contains("운동")) return RecommendationTiming.운동후;
+        if (timingText.contains("취침")) return RecommendationTiming.취침전;
+        if (timingText.contains("점심")) return RecommendationTiming.점심;
+        if (timingText.contains("저녁")) return RecommendationTiming.저녁;
+        if (timingText.contains("아침")) return RecommendationTiming.아침;
+
+        return RecommendationTiming.아침;
+    }
+
+    // ✅ 건강 상태 점수 계산 로직 (optionCode → 카테고리 기반)
+    private static final Map<String, Integer> HEALTH_DETAIL_COUNT = Map.of(
+            "소화 장", 4,
+            "피부 질환", 5,
+            "신장 부담", 4,
+            "수면 장애", 3,
+            "관절 건강", 2,
+            "간 건강", 2,
+            "혈관 건강", 3
+    );
+
+    public Map<String, Integer> calculateHealthConditionScores(Map<String, Integer> concernMap) {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        Map<String, Integer> selectedCountByCategory = new LinkedHashMap<>();
+
+        // [1] 각 하위 증상 → 상위 카테고리 매핑
+        for (Map.Entry<String, Integer> entry : concernMap.entrySet()) {
+            String childCode = entry.getKey();
+            String parentLabel = getParentLabelByOptionCode(childCode);
+
+            if (parentLabel != null) {
+                selectedCountByCategory.put(
+                        parentLabel,
+                        selectedCountByCategory.getOrDefault(parentLabel, 0) + entry.getValue()
+                );
+            }
         }
+        // [2] 실제 점수 계산 (항목당 비중 × 선택 수)
+        for (Map.Entry<String, Integer> entry : selectedCountByCategory.entrySet()) {
+            String category = entry.getKey();
+            int selected = entry.getValue();
+            int total = HEALTH_DETAIL_COUNT.getOrDefault(category, 1);
+            double score = ((double) selected / total) * 100.0;
+            result.put(category, Math.min((int) Math.round(score), 100)); // 100점 cap
+        }
+
+        // [3] 선택 안 한 항목은 0점으로 고정
+        for (String category : HEALTH_DETAIL_COUNT.keySet()) {
+            result.putIfAbsent(category, 0);
+        }
+
+        return result;
+    }
+
+
+    private String getParentLabelByOptionCode(String code) {
+        return switch (code) {
+            case "CONSTIPATION", "DIARRHEA", "LACTOSE" -> "소화 장";
+            case "ACNE", "ALLERGY" -> "피부 질환";
+            case "KIDNEY" -> "신장 부담";
+            case "SLEEP" -> "수면 장애";
+            case "ARTHRITIS" -> "관절 건강";
+            case "LIVER", "TIRED" -> "간 건강";
+            case "CARDIO" -> "혈관 건강";
+            default -> null;
+        };
     }
 }

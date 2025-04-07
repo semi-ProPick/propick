@@ -34,8 +34,10 @@ public class SurveyResponse {
     @JoinColumn(name = "user_no")
     private User user;
 
+
     @OneToMany(mappedBy = "response", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<SurveyResponseOption> surveyResponseOptions;
+    private List<SurveyResponseOption> surveyResponseOptions = new ArrayList<>();
+
     // 만족도
     @OneToOne(mappedBy = "response", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Satisfaction satisfaction;
@@ -48,7 +50,7 @@ public class SurveyResponse {
     @Column(name="response_status", nullable = false)
     private ResponseStatus responseStatus = ResponseStatus.ACTIVE;
 
-    public void setResponseStatus(ResponseStatus status) {
-        this.responseStatus = status;
-    }
+
+
+
 }

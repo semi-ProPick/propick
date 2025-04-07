@@ -4,16 +4,18 @@ import com.ezen.propick.survey.dto.result.SurveyResultInputDTO;
 import com.ezen.propick.survey.dto.survey.*;
 import com.ezen.propick.survey.entity.*;
 import com.ezen.propick.survey.enumpackage.QuestionType;
+import com.ezen.propick.survey.enumpackage.ResponseStatus;
 import com.ezen.propick.survey.repository.*;
 import com.ezen.propick.user.entity.User;
 import com.ezen.propick.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SurveyResponseService {
@@ -35,10 +37,12 @@ public class SurveyResponseService {
         Survey survey = surveyRepository.findById(dto.getSurveyId())
                 .orElseThrow(() -> new IllegalArgumentException("설문지를 찾을 수 없습니다."));
 
+
         SurveyResponse response = SurveyResponse.builder()
                 .user(user)
                 .surveyId(survey)
                 .responseDate(LocalDateTime.now())
+                .responseStatus(ResponseStatus.ACTIVE)
                 .build();
         surveyResponseRepository.save(response);
 
@@ -70,6 +74,7 @@ public class SurveyResponseService {
                         .response(response)
                         .option(null)
                         .freeTextAnswer(answer.getFreeTextAnswer())
+                        .question(question)
                         .build();
                 surveyResponseOptionRepository.save(responseOption);
             }
@@ -82,6 +87,7 @@ public class SurveyResponseService {
                     SurveyResponseOption responseOption = SurveyResponseOption.builder()
                             .response(response)
                             .option(option)
+                            .question(question)
                             .build();
                     surveyResponseOptionRepository.save(responseOption);
                 }
@@ -94,7 +100,7 @@ public class SurveyResponseService {
      * 설문 응답 ID 기반으로 분석용 DTO 생성
      */
     public SurveyResultInputDTO getSurveyResultInputDTO(Integer responseId) {
-        SurveyResponse response = surveyResponseRepository.findById(responseId)
+        SurveyResponse response = surveyResponseRepository.findByIdWithOptions(responseId) // ✅ fetch join 적용
                 .orElseThrow(() -> new IllegalArgumentException("설문 응답을 찾을 수 없습니다."));
 
         Survey survey = response.getSurveyId();
@@ -107,12 +113,15 @@ public class SurveyResponseService {
      * 응답 데이터와 설문 구조를 기반으로 분석용 DTO 생성
      */
     private SurveyResultInputDTO buildInputDTOFromSurvey(SurveyResponse response, SurveyDTO surveyDTO) {
-        Set<Integer> selectedOptionIds = response.getSurveyResponseOptions().stream()
+        List<SurveyResponseOption> options = Optional.ofNullable(response.getSurveyResponseOptions())
+                .orElse(new ArrayList<>());
+
+        Set<Integer> selectedOptionIds = options.stream()
                 .filter(opt -> opt.getOption() != null)
                 .map(opt -> opt.getOption().getOptionId())
                 .collect(Collectors.toSet());
 
-        Map<Integer, String> freeTextAnswerMap = response.getSurveyResponseOptions().stream()
+        Map<Integer, String> freeTextAnswerMap = options.stream()
                 .filter(opt -> opt.getOption() == null && opt.getFreeTextAnswer() != null)
                 .collect(Collectors.toMap(opt -> opt.getQuestion().getQuestionId(), SurveyResponseOption::getFreeTextAnswer));
 
@@ -125,23 +134,32 @@ public class SurveyResponseService {
 
             if (type == QuestionType.Text) {
                 String freeTextAnswer = freeTextAnswerMap.get(question.getQuestionId());
-
                 if (freeTextAnswer != null && !freeTextAnswer.isBlank()) {
                     singleValueMap.put(questionCode, freeTextAnswer);
                 }
             } else {
                 for (SurveyOptionsDTO option : flattenOptions(question.getOptions())) {
                     if (selectedOptionIds.contains(option.getOptionId())) {
-                        String value = option.getOptionText();
+                        String code = option.getOptionCode();
+                        if (code == null || code.isBlank()) {
+                            log.warn("❗ optionId {} 의 optionCode 가 null 또는 비어있습니다.", option.getOptionId());
+                            continue;
+                        }
+                        log.info("질문코드: {}, 선택된 옵션 ID: {}, 코드: {}", questionCode, option.getOptionId(), code);
+
                         if (type == QuestionType.Multiple) {
-                            multiValueMap.computeIfAbsent(questionCode, k -> new ArrayList<>()).add(value);
+                            multiValueMap.computeIfAbsent(questionCode, k -> new ArrayList<>()).add(code);
                         } else if (type == QuestionType.Single) {
-                            singleValueMap.putIfAbsent(questionCode, value);
+                            singleValueMap.putIfAbsent(questionCode, code);
                         }
                     }
                 }
             }
         }
+
+        log.info("✅ 최종 SINGLE MAP: {}", singleValueMap);
+        log.info("✅ 최종 MULTI MAP: {}", multiValueMap);
+
         List<String> healthConcerns = multiValueMap.getOrDefault("HEALTH_CONCERN", new ArrayList<>());
 
         return SurveyResultInputDTO.builder()
@@ -150,11 +168,12 @@ public class SurveyResponseService {
                 .age(parseInt(singleValueMap.get("AGE"), 30))
                 .heightCm(parseDouble(singleValueMap.get("HEIGHT"), 170))
                 .weightKg(parseDouble(singleValueMap.get("WEIGHT"), 60))
-                .purpose(singleValueMap.get("PURPOSE"))
-                .workoutFreq(singleValueMap.get("WORKOUT"))
+                .purpose(singleValueMap.getOrDefault("PURPOSE", "PROTEIN_SUPPORT"))
+                .workoutFreq(singleValueMap.getOrDefault("WORKOUT", "LOW"))
                 .healthConcerns(toConcernMap(healthConcerns))
                 .build();
     }
+
     /**
      * Survey → SurveyDTO 변환 (option 트리 포함)
      */

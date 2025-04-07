@@ -19,6 +19,7 @@ public class SatisfactionController {
 
     @PostMapping
     public ResponseEntity<String> save(@RequestBody @Valid SatisfactionDTO dto) {
+        System.out.println("⭐ 저장 요청 DTO: " + dto);
         satisfactionService.save(dto);
         return ResponseEntity.ok("Satisfaction saved");
     }

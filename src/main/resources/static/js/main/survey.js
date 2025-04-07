@@ -8,7 +8,7 @@ let currentDetailIndex = 0;
 const healthConcernMap = {};
 
 const healthConcernImages = {
-    "소화, 장": "/images/main/digest.png",
+    "소화 장": "/images/main/digest.png",
     "피부 질환": "/images/main/skin_disease.png",
     "신장 부담": "/images/main/kidney.png",
     "수면 장애": "/images/main/sleep_disorder.png",
@@ -148,6 +148,11 @@ function getHelpText(question) {
                     surveyAnswers[question.questionId] = isNaN(numericValue) ? "" : numericValue;
                 } else {
                     surveyAnswers[question.questionId] = value;
+                    if (code === "NAME") {
+                        input.id = "nametext";
+                        input.placeholder = "이름";
+                        localStorage.setItem("userName", value);
+                    }
                 }
             };
 
@@ -282,6 +287,30 @@ function showDetailQuestion(index) {
         currentDetailIndex++;
         showDetailQuestion(currentDetailIndex); // 다음 고민의 하위 질문 보여줌
     };
+    // ✅ concern_detail_page 내 이전 버튼 처리
+    const detailBeforeBtn = document.querySelector("#concern_detail_page .before_page");
+    if (detailBeforeBtn) {
+        detailBeforeBtn.onclick = () => {
+            console.log("하위 증상 - 이전 버튼 클릭됨");
+            if (currentDetailIndex > 0) {
+                currentDetailIndex--;
+                showDetailQuestion(currentDetailIndex);
+            } else {
+                // HEALTH_CONCERN 질문 페이지로 이동
+                const healthPageId = pageQuestionList[pageQuestionList.length - 2]; // 보통 마지막은 concern_detail_page
+                nextPage("concern_detail_page", healthPageId);
+            }
+        };
+    }
+
+    // ✅ concern_detail_page 내 닫기 버튼 처리
+    const detailCloseBtn = document.querySelector("#concern_detail_page .close_btn");
+    if (detailCloseBtn) {
+        detailCloseBtn.onclick = () => {
+            console.log("하위 증상 - 닫기 버튼 클릭됨");
+            document.querySelector(".popup_bg").style.display = "flex";
+        };
+    }
 }
 
 function generateDynamicPages(count) {
@@ -328,15 +357,24 @@ function collectSurveyAnswers() {
 }
 document.getElementById("submit_btn").addEventListener("click", async () => {
     const inputData = collectSurveyAnswers();
-    localStorage.setItem("surveyData", JSON.stringify(inputData));  // 설문 응답 백업
 
-    // 기존 응답 ID 제거 (중복 저장 방지)
+    // ✅ [1] localStorage 저장 (프론트 백업용)
+    localStorage.setItem("surveyData", JSON.stringify(inputData));
     localStorage.removeItem("surveyResponseId");
 
-    // 설문 응답 임시 저장
-    localStorage.setItem("surveyData", JSON.stringify(inputData));
+    // ✅ [2] 백엔드 세션 저장 (임시 저장)
+    try {
+        await fetch("/api/temp-survey", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(inputData)
+        });
+        console.log("✅ 세션에 설문 응답 임시 저장 성공");
+    } catch (err) {
+        console.error(" 세션 저장 실패:", err);
+    }
 
-    // 로그인 후 결과 페이지로 이동
+    // ✅ [3] 로그인 후 결과 페이지로 이동
     window.location.href = "/user/login?redirect=/survey_result";
 });
 
