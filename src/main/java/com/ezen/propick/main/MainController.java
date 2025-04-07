@@ -21,4 +21,9 @@ public class MainController {
     public String collaboPage() {
         return "main/collabo";
     }
+
+    @GetMapping("/mypage")
+    public String mypage() {
+        return "/main/mypage";
+    }
 }

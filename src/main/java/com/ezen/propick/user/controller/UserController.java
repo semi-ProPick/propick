@@ -21,6 +21,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Profile("user")
@@ -50,12 +52,6 @@ public class UserController {
     }
 
 
-    //     회원가입 페이지를 보여주는 메서드
-    @GetMapping("/join")
-    public String join(Model model) {
-        model.addAttribute("MemberDTO", new MemberDTO()); // Model에 memberDTO 추가
-        return "/main/join";  // join.html 뷰를 반환
-    }
 
     //회원가입 처리
     @GetMapping("/join")
@@ -63,6 +59,7 @@ public class UserController {
         model.addAttribute("MemberDTO", new MemberDTO()); // Model에 memberDTO 추가
         return "/main/join";  // join.html 뷰를 반환
     }
+
     //회원가입 처리
     @PostMapping("/join")
     public String join(@ModelAttribute MemberDTO memberDTO,

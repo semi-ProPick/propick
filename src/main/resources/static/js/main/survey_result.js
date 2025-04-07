@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 body: JSON.stringify(dto)
             });
             alert("설문이 저장되었습니다!");
-            window.location.href = "/main";
+            window.location.href = "/";
         } catch (err) {
             alert("저장 중 오류가 발생했습니다.");
             console.error(err);
