@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>자유게시판-댓글</title>
+    <link rel="stylesheet" href="/css/boardcm.css" />
+    <link rel="stylesheet" href="css/header.css" type="text/css" />
+  </head>
+  <body>
+    <div id="header"></div>
+    <input
+      type="text"
+      class="title-box"
+      placeholder="추천 잘해주는 거 같아요"
+    />
+    <div class="separator"></div>
+    <textarea
+      class="content-box"
+      placeholder="이제 보충제를 뭐 먹어야할지 선택할 게 많아지고, 고민이 많았어요 ㅠㅠ
+심리적 적정선에서 제일 잘 맞는 보충제를 픽해서 알려주니까 1:1 맞춤인 느낌?
+받아서 먹어보니까 소화도 잘되고 단백질까지 챙겨서 헬스인의 저한테는 너무나 만족스러운 구매였습니다.!
+보충제 뭐사야할지 고민이라면 설문 통해서 구매하는거 진짜 추천!"
+    ></textarea>
+    <div class="upload-section">
+      <div class="upload-box">
+        <img src="upload-icon.png" alt="" />
+        <span>사진 (1/5)</span>
+      </div>
+    </div>
+    <div class="separator1"></div>
+    <div class="button-container">
+      <button onclick="addComment()">댓글쓰기</button>
+    </div>
+    <div class="comment-section">
+      <h2>댓글</h2>
+      <div class="comment-item">
+        <span class="user">🆔 gfrw12</span>
+        <p>글 잘보고 갑니다.</p>
+        <span class="comment-date">2023-12-23 14:20</span>
+        <div class="comment-actions">
+          <button onclick="replyComment(this)">답글</button>
+          <button class="report" onclick="reportComment(this)">신고</button>
+        </div>
+      </div>
+    </div>
+    <div class="separator1"></div>
+
+    <div class="comment-section" id="comment-section"></div>
+  </body>
+  <script src="/js/header.js" defer></script>
+</html>

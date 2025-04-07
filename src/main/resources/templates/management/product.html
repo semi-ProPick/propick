@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>상품</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet"
+    />
+    <link href="/css/management/sb-admin-2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/management/common.css" />
+  </head>
+  <body id="page-top">
+    <div id="wrapper">
+      <!-- 사이드바 -->
+      <div id="sidebar" th:replace="~{management/sidebar}"></div>
+
+      <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+          <!-- 해더 -->
+          <div id="header" th:replace="~{management/header}"></div>
+
+          <div
+            class="d-sm-flex align-items-center justify-content-between mb-4"
+          ></div>
+          <!-- 내용 -->
+          <div class="container-fluid">
+            <h2 class="h3 mb-5 text-gray-800">상품 관리</h2>
+            <div class="card shadow mb-4">
+              <div class="card-header py-3 event-title" id="event-title">
+                <h6 class="m-0 font-weight-bold text-primary"></h6>
+                <button class="btn-register">
+                  <a th:href="@{/products/regist}">상품 등록</a>
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table
+                    class="table table-bordered"
+                    id="dataTable"
+                    width="100%"
+                    cellspacing="0"
+                  >
+                    <thead>
+                      <tr style="text-align: center;">
+                        <th>상품ID</th>
+                        <th>브랜드명</th>
+                        <th>상품명</th>
+                        <th>프로틴 유형</th>
+                        <th>가격</th>
+                        <th>등록일</th>
+                        <th>수정/삭제</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="product : ${products}">
+                        <td th:text="${product.productId}" style="text-align: center;"></td>
+                        <td th:text="${product.brandName}" style="text-align: center;"></td>
+                        <td th:text="${product.productName}"></td>
+                        <td th:text="${product.productType}"></td>
+                        <td th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'" style="text-align: center;"></td>
+                        <td th:text="${#temporals.format(product.productCreatedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                          <div style="display: flex; justify-content: center;">
+                          <button class="btn-edit">
+                            <a th:href="@{/products/edit/{productId}(productId=${product.productId})}">수정</a>
+                          </button>
+                            <form action="/products/delete" method="POST" style="margin-left: 10px;">
+                              <input type="hidden" name="productId" th:value="${product.productId}" />
+                              <button type="submit" class="btn-delete">삭제</button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <nav>
+                    <ul class="pagination justify-content-center">
+                      <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/products(page=0)}">처음</a>
+                      </li>
+                      <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/products(page=${currentPage - 1})}">이전</a>
+                      </li>
+
+                      <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                          th:classappend="${pageNum == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/products(page=${pageNum})}" th:text="${pageNum + 1}"></a>
+                      </li>
+
+                      <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/products(page=${currentPage + 1})}">다음</a>
+                      </li>
+                      <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/products(page=${totalPages - 1})}">끝</a>
+                      </li>
+                    </ul>
+                  </nav>
+                  <form class="search-container" th:action="@{/products}" method="get">
+                    <input
+                            type="text"
+                            name="keyword"
+                            placeholder="상품명 또는 브랜드명 입력"
+                            th:value="${keyword}"
+                    />
+                    <select name="sortOrder">
+                      <option value="desc" th:selected="${sortOrder == 'desc'}">최신순</option>
+                      <option value="asc" th:selected="${sortOrder == 'asc'}">오래된순</option>
+                    </select>
+                    <button class="btn btn-search" type="submit">검색</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="footer" th:replace="~{management/footer}"></div>
+      </div>
+    </div>
+
+    <div id="logout_modal" th:replace="~{management/logoutModal}"></div>
+
+    <script src="/jquery/jquery.slim.js"></script>
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+
+    <script src="/js/management/sb-admin-2.min.js"></script>
+    <script src="/js/management/chart-area-demo.js"></script>
+    <script src="/js/management/chart-pie-demo.js"></script>
+  </body>
+</html>

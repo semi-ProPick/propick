@@ -1,0 +1,295 @@
+/* 대시보드 */
+.count_box {
+  width: 80%;
+  display: flex;
+}
+
+.count {
+  border: none;
+  border-radius: 10px;
+  background-color: #d9d9d9;
+  width: 100%;
+  height: 15vh;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  color: black;
+  font-size: 25px;
+}
+
+.satisfaction_survey {
+  width: 80%;
+}
+
+.chart {
+  width: 70%;
+  border-radius: 10px;
+  border: none;
+  height: 40vh;
+  background-color: #d9d9d9;
+}
+
+.bookmark_rank {
+  width: 80%;
+}
+
+.rank_box {
+  width: 100%;
+  height: 20vh;
+  border: none;
+  border-radius: 15px;
+  background-color: #d9d9d9;
+  margin-bottom: 30px;
+  gap: 60px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rank_product_img {
+  width: 20%;
+  height: 80%;
+  border: 1px solid black;
+}
+
+#inside {
+  height: 800px;
+  overflow-y: scroll;
+}
+
+/* 이벤트 */
+.regist_event {
+  margin-right: 2px;
+}
+
+#event-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  border: 1px solid #d9d9d9;
+}
+
+button > a {
+  color: #000;
+}
+
+.content-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.content-wrap p {
+  font-size: 15px;
+  margin-right: 20px;
+  margin-top: 18px;
+}
+
+#progress {
+  margin-top: 14px;
+}
+#done {
+  margin-top: 14px;
+  margin-left: 20px;
+}
+#normal {
+  margin-top: 14px;
+}
+#custom,
+#save {
+  margin-top: 14px;
+  margin-left: 20px;
+}
+
+#new_user,
+#exist_user,
+#age10to20,
+#age30to40,
+#age40to50 {
+  margin-left: 15px;
+  margin-top: 14px;
+}
+
+#brand_power,
+#brand_mytein,
+#brand_3to500,
+#brand_propic,
+#brand_protein {
+  margin-left: 15px;
+  margin-top: 14px;
+}
+
+#save,
+#modify {
+  margin-left: 326px;
+}
+#brand_save {
+  margin-left: 377px;
+}
+
+/* product */
+.btn-edit {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+.btn-delete {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+.btn-register {
+  float: right;
+  margin-bottom: 10px;
+  background-color: white;
+  color: black;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+.search-container {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+input[type="text"] {
+  width: 50%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.btn-search {
+  background-color: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+/* user */
+.select_box {
+  width: 100%;
+  display: flex;
+}
+
+.text_box {
+  width: 15%;
+}
+
+#user_search {
+  margin-left: 10px;
+}
+
+.user_info_box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user_info_box p {
+  margin-right: 10px;
+  width: 120px;
+  text-align: left;
+}
+
+.text {
+  padding: 5px;
+  width: 194px;
+  height: 30px;
+  color: #d9d9d9;
+  background-color: #fff;
+}
+
+.impossible {
+  color: red;
+  margin-left: 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.user_info_box input[readonly] {
+  background-color: #d9d9d9;
+}
+
+.click_ox {
+  width: 50%;
+}
+
+.ox {
+  width: 100%;
+  text-align: right;
+}
+
+/* 설문 */
+#survey-wrap {
+  overflow-y: scroll;
+  height: 1000px;
+}
+
+.q3text {
+  margin: 40px;
+  color: black;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.button-container2 {
+  display: flex;
+
+  margin-bottom: 10px;
+}
+.commit-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.text1 {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  color: black;
+}
+
+.table2 {
+  margin-top: 40px;
+}
+
+.commitbutton {
+  background-color: #4e73df;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.page2,
+.page3 {
+  margin-top: 40px;
+}
+
+.form-group label {
+  /*width: 70px; */
+  text-align: left;
+  font-weight: bold;
+}
+.form-group input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
