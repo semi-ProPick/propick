@@ -1,4 +1,4 @@
-package com.ezen.propick.user.controller;
+package com.ezen.propick.admin.controller;
 
 import com.ezen.propick.user.dto.AdminUserModifyDTO;
 import com.ezen.propick.user.dto.AfterUserInfoDTO;
