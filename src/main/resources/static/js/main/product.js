@@ -1,26 +1,16 @@
-document.querySelectorAll(".category_menu").forEach((item) => {
-  item.addEventListener("click", () => {
-    // 다른 모든 항목에서 active 클래스 제거
-    document.querySelectorAll(".category_menu").forEach((cate) => {
-      cate.classList.remove("active");
-    });
 
-    // 클릭한 항목에 active 클래스 추가
-    item.classList.add("active");
-  });
-});
 
-document.querySelectorAll(".product_cate").forEach((item) => {
-  item.addEventListener("click", () => {
-    // 다른 모든 항목에서 active 클래스 제거
-    document.querySelectorAll(".product_cate").forEach((cate) => {
-      cate.classList.remove("active");
-    });
-
-    // 클릭한 항목에 active 클래스 추가
-    item.classList.add("active");
-  });
-});
+// document.querySelectorAll(".product_cate").forEach((item) => {
+//   item.addEventListener("click", () => {
+//     // 다른 모든 항목에서 active 클래스 제거
+//     document.querySelectorAll(".product_cate").forEach((cate) => {
+//       cate.classList.remove("active");
+//     });
+//
+//     // 클릭한 항목에 active 클래스 추가
+//     item.classList.add("active");
+//   });
+// });
 
 document.addEventListener("DOMContentLoaded", function () {
   const listItems = document.querySelectorAll(".category_wrap ul li");
@@ -38,42 +28,42 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  const ageCategory = document.getElementById("age_category"); // '연령별' 카테고리 li
-  const ageList = document.querySelector(".age_list"); // 'age_list' ul
-  const otherCategories = document.querySelectorAll(
-    ".product_cate:not(#age_category)"
-  ); // '연령별' 제외한 다른 카테고리들
-  const ageCates = document.querySelectorAll(".age_cate");
-
-  // 연령별 클릭 시 age_list 보이기 (숨겨지지 않도록 수정)
-  ageCategory.addEventListener("click", function () {
-    // 다른 카테고리 클릭 시 age_list 숨기기
-    otherCategories.forEach((category) => {
-      category.classList.remove("active");
-    });
-
-    // 연령별 클릭하면 항상 active 유지
-    ageList.classList.add("active");
-  });
-
-  // 다른 카테고리 클릭 시, age_list 숨기기
-  otherCategories.forEach((category) => {
-    category.addEventListener("click", function () {
-      ageList.classList.remove("active"); // 연령별이 아닌 카테고리 클릭하면 숨김
-    });
-  });
-
-  // 연령별 리스트(age_cate) 클릭 시 색상 변경
-  ageCates.forEach((cate) => {
-    cate.addEventListener("click", function () {
-      // 기존 선택된 항목의 active 제거
-      ageCates.forEach((item) => item.classList.remove("active"));
-      // 현재 클릭한 항목에 active 추가
-      cate.classList.add("active");
-    });
-  });
-});
+// document.addEventListener("DOMContentLoaded", function () {
+//   const ageCategory = document.getElementById("age_category"); // '연령별' 카테고리 li
+//   const ageList = document.querySelector(".age_list"); // 'age_list' ul
+//   const otherCategories = document.querySelectorAll(
+//     ".product_cate:not(#age_category)"
+//   ); // '연령별' 제외한 다른 카테고리들
+//   const ageCates = document.querySelectorAll(".age_cate");
+//
+//   // 연령별 클릭 시 age_list 보이기 (숨겨지지 않도록 수정)
+//   ageCategory.addEventListener("click", function () {
+//     // 다른 카테고리 클릭 시 age_list 숨기기
+//     otherCategories.forEach((category) => {
+//       category.classList.remove("active");
+//     });
+//
+//     // 연령별 클릭하면 항상 active 유지
+//     ageList.classList.add("active");
+//   });
+//
+//   // 다른 카테고리 클릭 시, age_list 숨기기
+//   otherCategories.forEach((category) => {
+//     category.addEventListener("click", function () {
+//       ageList.classList.remove("active"); // 연령별이 아닌 카테고리 클릭하면 숨김
+//     });
+//   });
+//
+//   // 연령별 리스트(age_cate) 클릭 시 색상 변경
+//   ageCates.forEach((cate) => {
+//     cate.addEventListener("click", function () {
+//       // 기존 선택된 항목의 active 제거
+//       ageCates.forEach((item) => item.classList.remove("active"));
+//       // 현재 클릭한 항목에 active 추가
+//       cate.classList.add("active");
+//     });
+//   });
+// });
 
 document.addEventListener("DOMContentLoaded", function () {
   const searchInput = document.querySelector(".seach_input"); // 검색 입력창
@@ -85,15 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentPage = 1; // 현재 페이지
   const itemsPerPage = 6; // 한 페이지당 6개 표시
 
-  // 더미 데이터 (서버에서 불러올 데이터 대신)
-  allProducts = [
-    { name: "마이프로틴", image: "/Propick/images/rank1.png" },
-    { name: "마이프로틴", image: "/Propick/images/rank2.png" },
-    { name: "마이프로틴", image: "/Propick/images/rank3.png" },
-    { name: "유청 프로틴", image: "/Propick/images/rank4.png" },
-    { name: "카제인 프로틴", image: "/Propick/images/rank5.png" },
-    { name: "식물성 프로틴", image: "/Propick/images/rank6.png" },
-  ];
 
   // 검색 이벤트
   searchInput.addEventListener("input", function () {
@@ -115,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     renderProducts(filteredProducts);
   });
 
-  // 🔹 검색 결과 렌더링 함수
+  // 검색 결과 렌더링 함수
   function renderProducts(productArray) {
     searchResults.innerHTML = ""; // 기존 목록 초기화
     pagination.innerHTML = ""; // 페이지네이션 초기화
@@ -149,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
     renderPagination(productArray);
   }
 
-  // 🔹 페이지네이션 생성 함수
+  // 페이지네이션 생성 함수
   function renderPagination(productArray) {
     pagination.innerHTML = "";
     const totalPages = Math.ceil(productArray.length / itemsPerPage);
@@ -191,3 +172,94 @@ document.addEventListener("DOMContentLoaded", function () {
     pagination.appendChild(nextButton);
   }
 });
+
+// 상품 상세 이미지 swiper
+document.addEventListener("DOMContentLoaded", function () {
+  let swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,  // 한 번에 하나의 이미지만 보이도록 설정
+    loop: true,  // 무한 루프
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+  });
+})
+
+document.addEventListener('DOMContentLoaded', function () {
+  const categoryMenus = document.querySelectorAll('.category_menu'); // 상단 카테고리
+  const categoryWraps = document.querySelectorAll('.category_wrap ul li'); // 하단 카테고리
+  const discountButtons = document.querySelectorAll("a[href='/products?discount=true']"); // 할인 버튼 (상단 + 하단)
+  const allMenuItem = document.querySelector(".category_menu.all"); // 전체보기 버튼
+
+  //  모든 카테고리에 클릭 이벤트 추가 (수정: id → dataset.category)
+  [...categoryMenus, ...categoryWraps].forEach(item => {
+    item.addEventListener('click', function () {
+      activateCategory(item);
+      const selectedCategory = item.dataset.category; // ⬅️ 여기 수정!
+      filterProductsByCategory(selectedCategory);
+    });
+  });
+
+  // 할인 버튼 클릭 시
+  discountButtons.forEach(button => {
+    button.parentElement.addEventListener("click", (event) => {
+      event.preventDefault();
+      activateDiscountCategory();
+      window.location.href = "/products?discount=true";
+    });
+  });
+
+  // 전체보기 클릭 시
+  if (allMenuItem) {
+    allMenuItem.addEventListener("click", (event) => {
+      event.preventDefault();
+      activateCategory(allMenuItem);
+      window.location.href = "/products";
+    });
+  }
+
+  // 클릭한 카테고리로 이동
+  function filterProductsByCategory(categoryId) {
+    const params = new URLSearchParams(window.location.search);
+    const isDiscount = params.get("discount") === "true";
+
+    let url = `/products?category=${categoryId}`;
+    if (isDiscount) {
+      url += "&discount=true";
+    }
+
+    window.location.href = url;
+  }
+
+  // 클릭한 항목 active 적용
+  function activateCategory(selectedItem) {
+    [...categoryMenus, ...categoryWraps].forEach(item => item.classList.remove("active"));
+    selectedItem.classList.add("active");
+  }
+
+  // 할인 버튼 active 적용
+  function activateDiscountCategory() {
+    [...categoryMenus, ...categoryWraps].forEach(item => item.classList.remove("active"));
+    discountButtons.forEach(button => button.parentElement.classList.add("active"));
+  }
+
+  // 페이지 로드시 현재 URL 기준으로 active 적용 (수정: id → data-category)
+  const urlParams = new URLSearchParams(window.location.search);
+
+  if (urlParams.get("discount") === "true") {
+    activateDiscountCategory();
+  }
+
+  const selectedCategoryId = urlParams.get("category");
+  if (selectedCategoryId) {
+    const categoryElement = document.querySelector(`[data-category="${selectedCategoryId}"]`); // ⬅️ 여기 수정!
+    if (categoryElement) {
+      activateCategory(categoryElement);
+    }
+  }
+});
+
