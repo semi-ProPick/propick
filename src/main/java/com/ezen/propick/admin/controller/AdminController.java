@@ -1,7 +1,5 @@
 package com.ezen.propick.admin.controller;
 
-import com.ezen.propick.user.dto.AdminUserModifyDTO;
-import com.ezen.propick.user.dto.AfterUserInfoDTO;
 import com.ezen.propick.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,14 +13,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Optional;
 
 @Profile("admin")
 @Controller
 @RequestMapping
 @RequiredArgsConstructor
-public class adminController {
+public class AdminController {
 
     private final UserService userService;
     private final UserRepository userRepository;

@@ -46,8 +46,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("UPDATE User u SET u.userName = :userName, u.userPhone = :userPhone WHERE u.userId = :userId")
     @Modifying
     int updateByUserIdAndUserNameAndUserPhone(@Param("userId") String userId,
-                                               @Param("userName") String userName,
-                                               @Param("userPhone") String userPhone);
+                                              @Param("userName") String userName,
+                                              @Param("userPhone") String userPhone);
 
 
     Page<User> findByUserNameContainingOrUserPhoneContaining(String userName, String userPhone, Pageable pageable);

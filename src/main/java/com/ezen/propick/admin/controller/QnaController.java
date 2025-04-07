@@ -1,29 +1,26 @@
-package com.ezen.propick.board.controller;
+package com.ezen.propick.admin.controller;
 
 import com.ezen.propick.board.entity.QnaAnswer;
 import com.ezen.propick.board.entity.QnaBoard;
-import com.ezen.propick.board.entity.UserPostBoard;
 import com.ezen.propick.board.repository.QnaAnswerRepository;
 import com.ezen.propick.board.repository.QnaBoardRepository;
 import com.ezen.propick.board.service.QnaBoardService;
-import com.ezen.propick.board.service.UserPostBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
+@Profile("admin")
 @Controller
 @RequiredArgsConstructor
 public class QnaController {

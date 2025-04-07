@@ -1,4 +1,4 @@
-package com.ezen.propick.product.controller;
+package com.ezen.propick.admin.controller;
 
 import com.ezen.propick.product.dto.*;
 import com.ezen.propick.product.entity.*;
@@ -19,10 +19,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j

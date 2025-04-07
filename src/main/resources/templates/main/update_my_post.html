@@ -1,54 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>내가 쓴 글 수정</title>
     <link rel="stylesheet" href="css/my_write.css" type="text/css" />
     <link rel="stylesheet" href="css/header.css" type="text/css" />
-  </head>
-  <body>
-    <div id="header"></div>
-    <div class="big_container">
-      <div class="middle_container">
+</head>
+<body>
+<div id="header"></div>
+<div class="big_container">
+    <div class="middle_container">
         <div class="my_text_title">
-          <img src="images/mypost.png" alt="내가 쓴 글 사진" />
-          <p>내가 쓴 글</p>
+            <img src="images/mypost.png" alt="내가 쓴 글 사진" />
+            <p>내가 쓴 글</p>
         </div>
 
         <div class="title_day_header2">
-          <p>제목</p>
-          <input id="title_box" type="text" />
-          <div class="input_box"></div>
+            <p>제목</p>
+            <input id="title_box" type="text" />
+            <div class="input_box"></div>
         </div>
 
         <div class="body_text">
-          <textarea id="body_box"></textarea>
+            <textarea id="body_box"></textarea>
         </div>
 
         <div class="update_or_delete">
-          <p class="click_box" id="update_box">수정</p>
-          <div class="popup" id="update_popup">
-            <div id="popup_content">
-              <p>수정하시겠습니까?</p>
-              <button class="confirm_ox" id="update_confirm_o">확인</button>
-              <button class="confirm_ox" id="update_confirm_x">취소</button>
+            <p class="click_box" id="update_box">수정</p>
+            <div class="popup" id="update_popup">
+                <div id="popup_content">
+                    <p>수정하시겠습니까?</p>
+                    <button class="confirm_ox" id="update_confirm_o">확인</button>
+                    <button class="confirm_ox" id="update_confirm_x">취소</button>
+                </div>
             </div>
-          </div>
 
-          <p class="click_box" id="delete_box">삭제</p>
-          <div class="popup" id="delete_popup">
-            <div id="popup_content">
-              <p>삭제하시겠습니까?</p>
-              <button class="confirm_ox" id="delete_confirm_o">확인</button>
-              <button class="confirm_ox" id="delete_confirm_x">취소</button>
+            <p class="click_box" id="delete_box">삭제</p>
+            <div class="popup" id="delete_popup">
+                <div id="popup_content">
+                    <p>삭제하시겠습니까?</p>
+                    <button class="confirm_ox" id="delete_confirm_o">확인</button>
+                    <button class="confirm_ox" id="delete_confirm_x">취소</button>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-    <script src="js/update_my_post.js"></script>
-    <script src="/js/header.js" defer></script>
-  </body>
+</div>
+<script src="js/update_my_post.js"></script>
+<script src="/js/header.js" defer></script>
+</body>
 </html>

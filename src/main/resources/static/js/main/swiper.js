@@ -19,8 +19,16 @@ const swiper = new Swiper(".swiper", {
         activeSlide.style.transform = "scale(1.3)";
       }
     },
+    slideChange: function () {
+      const currentSlide = this.slides[this.activeIndex]; // 여기 수정
+      const imageName = currentSlide.getAttribute('data-name');
+      if (imageName) {
+        document.getElementById('point').innerHTML = `[&emsp;${imageName}&emsp;]`;
+      }
+    },
   },
 });
+
 window.onload = function () {
   const activeSlide = document.querySelector(".swiper-slide-active img");
   if (activeSlide) {

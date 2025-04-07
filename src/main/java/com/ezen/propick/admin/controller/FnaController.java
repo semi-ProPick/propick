@@ -1,9 +1,9 @@
-package com.ezen.propick.board.controller;
+package com.ezen.propick.admin.controller;
 
-import com.ezen.propick.board.entity.Notice;
-import com.ezen.propick.board.entity.UserPostBoard;
-import com.ezen.propick.board.service.NoticeService;
+import com.ezen.propick.board.entity.FnaBoard;
+import com.ezen.propick.board.service.FnaBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,43 +15,43 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+@Profile("admin")
 @Controller
-public class NoticeController {
-
+public class FnaController {
     @Autowired
-    private final NoticeService noticeService;
+    private final FnaBoardService fnaBoardService;
 
-    public NoticeController(NoticeService noticeService) {
-        this.noticeService = noticeService;
+    public FnaController(FnaBoardService fnaBoardService) {
+        this.fnaBoardService = fnaBoardService;
     }
 
-    @GetMapping("/notice/write")
+    @GetMapping("/fna/write")
     public String noticeWriteForm() {
 
-        return "/management/post_notice_write";
+        return "/management/post_fna_write";
     }
 
-    @PostMapping("/notice/writedo")
-    public String noticeWritePro(Notice notice) {
-        noticeService.noticewrite(notice);
-        return "redirect:/notice/list";
+    @PostMapping("/fna/writedo")
+    public String fnaWritePro(FnaBoard fnaBoard) {
+        fnaBoardService.fnawrite(fnaBoard);
+        return "redirect:/fna/list";
 
     }
-    @GetMapping("/notice/list")
-    public String noticelist(Model model,
+
+    @GetMapping("/fna/list")
+    public String fnalist(Model model,
                              @PageableDefault(page=0, size=10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                              String searchKeyword,
                              @RequestParam(value = "page", defaultValue = "0") int page) { //url 에서 ?page=1, ?page=0등의 값 받아옴
 
-        Page<Notice> list = null;
+        Page<FnaBoard> list = null;
         //searchKeyword 가 넣이면 원래 페이지 리스트 보여줌
         if(searchKeyword == null) {
-            list = noticeService.noticeList(pageable);
+            list = fnaBoardService.fnaBoardList(pageable);
 
             //searchKeyword 가 널이 아니면 작성한 검색 메서드 실행 후 페이지 리스트 보여줌
         } else {
-            list = noticeService.noticeSearchList(searchKeyword, pageable);
+            list = fnaBoardService.fnaSearchList(searchKeyword, pageable);
         }
         // 현재 페이지를 기반으로 pageable 생성
         pageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
@@ -68,42 +68,54 @@ public class NoticeController {
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        return "/management/post_notice";
+        return "/management/post_fna";
     }
 
-    @GetMapping("/notice/view")   //localhost:8081/notice/view?id=1
-    public String noticeView(Model model, Integer id){
-        model.addAttribute("notice", noticeService.noticeView(id));
-        return "/management/post_notice_view";
+    @GetMapping("/fna/view")   //localhost:8081/notice/view?id=1
+    public String fnaView(Model model, Integer id){
+        model.addAttribute("fnaBoard", fnaBoardService.fnaView(id));
+        return "/management/post_fna_view";
     }
 
-    @GetMapping("notice/delete")
-    public String noticeDelete(Integer id){
-        noticeService.noticeDelete(id);
+    @GetMapping("fna/delete")
+    public String fnaDelete(Integer id){
+        fnaBoardService.fnaDelete(id);
         return "redirect:list";
     }
 
     //수정 @PathVariable 사용
-    @GetMapping("notice/modify/{id}")
-    public String noticeModify(@PathVariable("id") Integer id, Model model){
+    @GetMapping("fna/modify/{id}")
+    public String fnaModify(@PathVariable("id") Integer id, Model model){
 
-        model.addAttribute("notice", noticeService.noticeView(id));
-        return "/management/post_notice_modify";
+        model.addAttribute("fnaBoard", fnaBoardService.fnaView(id));
+        return "/management/post_fna_modify";
     }
 
     //수정
-    @PostMapping("/notice/update/{id}")
-    public String noticeUpdate(@PathVariable("id") Integer id, Notice notice) {
+    @PostMapping("/fna/update/{id}")
+    public String fnaUpdate(@PathVariable("id") Integer id, FnaBoard fnaBoard) {
 
         //기존 내용 가져옴
-        Notice boardTemp = noticeService.noticeView(id);
+        FnaBoard boardTemp = fnaBoardService.fnaView(id);
         //위의 인수로 받은 새로운 내용 가져오기-> 덮어씌우기
-        boardTemp.setTitle(notice.getTitle());
-        boardTemp.setContents(notice.getContents());
+        boardTemp.setTitle(fnaBoard.getTitle());
+        boardTemp.setAnswer(fnaBoard.getAnswer());
 
-        noticeService.noticewrite(boardTemp);
+        fnaBoardService.fnawrite(boardTemp);
 
-        return "redirect:/notice/list";
+        return "redirect:/fna/list";
     }
 
+
+//    //게시글 리스트 출력
+//    @GetMapping("/main/f&q_board")
+//    public String fnaBoardList(Model model) {
+//        model.addAttribute("list", fnaBoardService.fnaBoardList());
+//
+//        return "/main/f&q_board";
+//    }
+
+
+
 }
+

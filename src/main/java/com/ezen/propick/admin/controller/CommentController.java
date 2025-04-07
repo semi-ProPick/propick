@@ -1,19 +1,18 @@
-package com.ezen.propick.board.controller;
+package com.ezen.propick.admin.controller;
 
 import com.ezen.propick.board.dto.CommentRequestDTO;
 import com.ezen.propick.board.entity.Comment;
-import com.ezen.propick.board.repository.CommentRepository;
 import com.ezen.propick.board.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
-
+@Profile("admin")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

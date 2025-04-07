@@ -12,7 +12,7 @@
     <title>브랜드 협업</title>
   </head>
   <body>
-    <div id="header"></div>
+  <div id="header" class="header_wrap" th:replace="~{main/mainHeader}"></div>
     <div id="wrap">
       <div class="collabo_wrap">
         <div class="collabo_content_wrap">
@@ -22,22 +22,22 @@
           </h2>
           <div class="swiper">
             <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <img src="/images/calobye.png" alt="Logo 1" />
+              <div class="swiper-slide" data-name="칼로바이">
+                <img src="/images/main/calobye.png" alt="Logo 1"  />
               </div>
-              <div class="swiper-slide">
+              <div class="swiper-slide" data-name="마이프로틴">
                 <img src="/images/main/myprotein.png" alt="Logo 2" />
               </div>
-              <div class="swiper-slide">
+              <div class="swiper-slide" data-name="삼대오백">
                 <img src="/images/main/threeTofive.png" alt="Logo 3" />
               </div>
-              <div class="swiper-slide">
+              <div class="swiper-slide" data-name="칼로바이">
                 <img src="/images/main/calobye.png" alt="Logo 4" />
               </div>
-              <div class="swiper-slide">
+              <div class="swiper-slide" data-name="마이프로틴">
                 <img src="/images/main/myprotein.png" alt="Logo 5" />
               </div>
-              <div class="swiper-slide">
+              <div class="swiper-slide" data-name="삼대오백">
                 <img src="/images/main/threeTofive.png" alt="Logo 6" />
               </div>
             </div>

@@ -16,6 +16,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class MemberDTO {
 
     @NotBlank(message = "아이디는 필수 입력 값입니다.")
