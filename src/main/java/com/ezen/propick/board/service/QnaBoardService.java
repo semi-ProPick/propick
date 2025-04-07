@@ -1,9 +1,9 @@
 package com.ezen.propick.board.service;
 
 import com.ezen.propick.board.entity.QnaBoard;
-import com.ezen.propick.board.entity.UserPostBoard;
 import com.ezen.propick.board.repository.BoardImageRepository;
 import com.ezen.propick.board.repository.QnaBoardRepository;
+import com.ezen.propick.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -24,8 +25,12 @@ public class QnaBoardService {
     private final BoardImageRepository boardImageRepository;
 
 
+
     /* 게시글 작성 */
-    public void write(QnaBoard qnaBoard, MultipartFile file, Integer userNo) throws Exception {
+    public void write(QnaBoard qnaBoard, MultipartFile file, Optional<User> user) throws Exception {
+
+        // 1. 유저 설정
+        qnaBoard.setUser(user.get());
         // 파일 저장 경로 지정
         String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\q&a_post_files";
 

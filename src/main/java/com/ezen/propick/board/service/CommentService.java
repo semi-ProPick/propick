@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -35,6 +38,16 @@ public class CommentService {
 
         return commentRepository.save(comment);  // 저장 후 반환
     }
+
+    public List<Comment> getCommentsByPostId(Integer postId) {
+        return commentRepository.findByUserPostBoardId(postId);
+    }
+    public void deleteCommentById(Integer commentId) {
+        commentRepository.deleteById(commentId);
+    }
+
+
+
 
 
 }

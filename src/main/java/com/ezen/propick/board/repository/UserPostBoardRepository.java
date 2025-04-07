@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface UserPostBoardRepository extends JpaRepository<UserPostBoard, Integer> {
 
     Page<UserPostBoard> findByTitleContaining(String searchKeyword, Pageable pageable);
+
 }

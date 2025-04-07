@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +8,20 @@
     <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
 </head>
 <body>
-    <div id="header"></div>
+<div id="header" class="header_wrap" th:replace="~{main/mainHeader}"></div>
+
+
         <h1 class="title-box" th:text="${userPostBoard.title}">추천 잘해주는 거 같아요.</h1>
+<div class="separator"></div>
+<div class="post-meta-wrapper">
+        <div class="post-meta">
+            <span class="writer">작성자: <span th:text="${userPostBoard.user.userId}">작성자아이디</span></span> |
+            <span class="date">작성일: <span th:text="${#temporals.format(userPostBoard.created_at, 'yyyy-MM-dd HH:mm')}">작성일자</span></span>
+        </div>
+</div>
 
     <div class="separator"></div>
-    <p th:utext="${userPostBoard.contents}" class="content-box"> 여러 보충제를 먹어봤지만 소화가 잘 안되가지고.. 고민이 많았어요ㅠㅠ
+    <p th:utext="${userPostBoard.contents}" class="content-box fixed-content"> 여러 보충제를 먹어봤지만 소화가 잘 안되가지고.. 고민이 많았어요ㅠㅠ
 설문지 작성해서 저한테 맞는 보충제를 픽해서 알려주니까 1:1 맞춤인 느낌?
 받아서 먹어보니까 전보다 소화도 잘되고 단백질까지 챙겨서
 헬스인인 저한테는 너무나 만족스러운 구매였습니다.!
@@ -24,48 +33,101 @@
     </div>
     <div class="button-container">
         <span class="like-button" id="like-button">👍</span>
-        <button><a th:href="@{/main/board_delete(id=${userPostBoard.id})}">삭제</a></button>&nbsp;&nbsp;&nbsp;
-        <button><a th:href="@{/main/free_modify/{id}(id=${userPostBoard.id})}">수정</a></button>
+        <div th:if="${userPostBoard.user.userId} == ${#authentication.name}">
+            <button class="voidbtn">
+                <a th:href="@{/main/board_delete(id=${userPostBoard.id})}">삭제</a>
+            </button>
+            <button class="voidbtn">
+                <a th:href="@{/main/free_modify/{id}(id=${userPostBoard.id})}">수정</a>
+            </button>
+        </div>
+
+
     </div>
     <div class="separator1"></div>
     <div class="comment-section">
         <h3>댓글</h3>
         <div class="comment-input-box">
             <textarea id="comment-box" class="comment-box" placeholder="댓글을 입력하세요..."></textarea>
-            <button class="comment-submit-button" id="comment-submit-button" type="submit" onclick="submitComment()">등록</button>
+            <button class="comment-submit-button" id="comment-submit-button" type="button" >등록</button>
         </div>
     </div>
 
     <!-- 댓글 목록 -->
-    <div class="comment-list">
-        <div class="comment-item" th:each="comment : ${comment}">
-            <div class="comment-header">
-                <span th:text="${comment.created_at}">작성 날짜</span>
-            </div>
-            <p class="comment-content" th:text="${comment.contents}">댓글 내용</p>
-            <div class="comment-actions">
-                <button class="comment-edit-button">수정</button>
-                <button class="comment-delete-button">삭제</button>
-            </div>
+<div class="comment-list">
+    <div class="comment-item" th:each="comment : ${commentList}"
+         th:attr="data-comment-id=${comment.id}">
+    <div class="comment-header">
+            <span th:text="${comment.created_at}">작성 날짜</span>
         </div>
+        <p class="comment-content">작성자: <span sec:authentication="name">작성자번호</span></p>
+        <p class="comment-content" th:text="${comment.contents}">댓글 내용</p>
+        <p th:text="${comment.user.userId}">작성자 아이디</p>
+        <p>로그인 유저: <span sec:authentication="name">로그인 유저</span></p>
+
+
+        <div th:if="${comment.user.userId} == ${#authentication.name}">
+            <button class="comment-submit-button">
+                <a th:href="@{/main/comments/{id}/edit(id=${comment.id})}">수정</a>
+            </button>
+            <button class="comment-delete-button"
+                    th:attr="data-comment-id=${comment.id}, data-post-id=${userPostBoard.id}">
+                삭제
+            </button>
+        </div>
+
+
     </div>
+</div>
+
 
 </body>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("comment-submit-button").addEventListener("click", function() {
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("comment-submit-button").addEventListener("click", function () {
             console.log("댓글 등록 버튼 클릭됨!"); // 콘솔 확인
-
             submitComment(); // 댓글 등록 함수 호출
         });
     });
 
-    function submitComment() {
-        console.log("submitComment 함수 실행됨!"); // 콘솔 확인
 
-        let commentContents = document.getElementById("comment-box").value;
-        let postId = 1;  // 실제 게시글 ID로 변경해야 함 (예: URL에서 가져오기)
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // 삭제 버튼 이벤트 등록
+            document.querySelectorAll(".comment-delete-button").forEach(button => {
+                button.addEventListener("click", async function () {
+                    const commentId = this.getAttribute("data-comment-id");
+                    const postId = this.getAttribute("data-post-id");
+
+                    if (!confirm("댓글을 삭제하시겠습니까?")) return;
+
+                    try {
+                        const response = await fetch(`/api/main/Free_boardcm/${postId}/comments/${commentId}`, {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        });
+
+                        if (response.ok) {
+                            alert("댓글이 삭제되었습니다.");
+                            location.reload(); // 새로고침으로 삭제된 댓글 반영
+                        } else {
+                            alert("댓글 삭제 실패");
+                        }
+                    } catch (error) {
+                        console.error("삭제 중 오류:", error);
+                    }
+                });
+            });
+        });
+    async function submitComment() {
+        console.log("submitComment 함수 실행됨!");
+
+        let postId = [[${userPostBoard.id}]]; // Thymeleaf에서 게시글 ID 가져오기
+        let commentContents = document.querySelector("#comment-box").value;
 
         if (!commentContents.trim()) {
             alert("댓글을 입력하세요!");
@@ -76,31 +138,27 @@
             contents: commentContents
         };
 
-
-        fetch(`/main/Free_boardcm/${postId}/comments`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include",
-            body: JSON.stringify(requestData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("서버 오류 발생!");
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("댓글 등록 성공:", data);
-                alert("댓글이 등록되었습니다!");
-                location.reload();  // 댓글 목록 새로고침
-            })
-            .catch(error => {
-                console.error("댓글 등록 실패:", error);
-                alert("댓글 등록에 실패했습니다.");
+        try {
+            const response = await fetch(`/main/Free_boardcm/${postId}/comments`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
             });
+
+            if (response.ok) {
+                alert("댓글이 등록되었습니다.");
+                location.reload();
+            } else {
+                alert("댓글 등록 실패!");
+            }
+        } catch (error) {
+            console.error("댓글 등록 중 오류:", error);
+        }
+
     }
+
 </script>
 
 

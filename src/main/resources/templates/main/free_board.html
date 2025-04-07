@@ -18,8 +18,7 @@
             <th scope="col">번호</th>
             <th scope="col">제목</th>
             <th scope="col">날짜</th>
-            <th scope="col">조회</th>
-            <th scope="col">추천</th>
+            <th scope="col">조회수</th>
           </tr>
         </thead>
         <tbody>
@@ -30,6 +29,7 @@
                th:href="@{/main/Free_boardcm(id=${userPostBoard.id})}">
               제목
             </a>
+            <p>작성자: 유저<span th:text="${userPostBoard.user.userNo}">작성자번호</span></p>
 
 
           </td>
@@ -46,7 +46,6 @@
           </td>
           <td>16:42</td>
           <td>15</td>
-          <td>15</td>
         </tr>
           <tr>
             <td>회원정보</td>
@@ -55,7 +54,6 @@
               <div class="user-id">작성자: user123</div>
             </td>
             <td>16:42</td>
-            <td>15</td>
             <td>15</td>
           </tr>
           <tr>
@@ -66,7 +64,6 @@
             </td>
             <td>06:42</td>
             <td>15</td>
-            <td>15</td>
           </tr>
           <tr>
             <td>회원정보</td>
@@ -75,7 +72,6 @@
               <div class="user-id">작성자: user123</div>
             </td>
             <td>25-03-01</td>
-            <td>15</td>
             <td>15</td>
           </tr>
           <tr>
@@ -86,7 +82,6 @@
             </td>
             <td>25-03-01</td>
             <td>15</td>
-            <td>15</td>
           </tr>
           <tr>
             <td>프로틴 케어</td>
@@ -95,7 +90,6 @@
               <div class="user-id">작성자: user123</div>
             </td>
             <td>25-03-01</td>
-            <td>15</td>
             <td>15</td>
           </tr>
           <tr>
@@ -106,7 +100,6 @@
             </td>
             <td>25-03-01</td>
             <td>15</td>
-            <td>15</td>
           </tr>
           <tr>
             <td>프로틴 케어</td>
@@ -115,7 +108,6 @@
               <div class="user-id">작성자: user123</div>
             </td>
             <td>25-03-01</td>
-            <td>15</td>
             <td>15</td>
           </tr>
           <tr>
@@ -126,7 +118,6 @@
             </td>
             <td>16:42</td>
             <td>15</td>
-            <td>15</td>
           </tr>
           <tr>
             <td>기타</td>
@@ -136,7 +127,6 @@
             </td>
             <td>16:42</td>
             <td>15</td>
-            <td>15</td>
           </tr>
           <tr>
             <td>기타</td>
@@ -145,7 +135,6 @@
               <div class="user-id">작성자: user123</div>
             </td>
             <td>16:42</td>
-            <td>15</td>
             <td>15</td>
           </tr>
         </tbody>

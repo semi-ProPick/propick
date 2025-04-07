@@ -63,8 +63,8 @@ a {
   width: 90%;
   height: 5px;
   border-radius: 5px;
-  background-color: black;
-  margin: 20px 0;
+  background-color: #ffffff;
+  margin: 10px 0;
 }
 
 .separator1 {
@@ -360,3 +360,52 @@ button:hover {
 .comment-delete-button:hover {
   background: darkred;
 }
+
+.voidbtn {
+  padding: 10px 20px;
+  background-color: #4e5759;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+
+.fixed-content {
+  height: 400px;                /* 고정 높이 */
+  min-height: 300px;            /* 최소 높이도 고정 */
+  overflow-y: auto;             /* 내부 스크롤 */
+  padding: 10px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  flex-shrink: 0;               /* flex 환경에서 줄어드는 거 방지 */
+}
+
+.post-meta-wrapper {
+  width: 90%;
+  display: flex;
+  justify-content: flex-end;
+}
+.post-meta {
+  font-size: 18px;
+  color: #555;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-group-right {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-group-right button a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+
+

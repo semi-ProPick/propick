@@ -1,5 +1,6 @@
 package com.ezen.propick.board.entity;
 
+import com.ezen.propick.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -48,6 +49,10 @@ public class QnaBoard {
     @Column(name = "is_answered")
     private boolean isAnswered;
 
+    //user랑 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no", nullable = false)  // user_no 컬럼 매핑
+    private User user;
 //    @OneToMany(mappedBy = "qnaBoard", cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
 //    private QnaAnswer qnaAnswer;
 

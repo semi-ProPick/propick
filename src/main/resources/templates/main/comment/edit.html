@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>댓글 수정</title>
+  <link rel="stylesheet" href="/css/main/boardcm.css">
+  <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+</head>
+<body>
+
+<!-- 헤더 -->
+<div id="header" class="header_wrap" th:replace="~{main/mainHeader}"></div>
+
+<!-- 제목 -->
+<h1 class="title-box">댓글 수정</h1>
+<div class="separator"></div>
+
+<!-- 댓글 수정 폼 -->
+<div class="comment-section">
+  <form th:action="@{/main/comments/{id}/update(id=${comment.id})}" method="post">
+    <textarea name="contents" th:text="${comment.contents}"></textarea><br>
+    <button type="submit">수정</button>
+  </form>
+</div>
+
+</body>
+</html>

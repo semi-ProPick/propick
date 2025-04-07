@@ -5,6 +5,7 @@ import com.ezen.propick.board.dto.CommentResponseDTO;
 import com.ezen.propick.board.dto.UserPostResponseDTO;
 import com.ezen.propick.board.entity.Comment;
 import com.ezen.propick.board.entity.UserPostBoard;
+import com.ezen.propick.board.repository.CommentRepository;
 import com.ezen.propick.board.repository.UserPostBoardRepository;
 import com.ezen.propick.board.service.CommentService;
 import com.ezen.propick.board.service.UserPostBoardService;
@@ -37,6 +38,8 @@ public class UserPostController {
     private UserPostBoardRepository userPostBoardRepository;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private final CommentRepository commentRepository;
 
 
     //@GetMapping("주소부분 쓰기")
@@ -55,10 +58,6 @@ public class UserPostController {
         model.addAttribute("searchUrl","/main/free_board");
         return "/main/postmessage";
     }
-
-
-
-
 
     //작성한 게시글 리스트 출력
     @GetMapping("main/free_board")
@@ -103,26 +102,13 @@ public class UserPostController {
 
         model.addAttribute("userPostBoard",userPostBoardService.boardView(id));
 
+        List<Comment> commentList = commentService.getCommentsByPostId(id);
+        model.addAttribute("commentList", commentList);
+
         UserPostBoard userPostBoard = userPostBoardRepository.findById(id).get();
         userPostBoard.setCountview(userPostBoard.getCountview() + 1 );
         return "/main/Free_boardcm";  //상세페이지 뷰를 담당하는 html 주소
     }
-
-    @PostMapping("/main/Free_boardcm/{id}/comments")
-    public ResponseEntity<Comment> save(
-            @PathVariable Integer id,
-            @RequestBody CommentRequestDTO requestDTO,
-            Principal principal) {
-
-        if (principal == null || principal.getName() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 인증되지 않은 경우
-        }
-
-        Comment savedComment = commentService.commentSave(id, requestDTO, principal.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
-    }
-
-
 
 
     //삭제
@@ -157,18 +143,46 @@ public class UserPostController {
 
     //댓글
 
+    //댓글 등록
+    @PostMapping("/main/Free_boardcm/{id}/comments")
+    public ResponseEntity<Comment> save(
+            @PathVariable Integer id,
+            @RequestBody CommentRequestDTO requestDTO,
+            Principal principal) {
 
+        if (principal == null || principal.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 인증되지 않은 경우
+        }
 
+        Comment savedComment = commentService.commentSave(id, requestDTO, principal.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
+    }
 
+    // 댓글 삭제
+    @DeleteMapping("/api/main/Free_boardcm/{postId}/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Integer postId, @PathVariable Integer commentId) {
+        commentService.deleteCommentById(commentId);
+        return ResponseEntity.ok().body("삭제 완료");
+    }
+
+    // 수정 폼으로 이동
+    @GetMapping("/main/comments/{id}/edit")
+    public String editCommentForm(@PathVariable Integer id, Model model) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+        model.addAttribute("comment", comment);
+        return "/main/comment/edit"; // 수정 폼 템플릿
+    }
+
+    // 수정 폼 제출
+    @PostMapping("/main/comments/{id}/update")
+    public String updateComment(@PathVariable Integer id, @RequestParam String contents) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+        comment.setContents(contents);
+        commentRepository.save(comment);
+        return "redirect:/main/Free_boardcm?id=" + comment.getUserPostBoard().getId(); // 원래 글로 리다이렉트
+    }
 
 }
-
-
-
-
-
-//    @PostMapping("/")
-//    public String save(@ModelAttribute UserPostResponseDTO userPostResponseDTO) {
-//        boardService.save(userPostResponseDTO);
-//        return null;
 

@@ -2,6 +2,7 @@ package com.ezen.propick.board.entity;
 
 
 import com.ezen.propick.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,12 +35,17 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id",nullable = false)
+    @JsonBackReference
     private UserPostBoard userPostBoard;
 
     @ManyToOne
     @JoinColumn(name = "user_no")
     private User user;
 
+
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
 
 }
 

@@ -6,6 +6,8 @@ import com.ezen.propick.board.entity.UserPostBoard;
 import com.ezen.propick.board.repository.QnaBoardRepository;
 import com.ezen.propick.board.service.NoticeService;
 import com.ezen.propick.board.service.QnaBoardService;
+import com.ezen.propick.user.entity.User;
+import com.ezen.propick.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Controller
 public class UserQnaController {
@@ -27,6 +32,8 @@ public class UserQnaController {
     private final QnaBoardService qnaBoardService;
     @Autowired
     private QnaBoardRepository qnaBoardRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping("main/q&a_write")
@@ -36,14 +43,17 @@ public class UserQnaController {
 
     //문의사항 작성
     @PostMapping("main/q&a_write")
-    public String qnaWrite(QnaBoard qnaBoard, Model model, MultipartFile file, Integer userNo) throws Exception{
-        qnaBoardService.write(qnaBoard, file, userNo);
-        System.out.println(qnaBoard.getTitle());
-        System.out.println(qnaBoard.getContents());
+    public String qnaWrite(QnaBoard qnaBoard, Model model, MultipartFile file, Principal principal) throws Exception {
+        String username = principal.getName(); // 현재 로그인한 아이디
+        Optional<User> user = userRepository.findByUserId(username); // 아이디로 유저 찾기
+
+        qnaBoardService.write(qnaBoard, file, user); // ← user 넘김
+
         model.addAttribute("message","작성 완료!");
         model.addAttribute("searchUrl","/main/q&a_board");
         return "/main/postmessage";
     }
+
 
     @GetMapping("main/q&a_board")
     public String qnalist(Model model,

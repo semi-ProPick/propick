@@ -8,10 +8,16 @@
   <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
 </head>
 <body>
-<div id="header"></div>
+<div id="header" class="header_wrap" th:replace="~{main/mainHeader}"></div>
 
 <h1 class="title-box" th:text="${qnaBoard.title}"></h1>
-
+<div class="separator"></div>
+<div class="post-meta-wrapper">
+  <div class="post-meta">
+    <span class="writer">작성자: <span th:text="${qnaBoard.user.userId}">작성자아이디</span></span> |
+    <span class="date">작성일: <span th:text="${#temporals.format(qnaBoard.created_at, 'yyyy-MM-dd HH:mm')}">작성일자</span></span>
+  </div>
+</div>
   <div class="separator"></div>
   <p th:utext="${qnaBoard.contents}" class="content-box">내용을 입력하십시요</p>
   <div class="upload-section">
@@ -21,10 +27,20 @@
   </div>
 
   <div class="separator1"></div>
-  <div class="button-container">
-    <button type="submit"><a th:href="@{/main/qna_modify/{id}(id=${qnaBoard.id})}">문의수정</a></button>
-    <button class="cancel-btn"><a th:href="@{/main/qna_board_delete(id=${qnaBoard.id})}">문의삭제</a></button>
-  </div>
+<!--  <div class="button-container">-->
+<!--    <button type="submit"><a th:href="@{/main/qna_modify/{id}(id=${qnaBoard.id})}">문의수정</a></button>-->
+<!--    <button class="cancel-btn"><a th:href="@{/main/qna_board_delete(id=${qnaBoard.id})}">문의삭제</a></button>-->
+<!--  </div>-->
+<div style="width: 90%;">
+<div th:if="${qnaBoard.user.userId} == ${#authentication.name}" class="btn-group-right">
+  <button type="submit">
+    <a th:href="@{/main/qna_modify/{id}(id=${qnaBoard.id})}">문의수정</a>
+  </button>
+  <button class="cancel-btn">
+    <a th:href="@{/main/qna_board_delete(id=${qnaBoard.id})}">문의삭제</a>
+  </button>
+</div>
+</div>
 
 <div id="uploadModal" class="modal">
   <div class="modal-content">

@@ -1,6 +1,7 @@
 package com.ezen.propick.board.entity;
 
 import com.ezen.propick.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,6 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Entity
-@Getter
 @Data
 @Table(name = "user_post_board")
 public class UserPostBoard {
@@ -69,13 +69,14 @@ public class UserPostBoard {
     // orphanRemoval : 연관관계에서 제거하면 자식엔티티 자동 삭제
     @OneToMany(mappedBy = "userPostBoard", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @OrderBy("id asc")
+    @JsonManagedReference
     private List<Comment> comments;
 
 
-//    //user랑 연결
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_no", nullable = false)  // user_no 컬럼 매핑
-//    private User user;
+    //user랑 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no", nullable = false)  // user_no 컬럼 매핑
+    private User user;
 
 
     @Builder
