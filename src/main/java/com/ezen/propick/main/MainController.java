@@ -9,4 +9,14 @@ public class MainController {
     public String mainPage() {
         return "main/main";
     }
+
+    @GetMapping("/brandIntro")
+    public String brandstroyPage() {
+        return "main/brandIntro";
+    }
+
+    @GetMapping("/collabo")
+    public String collaboPage() {
+        return "main/collabo";
+    }
 }

@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/main/main.css" type="text/css" />
     <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
-    <link rel="stylesheet" href="/css/jquery.fullPage.css" type="text/css" />
+    <link rel="stylesheet" href="/css/main/jquery.fullPage.css" type="text/css" />
     <title>브랜드소개</title>
   </head>
   <body>
-    <div id="header"></div>
+  <div id="header" class="header_wrap" th:replace="~{main/mainHeader}"></div>
     <div id="wrap">
       <div id="fullPage">
         <!-- 브랜드 첫번째 -->
@@ -36,7 +36,7 @@
         <div class="section brand_2">
           <div class="content_wrap2">
             <div class="brand_image">
-              <img src="/images/brand_2.png" alt="Brand Image" />
+              <img src="/images/main/brand_2.png" alt="Brand Image" />
             </div>
             <div class="brand_text2">
               <h2>
@@ -77,14 +77,14 @@
               </p>
             </div>
             <div class="circle_image">
-              <img src="/images/circle_3.png" alt="Circle Image" />
+              <img src="/images/main/circle_3.png" alt="Circle Image" />
             </div>
           </div>
         </div>
       </div>
     </div>
   </body>
-  <script src="/js/header.js" defer></script>
+  <script src="/js/main/header.js" defer></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.js"></script>
   <script>

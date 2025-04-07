@@ -62,8 +62,6 @@
         </div>
         <p class="comment-content">작성자: <span sec:authentication="name">작성자번호</span></p>
         <p class="comment-content" th:text="${comment.contents}">댓글 내용</p>
-        <p th:text="${comment.user.userId}">작성자 아이디</p>
-        <p>로그인 유저: <span sec:authentication="name">로그인 유저</span></p>
 
 
         <div th:if="${comment.user.userId} == ${#authentication.name}">
