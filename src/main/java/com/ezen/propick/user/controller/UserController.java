@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(){
+    public String login() {
         return "/main/login";
     }
 
@@ -56,6 +56,7 @@ public class UserController {
         model.addAttribute("MemberDTO", new MemberDTO()); // Model에 memberDTO 추가
         return "/main/join";  // join.html 뷰를 반환
     }
+
     //회원가입 처리
     @PostMapping("/join")
     public String join(@ModelAttribute MemberDTO memberDTO, BindingResult bindingResult) {
@@ -161,3 +162,4 @@ public class UserController {
 
         return ResponseEntity.ok("회원 탈퇴 완료 및 로그아웃 완료");
     }
+}
