@@ -27,7 +27,7 @@ public class QnaAnswer {
     @Column(name = "q_n_a_comments_contents", nullable = false)
     private String answer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "q_n_a_id")
     private QnaBoard qnaBoard;
 }

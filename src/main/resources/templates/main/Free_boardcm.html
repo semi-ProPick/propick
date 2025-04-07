@@ -41,8 +41,6 @@
                 <a th:href="@{/main/free_modify/{id}(id=${userPostBoard.id})}">수정</a>
             </button>
         </div>
-
-
     </div>
     <div class="separator1"></div>
     <div class="comment-section">
@@ -57,14 +55,9 @@
 <div class="comment-list">
     <div class="comment-item" th:each="comment : ${commentList}"
          th:attr="data-comment-id=${comment.id}">
-    <div class="comment-header">
-            <span th:text="${comment.created_at}">작성 날짜</span>
-        </div>
-        <p class="comment-content">작성자: <span sec:authentication="name">작성자번호</span></p>
-        <p class="comment-content" th:text="${comment.contents}">댓글 내용</p>
-        <p th:text="${comment.user.userId}">작성자 아이디</p>
-        <p>로그인 유저: <span sec:authentication="name">로그인 유저</span></p>
-
+    <div class="comment-header"><span th:text="${comment.created_at}">작성 날짜</span></div>
+        <p class="comment-content">작성자: <span th:text="${comment.user.userId}">작성자번호</span></p>
+        <p class="comment-content1" th:text="${comment.contents}">댓글 내용</p>
 
         <div th:if="${comment.user.userId} == ${#authentication.name}">
             <button class="comment-submit-button">
@@ -75,8 +68,6 @@
                 삭제
             </button>
         </div>
-
-
     </div>
 </div>
 

@@ -84,6 +84,8 @@ public class UserPostBoard {
         this.title = title;
         this.contents = contents;
     }
+
+
 }
 
 

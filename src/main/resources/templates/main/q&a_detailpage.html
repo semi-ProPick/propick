@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +31,8 @@
 <!--    <button type="submit"><a th:href="@{/main/qna_modify/{id}(id=${qnaBoard.id})}">문의수정</a></button>-->
 <!--    <button class="cancel-btn"><a th:href="@{/main/qna_board_delete(id=${qnaBoard.id})}">문의삭제</a></button>-->
 <!--  </div>-->
-<div style="width: 90%;">
+<div class="button-container">
+
 <div th:if="${qnaBoard.user.userId} == ${#authentication.name}" class="btn-group-right">
   <button type="submit">
     <a th:href="@{/main/qna_modify/{id}(id=${qnaBoard.id})}">문의수정</a>
@@ -41,6 +42,23 @@
   </button>
 </div>
 </div>
+
+<div class="comment-list">
+  <th:block th:each="answer : ${qnaAnswer}">
+    <div class="comment-item">
+      <div class="comment-meta">
+        <span class="comment-date" th:text="${#temporals.format(answer.created_at, 'yyyy-MM-dd HH:mm')}">작성일</span>
+      </div>
+      <div class="answer-box">
+        <p class="comment-title">문의 답변</p>
+        <p class="comment-content" th:text="${answer.answer}">답변 내용</p>
+      </div>
+    </div>
+  </th:block>
+</div>
+
+
+
 
 <div id="uploadModal" class="modal">
   <div class="modal-content">

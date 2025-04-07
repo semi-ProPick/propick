@@ -12,9 +12,9 @@
         <div th:replace="~{main/mainHeader}"></div></div>
 
     <form action="/main/q&a_write" method="post" enctype="multipart/form-data">
-        <input name="title" type="text" class="title-box" placeholder="제목을 입력하세요"></input>
+        <input name="title" type="text" class="title-box1" placeholder="제목을 입력하세요"></input>
     <div class="separator"></div>
-    <textarea name="contents" class="content-box" placeholder="내용을 입력하십시요"></textarea>
+    <textarea name="contents" class="content-box1" placeholder="내용을 입력하십시요"></textarea>
         <div class="upload-section">
             <div class="upload-box">
                 <!-- label을 사용하여 아이콘을 클릭하면 file input이 활성화되도록 연결 -->
@@ -26,8 +26,8 @@
             </div>
         </div>
 
-    <div class="separator1"></div>
-    <div class="button-container">
+    <div class="separator2"></div>
+    <div class="button-container2">
         <button type="submit">문의하기</button>
         <button class="cancel-btn">취소</button>
     </div>

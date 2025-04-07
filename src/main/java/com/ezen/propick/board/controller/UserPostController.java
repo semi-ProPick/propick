@@ -9,6 +9,8 @@ import com.ezen.propick.board.repository.CommentRepository;
 import com.ezen.propick.board.repository.UserPostBoardRepository;
 import com.ezen.propick.board.service.CommentService;
 import com.ezen.propick.board.service.UserPostBoardService;
+import com.ezen.propick.user.entity.User;
+import com.ezen.propick.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -28,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -40,6 +44,8 @@ public class UserPostController {
     private CommentService commentService;
     @Autowired
     private final CommentRepository commentRepository;
+    @Autowired
+    private final UserRepository userRepository;
 
 
     //@GetMapping("주소부분 쓰기")
@@ -50,8 +56,10 @@ public class UserPostController {
 
     //게시글 작성
     @PostMapping("main/free_write")
-    public String userPostWrite(UserPostBoard userPostBoard, Model model, MultipartFile file, Integer userNo) throws Exception{
-        userPostBoardService.write(userPostBoard, file, userNo);
+    public String userPostWrite(UserPostBoard userPostBoard, Model model, MultipartFile file, Principal principal) throws Exception{
+        String username = principal.getName(); // 현재 로그인한 아이디
+        Optional<User> user = userRepository.findByUserId(username);
+        userPostBoardService.write(userPostBoard, file, user);
         System.out.println(userPostBoard.getTitle());
         System.out.println(userPostBoard.getContents());
         model.addAttribute("message","작성 완료!");
@@ -108,6 +116,41 @@ public class UserPostController {
         UserPostBoard userPostBoard = userPostBoardRepository.findById(id).get();
         userPostBoard.setCountview(userPostBoard.getCountview() + 1 );
         return "/main/Free_boardcm";  //상세페이지 뷰를 담당하는 html 주소
+    }
+
+    //작성한 게시글 리스트 출력
+    @GetMapping("main/my_free_board")
+    public String userPostBoardList1(Model model,
+                                    @PageableDefault(page=0, size=10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                    String searchKeyword,
+                                    @RequestParam(value = "page", defaultValue = "0") int page) { //url 에서 ?page=1, ?page=0등의 값 받아옴
+
+        Page<UserPostBoard> list = null;
+        //searchKeyword 가 넣이면 원래 페이지 리스트 보여줌
+        if(searchKeyword == null) {
+            list = userPostBoardService.userPostBoardList(pageable);
+
+            //searchKeyword 가 널이 아니면 작성한 검색 메서드 실행 후 페이지 리스트 보여줌
+        } else {
+            list = userPostBoardService.boardSearchList(searchKeyword, pageable);
+        }
+        // 현재 페이지를 기반으로 pageable 생성
+        pageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
+
+
+        //현재 페이지 가져오기  페이지는 0에서 시작하기때문에 1 더해줌
+        int nowPage = list.getPageable().getPageNumber() + 1;
+        //페이지 수가 음수가 나올 경우 1 반환
+        int startPage = Math.max(nowPage -4 , 1);
+
+        int endPage = Math.min(nowPage + 5, list.getTotalPages());
+
+        model.addAttribute("list",list);
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        return "main/my_free_board";
     }
 
 

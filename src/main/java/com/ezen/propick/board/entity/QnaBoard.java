@@ -53,8 +53,9 @@ public class QnaBoard {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = false)  // user_no 컬럼 매핑
     private User user;
-//    @OneToMany(mappedBy = "qnaBoard", cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
-//    private QnaAnswer qnaAnswer;
+
+    @OneToMany(mappedBy = "qnaBoard")
+    private List<QnaAnswer> answers;
 
 //    @OneToMany(mappedBy = "qnaBoard", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<UserPostBoardComment> comments = new ArrayList<>();

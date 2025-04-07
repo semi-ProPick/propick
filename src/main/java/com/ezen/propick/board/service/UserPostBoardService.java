@@ -26,7 +26,10 @@ public class UserPostBoardService {
     private final BoardImageRepository boardImageRepository;
 
     /* 게시글 작성 */
-    public void write(UserPostBoard userPostBoard, MultipartFile file, Integer userNo) throws Exception {
+    public void write(UserPostBoard userPostBoard, MultipartFile file, Optional<User> user) throws Exception {
+
+        // userPostBoard에 User 객체 설정
+        userPostBoard.setUser(user.get());
         // 파일 저장 경로 지정
         String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\user_post_files";
 
