@@ -232,7 +232,6 @@ video {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
 }
 
 .search input {
@@ -289,6 +288,9 @@ video {
   margin-left: 20px;
   font-size: 20px;
 }
+.category_list li a {
+  font-size: 20px;
+}
 
 .category_menu.active {
   background: #ff5722;
@@ -337,7 +339,11 @@ video {
   margin-top: 10px;
   font-size: 30px;
 }
-
+.category_wrap a {
+  margin-top: 10px;
+  font-size: 30px;
+  font-weight: bold;
+}
 .recomment_wrap {
   display: flex;
   justify-content: center;
@@ -406,6 +412,9 @@ span {
   font-size: 20px;
   font-weight: bold;
 }
+.product_cate a {
+  font-size: 20px;
+}
 .product_cate.active {
   border-bottom: 3px solid #ff5c35 !important;
 }
@@ -466,7 +475,6 @@ span {
 }
 .others_product li {
   width: 300px;
-  height: 400px;
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -547,13 +555,22 @@ span {
 }
 .img_left_wrap {
   width: 30%;
-  padding: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   border-radius: 15px;
+  height: 400px;
+  overflow: hidden; /* 내부 콘텐츠가 넘치지 않도록 */
+  position: relative; /* 네비게이션 버튼 위치 조정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .txt_right_wrap {
   width: 65%;
   padding: 10px;
+}
+.product_detail ul li{
+  display: flex;
+  font-size: 25px;
 }
 .txt_info {
   display: flex;
@@ -568,20 +585,24 @@ span {
 .txt_info ul {
   display: flex;
   justify-content: space-between;
-  width: 520px;
+  width: 700px;
   margin-top: 20px;
-  font-size: 30px;
+  font-size: 20px;
+}
+.txt_info li {
+  display: flex;
 }
 .txt_info p {
-  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 30px;
 }
-.nutrition_facts {
+.ingredient_facts {
   margin-top: 45px;
 }
-.nutrition_facts h2 {
+.ingredient_facts h2 {
   text-align: left;
 }
-.nutrition_facts table {
+.ingredient_facts table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -590,19 +611,19 @@ span {
   border: 2px solid #ff5c35;
 }
 
-.nutrition_facts th,
-.nutrition_facts td {
+.ingredient_facts th,
+.ingredient_facts td {
   padding: 10px;
   text-align: center;
   border: 1px solid #ff5c35;
 }
 
-.nutrition_facts th {
+.ingredient_facts th {
   background-color: #ff5c35;
   color: #fff;
 }
 
-.nutrition_facts caption {
+.ingredient_facts caption {
   font-size: 20px;
   margin-bottom: 10px;
   color: #000;

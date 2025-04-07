@@ -1,154 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/main.css" type="text/css" />
-    <link rel="stylesheet" href="/css/header.css" type="text/css" />
-    <title>상품</title>
-  </head>
-  <body>
-    <div id="header"></div>
-    <div id="wrap">
-      <div class="search_wrap">
-        <p>전체상품</p>
-        <div class="search">
-          <input type="text" class="seach_input" placeholder="검색" />
-          <div class="search_icon">
-            <img src="/images/search.png" alt="" />
-          </div>
-        </div>
-        <div class="category_list">
-          <p>카테고리</p>
-          <ul>
-            <li class="category_menu active">전체보기</li>
-            <li class="category_menu">연령대</li>
-            <li class="category_menu">건강고민</li>
-            <li class="category_menu">인기상품</li>
-            <li class="category_menu">비건</li>
-          </ul>
-        </div>
-        <div class="category_wrap">
-          <p>어떤 프로틴이 필요하세요?</p>
-          <ul>
-            <li class="active">
-              <img src="/images/diet.png" alt="" />
-              <span>다이어트</span>
-            </li>
-            <li>
-              <img src="/images/volume.png" alt="" />
-              <span>증량</span>
-            </li>
-            <li>
-              <img src="/images/digest.png" alt="" />
-              <span>소화</span>
-            </li>
-            <li>
-              <img src="/images/ldl.png" alt="" />
-              <span>콜레스테롤</span>
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <img src="/images/cheap.png" alt="" />
-              <span>저렴한</span>
-            </li>
-            <li>
-              <img src="/images/whey.png" alt="" />
-              <span>유청</span>
-            </li>
-            <li>
-              <img src="/images/casein.png" alt="" />
-              <span>카제인</span>
-            </li>
-            <li>
-              <img src="/images/plant.png" alt="" />
-              <span>식물성</span>
-            </li>
-          </ul>
-        </div>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/main/main.css" type="text/css" />
+  <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+  <title>상품</title>
+</head>
+<body>
+<div id="header" th:replace="~{main/mainHeader}"></div>
+<div id="wrap">
+  <div class="search_wrap">
+    <p>전체상품</p>
+    <form class="search" action="/products/search" method="get">
+      <input type="text" class="seach_input" placeholder="입력" name="keyword" />
+      <div class="search_icon">
+        <button type="submit" style="border-style: none; background: transparent">
+          <img src="/images/main/search.png" alt="검색" />
+        </button>
       </div>
-      <div class="recomment_wrap">
-        <img src="/images/mark.png" alt="" />
-        <p>내 몸에 꼭 맞는 프로틴 추천받기</p>
-        <img src="/images/mark.png" alt="" />
-      </div>
-      <div class="survey_wrap">
-        <div class="survey_btn">
-          <a href="/survey_start.html">설문조사 하러가기</a>
-        </div>
-      </div>
-      <!-- 카테고리별 상품 보여지는 -->
-      <div class="products_wrap">
-        <p>인기 프로틴 <span class="footer_point">TOP 10</span></p>
-        <ul class="product_category">
-          <li class="product_cate active">전체</li>
-          <li class="product_cate" id="age_category">연령별</li>
-          <li class="product_cate">건강고민별</li>
-          <li class="product_cate">비건</li>
-          <li class="product_cate">다이어트</li>
-          <li class="product_cate">할인</li>
-        </ul>
-        <ul class="age_list">
-          <li class="age_cate active">10~20대</li>
-          <li class="age_cate">30대</li>
-          <li class="age_cate">40대</li>
-          <li class="age_cate">50대</li>
-          <li class="age_cate">60대</li>
-        </ul>
-        <div class="products_list">
-          <ul class="rank_product">
-            <a href="/product_detail.html" target="_blank">
-              <li>
-                <img src="/images/rank1.png" alt="" />
-                <p>마이프로틴</p>
-              </li>
-            </a>
-            <li>
-              <img src="/images/rank2.png" alt="" />
-              <p>상품명</p>
-            </li>
-            <li>
-              <img src="/images/rank3.png" alt="" />
-              <p>상품명</p>
-            </li>
-          </ul>
-          <ul class="others_product">
-            <li>
-              <img src="" alt="" />
-              <p>프로틴</p>
-            </li>
-            <li>
-              <img src="" alt="" />
-              <p>프로틴</p>
-            </li>
-            <li>
-              <img src="" alt="" />
-              <p>프로틴</p>
-            </li>
-            <li>
-              <img src="" alt="" />
-              <p>프로틴</p>
-            </li>
-            <li>
-              <img src="" alt="" />
-              <p>프로틴</p>
-            </li>
-            <li>
-              <img src="" alt="" />
-              <p>프로틴</p>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="search_results_wrap">
-        <ul class="search_results">
-          <li></li>
-        </ul>
-        <div class="pagination"></div>
-      </div>
+    </form>
+    <div class="category_list">
+      <ul>
+        <li class="category_menu all" th:classappend="${categoryId == null and discount == null} ? ' active'">
+          전체보기
+        </li>
+        <li class="category_menu">인기상품</li>
+        <li class="category_menu">
+          <a href="/products?discount=true" th:classappend="${discount == true ? ' active' : ''}">할인</a></li>
+      </ul>
     </div>
-  </body>
-  <script src="/js/header.js" defer></script>
-  <script src="/js/product.js"></script>
+    <div class="category_wrap">
+      <p>어떤 프로틴이 필요하세요?</p>
+      <ul id="category-list">
+        <li data-category="1" class="category-item" th:classappend="${categoryId == 1} ? ' active'">
+          <img src="/images/main/diet.png" alt="" />
+          <span>다이어트</span>
+        </li>
+        <li data-category="2" class="category-item" th:classappend="${categoryId == 2} ? ' active'">
+          <img src="/images/main/volume.png" alt="" />
+          <span>증량</span>
+        </li>
+        <li data-category="3" class="category-item" th:classappend="${categoryId == 3} ? ' active'">
+          <img src="/images/main/digest.png" alt="" />
+          <span>소화</span>
+        </li>
+        <li data-category="4" class="category-item" th:classappend="${categoryId == 4} ? ' active'">
+          <img src="/images/main/ldl.png" alt="" />
+          <span>콜레스테롤</span>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <img src="/images/main/cheap.png" alt="" />
+          <a href="/products?discount=true" th:classappend="${discount == true ? ' active' : ''}"></a>
+          <span>할인</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="recomment_wrap">
+    <img src="/images/main/mark.png" alt="" />
+    <p>내 몸에 꼭 맞는 프로틴 추천받기</p>
+    <img src="/images/main/mark.png" alt="" />
+  </div>
+  <div class="survey_wrap">
+    <div class="survey_btn">
+      <a href="/templates/main/survey_start.html">설문조사 하러가기</a>
+    </div>
+  </div>
+  <!-- 카테고리별 상품 보여지는 -->
+  <div class="products_wrap">
+    <p>인기 프로틴 <span class="footer_point">TOP 3</span></p>
+<!--    <ul class="product_category">-->
+<!--      <li class="product_cate active" id="all_category">전체</li>-->
+<!--      <li class="product_cate" id="age_category">연령별</li>-->
+<!--      <li class="product_cate" id="health_category">건강고민별</li>-->
+<!--      <li class="product_cate" id="vegan_category">비건</li>-->
+<!--      <li class="product_cate" id="diet_category">다이어트</li>-->
+<!--      <li class="product_cate" id="discount_category">-->
+<!--        <a href="/products?discount=true">할인</a>-->
+<!--      </li>-->
+<!--    </ul>-->
+<!--    <ul class="age_list">-->
+<!--      <li class="age_cate active">10~20대</li>-->
+<!--      <li class="age_cate">30대</li>-->
+<!--      <li class="age_cate">40대</li>-->
+<!--      <li class="age_cate">50대</li>-->
+<!--      <li class="age_cate">60대</li>-->
+<!--    </ul>-->
+    <div class="filtered_products">
+      <ul class="rank_product">
+        <li>
+          <img src="/images/main/rank1.png" alt="" />
+          <p>마이프로틴</p>
+        </li>
+        <li>
+          <img src="/images/main/rank2.png" alt="" />
+          <p>상품명</p>
+        </li>
+        <li>
+          <img src="/images/main/rank3.png" alt="" />
+          <p>상품명</p>
+        </li>
+      </ul>
+      <ul class="others_product" id="product_list">
+        <li th:each="product : ${products}">
+          <a th:href="@{/products/{id}(id=${product.productId})}">
+            <!-- 이미지 반복 출력 -->
+            <!-- 이미지 출력 (첫 번째 이미지만) -->
+            <div class="product-images">
+              <img th:if="${not #lists.isEmpty(product.productImages)}"
+                   th:src="@{${product.productImages[0]}}"
+                   alt="상품 이미지"
+                   style="max-width: 100%; height: auto;">
+              <p><span th:text="${product.productName}">상품명</span></p>
+            </div>
+
+            <!-- 가격 표시 -->
+            <div class="product-price">
+              <!-- 할인율이 있을 경우 -->
+              <p th:if="${product.discountRate > 0}">
+                <span style="text-decoration: line-through; font-size: 15px;" th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
+                <span style="color: red; font-weight: bold;" th:text="${#numbers.formatInteger(product.discountedPrice, 3, 'COMMA')} + '원'" ></span>
+                <span style="font-size: 15px;" th:text="'(' + ${product.discountRate} + '% 할인)'"></span>
+              </p>
+
+              <!-- 할인율이 없을 경우 -->
+              <p th:unless="${product.discountRate > 0}">
+                <span th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
+              </p>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="search_results_wrap">
+    <ul class="search_results">
+      <li></li>
+    </ul>
+    <div class="pagination"></div>
+  </div>
+</div>
+</body>
+<script src="/js/main/header.js"></script>
+<script src="/js/main/product.js"></script>
 </html>

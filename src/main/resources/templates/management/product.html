@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
       name="viewport"
@@ -9,29 +9,23 @@
     />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Admin/event</title>
-    <link
-      href="vendor/fontawesome-free/css/all.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <title>상품</title>
     <link
       href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
       rel="stylesheet"
     />
-    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/common.css" />
+    <link href="/css/management/sb-admin-2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/management/common.css" />
   </head>
-
   <body id="page-top">
     <div id="wrapper">
       <!-- 사이드바 -->
-      <div id="sidebar"></div>
+      <div id="sidebar" th:replace="~{management/sidebar}"></div>
 
       <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
           <!-- 해더 -->
-          <div id="header"></div>
+          <div id="header" th:replace="~{management/header}"></div>
 
           <div
             class="d-sm-flex align-items-center justify-content-between mb-4"
@@ -43,7 +37,7 @@
               <div class="card-header py-3 event-title" id="event-title">
                 <h6 class="m-0 font-weight-bold text-primary"></h6>
                 <button class="btn-register">
-                  <a href="/product_regist.html" class="">상품 등록</a>
+                  <a th:href="@{/products/regist}">상품 등록</a>
                 </button>
               </div>
               <div class="card-body">
@@ -55,85 +49,90 @@
                     cellspacing="0"
                   >
                     <thead>
-                      <tr>
-                        <th>체크박스</th>
+                      <tr style="text-align: center;">
                         <th>상품ID</th>
                         <th>브랜드명</th>
                         <th>상품명</th>
-                        <th>종류</th>
+                        <th>프로틴 유형</th>
                         <th>가격</th>
+                        <th>등록일</th>
                         <th>수정/삭제</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td><input type="checkbox" /></td>
-                        <td>pro1321</td>
-                        <td>브랜드 1</td>
-                        <td>프로틴 1</td>
-                        <td>WPC</td>
-                        <td>56,000</td>
+                      <tr th:each="product : ${products}">
+                        <td th:text="${product.productId}" style="text-align: center;"></td>
+                        <td th:text="${product.brandName}" style="text-align: center;"></td>
+                        <td th:text="${product.productName}"></td>
+                        <td th:text="${product.productType}"></td>
+                        <td th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'" style="text-align: center;"></td>
+                        <td th:text="${#temporals.format(product.productCreatedAt, 'yyyy-MM-dd HH:mm')}"></td>
                         <td>
+                          <div style="display: flex; justify-content: center;">
                           <button class="btn-edit">
-                            <a href="/edit_product.html">수정</a>
+                            <a th:href="@{/products/edit/{productId}(productId=${product.productId})}">수정</a>
                           </button>
-                          <button class="btn-delete">삭제</button>
+                            <form action="/products/delete" method="POST" style="margin-left: 10px;">
+                              <input type="hidden" name="productId" th:value="${product.productId}" />
+                              <button type="submit" class="btn-delete">삭제</button>
+                            </form>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
                   </table>
-                  <div class="search-container">
+                  <nav>
+                    <ul class="pagination justify-content-center">
+                      <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/products(page=0)}">처음</a>
+                      </li>
+                      <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/products(page=${currentPage - 1})}">이전</a>
+                      </li>
+
+                      <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                          th:classappend="${pageNum == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/products(page=${pageNum})}" th:text="${pageNum + 1}"></a>
+                      </li>
+
+                      <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/products(page=${currentPage + 1})}">다음</a>
+                      </li>
+                      <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/products(page=${totalPages - 1})}">끝</a>
+                      </li>
+                    </ul>
+                  </nav>
+                  <form class="search-container" th:action="@{/products}" method="get">
                     <input
-                      type="text"
-                      placeholder="상품명 또는 브랜드명 입력"
+                            type="text"
+                            name="keyword"
+                            placeholder="상품명 또는 브랜드명 입력"
+                            th:value="${keyword}"
                     />
-                    <button class="btn btn-search">검색</button>
-                  </div>
+                    <select name="sortOrder">
+                      <option value="desc" th:selected="${sortOrder == 'desc'}">최신순</option>
+                      <option value="asc" th:selected="${sortOrder == 'asc'}">오래된순</option>
+                    </select>
+                    <button class="btn btn-search" type="submit">검색</button>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div id="footer"></div>
+        <div id="footer" th:replace="~{management/footer}"></div>
       </div>
     </div>
 
-    <div id="logout_modal"></div>
+    <div id="logout_modal" th:replace="~{management/logoutModal}"></div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script>
-      fetch("/header.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("header").innerHTML = data));
+    <script src="/jquery/jquery.slim.js"></script>
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
 
-      fetch("/sidebar.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("sidebar").innerHTML = data));
-
-      fetch("/footer.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("footer").innerHTML = data));
-      fetch("/logoutModal.html")
-        .then((res) => res.text())
-        .then(
-          (data) => (document.getElementById("logout_modal").innerHTML = data)
-        );
-    </script>
-
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="/js/management/sb-admin-2.min.js"></script>
+    <script src="/js/management/chart-area-demo.js"></script>
+    <script src="/js/management/chart-pie-demo.js"></script>
   </body>
 </html>
