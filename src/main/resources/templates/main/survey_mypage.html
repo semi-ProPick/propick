@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/main/survey_mypage.css" type="text/css" />
+        <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+        <title>설문조사 마이페이지</title>
+    </head>
+    <body>
+    <div th:replace="~{main/mainHeader}"></div>
+        <div id="wrap">
+            <div class="mypage_container">
+                <img
+                    src="/images/main/survey.png"
+                    alt="Survey Icon"
+                    class="container_img" />
+                <div class="container_text">
+                    <p>설문조사</p>
+                </div>
+            </div>
+
+            <!-- 주요 구조만 정리 -->
+            <div class="survey_container">
+                <ul class="survey_list">
+                    <li class="survey_item header">
+                        <label>
+                            <input type="checkbox" class="select_all" />
+                            <span>설문 기록</span>
+                        </label>
+                    </li>
+                    <!-- 설문 항목은 JS에서 추가 -->
+                </ul>
+                <button class="delete_btn">삭제</button>
+            </div>
+
+            <!-- 팝업 영역들 -->
+            <div class="popup_bg confirm_delete">
+                <div class="survey_end_wrap">
+                    <p>삭제하시겠습니까?</p>
+                    <div class="btn_wrap">
+                        <div class="keep_btn">취소</div>
+                        <div class="end_btn">삭제</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup_bg empty_result">
+                <div class="survey_end_wrap">
+                    <p>진행한 설문이 없습니다!</p>
+                    <div class="btn_wrap">
+                        <button class="recommend_btn">AI 프로젝트 추천받기</button>
+                    </div>
+                </div>
+            </div>
+
+            <script src="/js/main/survey_mypage.js" defer></script>
+
+    </body>
+</html>

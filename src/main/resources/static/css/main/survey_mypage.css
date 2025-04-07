@@ -1,0 +1,177 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+* {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: "Pretendard Variable", Pretendard, sans-serif;
+}
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    scroll-behavior: smooth;
+    background-color: #ffffff;
+}
+a {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+}
+.user_icon img {
+    max-width: 25px;
+    margin-top: 5px;
+    margin-right: 30px;
+}
+
+.mypage_container {
+    margin-top: 60px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 60px;
+}
+
+.container_img {
+    width: 50px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.container_text {
+    font-weight: bolder;
+    font-size: 30px;
+    text-align: center;
+}
+
+.survey_container {
+    width: 100%;
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+}
+.survey_list {
+    width: 100%;
+}
+.survey_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+.survey_item:first-child span {
+    font-size: 25px;
+    font-weight: bold;
+}
+.survey_item label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.survey_item input[type="checkbox"] {
+    width: 10px;
+    height: 10px;
+    cursor: pointer;
+}
+
+.date {
+    font-size: 15px;
+}
+
+.delete_btn {
+    margin-top: 60px;
+    padding: 10px 30px;
+    background-color: #4e5759;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    float: right;
+    font-weight: bold;
+}
+
+.delete_btn:hover {
+    background-color: #4e5759;
+}
+
+
+.popup_bg {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+}
+
+.popup_bg.active {
+    display: flex;
+}
+
+.survey_end_wrap {
+    width: 400px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.survey_end_wrap p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.survey_end_wrap span {
+    font-size: 20px;
+    display: block;
+    margin-top: 10px;
+    font-weight: normal;
+}
+
+.btn_wrap {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+.end_btn,
+.keep_btn {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    width: 150px;
+}
+
+.end_btn {
+    border: 1px solid #000;
+}
+
+.keep_btn {
+    background-color: #ff5c35;
+    color: #fff;
+}
+
+
+
+.recommend_btn {
+    background-color: #ff5c35;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    width: 150px;
+}

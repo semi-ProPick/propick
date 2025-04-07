@@ -161,17 +161,3 @@ public class UserController {
 
         return ResponseEntity.ok("회원 탈퇴 완료 및 로그아웃 완료");
     }
-
-
-
-    @RequestMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("로그아웃 완료");
-    }
-
-    //회원가입 아이디 중복 체크
-
-}
-
-
