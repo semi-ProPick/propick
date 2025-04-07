@@ -1,128 +1,199 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Admin/event_regist</title>
-    <link
-      href="vendor/fontawesome-free/css/all.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-      rel="stylesheet"
-    />
-    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
-    <!-- <link href="css/common.css" rel="stylesheet" /> -->
-    <link rel="stylesheet" href="css/regist_product.css" />
-  </head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>상품 등록</title>
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+  <link href="/css/management/sb-admin-2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/management/common.css" />
+</head>
 
-  <body id="page-top">
-    <div id="wrapper">
-      <!-- 사이드바 -->
-      <div id="sidebar"></div>
+<body id="page-top">
+<div id="wrapper">
+  <!-- 사이드바 -->
+  <div id="sidebar" th:replace="~{management/sidebar}"></div>
 
-      <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-          <!-- 해더 -->
-          <div id="header"></div>
-          <div class="d-sm-flex align-items-center justify-content-between mb-4"
-          ></div>
-          <!-- 내용 -->
-          <div class="container-fluid">
-            <h1 class="h3 mb-4 text-gray-800">상품 등록</h1>
+  <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+      <!-- 헤더 -->
+      <div id="header" th:replace="~{management/header}"></div>
+
+      <div class="container-fluid">
+        <h2 class="h3 mb-5 text-gray-800">상품 등록</h2>
+        <form th:action="@{/products/regist}" method="post" th:object="${productDTO}" enctype="multipart/form-data">
+          <!-- 상품명 -->
+          <div class="form-group">
+            <label for="productName">상품명</label>
+            <input type="text" id="productName" class="form-control" th:field="*{productName}" placeholder="상품명을 입력하세요" required />
           </div>
-          <div class="container">
-            <form id="productForm">
-              <label for="productId">*상품 ID</label>
-              <input type="text" id="productId" name="productId" />
-              <span class="required" id="productIdError"
-                >상품 ID를 입력해주세요.</span
-              >
 
-              <label for="brandName">*브랜드 이름</label>
-              <input type="text" id="brandName" name="brandName" />
-
-              <label for="productName">*상품 이름</label>
-              <input type="text" id="productName" name="productName" />
-              <span class="required" id="productNameError"
-                >상품 이름을 입력해주세요.</span
-              >
-
-              <label for="proteinType">*프로틴 종류</label>
-              <input
-                type="text"
-                id="proteinType"
-                name="proteinType"
-                value="WPI"
-              />
-
-              <label for="price">*가격</label>
-              <input type="text" id="price" name="price" value="56,000" />
-
-              <label for="eventPeriod">행사 기간</label>
-              <input type="text" id="eventPeriod" name="eventPeriod" />
-
-              <label for="discountPrice">할인 가격</label>
-              <input type="text" id="discountPrice" name="discountPrice" />
-
-              <div class="button-group">
-                <button type="submit" class="btn btn-submit">수정 완료</button>
-                <button type="button" class="btn btn-cancel">취소</button>
-              </div>
-            </form>
+          <!-- 브랜드명 -->
+          <div class="form-group">
+            <label for="brandName">브랜드명</label>
+            <input type="text" id="brandName" class="form-control" th:field="*{brandName}" placeholder="브랜드명을 입력하세요" required />
           </div>
+
+          <!-- 상품 유형 -->
+          <div class="form-group">
+            <label for="productType">상품 유형</label>
+            <input type="text" id="productType" class="form-control" th:field="*{productType}" placeholder="상품 유형을 입력하세요" required />
           </div>
-           <!-- 푸터 -->
-           <div id="footer"></div>
-        </div>
+
+          <!-- 상품 가격 -->
+          <div class="form-group">
+            <label for="productPrice">상품 가격</label>
+            <input type="number" id="productPrice" class="form-control" th:field="*{productPrice}" placeholder="상품 가격을 입력하세요" required />
+          </div>
+
+          <!-- 카테고리 선택 -->
+          <div class="form-group">
+            <label>카테고리</label>
+            <select id="category" class="form-control" multiple>
+              <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.categoryName}"></option>
+            </select>
+          </div>
+          <div id="selectedCategories" class="border p-2 mb-3 bg-light rounded"></div>
+
+          <!-- 성분 입력 -->
+          <div class="form-row" id="ingredient-template">
+            <div class="form-group col-md-4">
+              <label>성분명</label>
+              <select class="form-control" id="ingredientName">
+                <option th:each="ingredient : ${ingredients}" th:value="${ingredient.ingredientId}" th:text="${ingredient.ingredientName}"></option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label>성분량</label>
+              <input type="number" class="form-control" id="ingredientAmount" step="0.1" />
+            </div>
+            <div class="form-group col-md-3">
+              <label>단위</label>
+              <select class="form-control" id="ingredientUnit">
+                <option value="g">g</option>
+                <option value="mg">mg</option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn-primary form-control" onclick="addIngredient()">추가</button>
+            </div>
+          </div>
+
+          <h5>추가된 성분</h5>
+          <table class="table">
+            <thead><tr><th>성분명</th><th>성분량</th><th>단위</th><th>삭제</th></tr></thead>
+            <tbody id="ingredient-list"></tbody>
+          </table>
+
+          <!-- 1회 섭취량  -->
+          <div class="form-group">
+            <label for="servingSize">1회 섭취량</label>
+            <input type="number" id="servingSize" th:field="*{servingSize}" name="servingSize" />
+          </div>
+
+          <!-- 할인율 -->
+          <div class="form-group">
+            <label for="discountRate">할인율</label>
+              <input type="number" id="discountRate" th:field="*{discountRate}" name="discountRate" />
+          </div>
+          <!-- 칼로리 -->
+          <div class="form-group">
+            <label for="calories">칼로리</label>
+            <input type="number" id="calories" class="form-control" th:field="*{calories}" placeholder="칼로리 수치를 입력하세요" />
+          </div>
+          <!-- 상품 이미지 -->
+          <div class="form-group">
+            <label for="productImage">상품 이미지</label>
+            <input type="file" id="productImage" name="imageFiles" multiple>  <!-- 여러 개의 파일 업로드 가능 -->
+          </div>
+          <button type="submit" class="btn btn-primary">등록</button>
+        </form>
       </div>
-      
     </div>
+    <!-- 푸터 -->
+    <div id="footer" th:replace="~{management/footer}"></div>
+  </div>
+</div>
 
-    <div id="logout_modal"></div>
+<div id="logout_modal" th:replace="~{management/logoutModal}"></div>
+<script>
+  let ingredientCount = 0;
 
-    <!-- Bootstrap core JavaScript-->
-    <script>
-      fetch("/header.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("header").innerHTML = data));
+  function addIngredient() {
+    const select = document.getElementById('ingredientName');
+    const amount = document.getElementById('ingredientAmount');
+    const unit = document.getElementById('ingredientUnit');
 
-      fetch("/sidebar.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("sidebar").innerHTML = data));
+    if (!amount.value || !select.value) {
+      alert("성분명과 성분량을 입력하세요.");
+      return;
+    }
 
-      fetch("/footer.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("footer").innerHTML = data));
-      fetch("/logoutModal.html")
-        .then((res) => res.text())
-        .then(
-          (data) => (document.getElementById("logout_modal").innerHTML = data)
-        );
-    </script>
+    const existingIds = new Set(
+            Array.from(document.querySelectorAll("input[name^='ingredientDTOs']"))
+                    .filter(input => input.name.endsWith(".ingredientId"))
+                    .map(input => input.value)
+    );
 
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    if (existingIds.has(select.value)) {
+      alert("이미 추가된 성분입니다.");
+      return;
+    }
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${select.options[select.selectedIndex].text}
+        <input type="hidden" name="ingredientDTOs[${ingredientCount}].ingredientId" value="${select.value}" />
+        <input type="hidden" name="ingredientDTOs[${ingredientCount}].ingredientName" value="${select.options[select.selectedIndex].text}" />
+      </td>
+      <td>${amount.value}
+        <input type="hidden" name="ingredientDTOs[${ingredientCount}].ingredientAmount" value="${amount.value}" />
+      </td>
+      <td>${unit.value}
+        <input type="hidden" name="ingredientDTOs[${ingredientCount}].ingredientUnit" value="${unit.value}" />
+      </td>
+      <td><button type="button" class="btn btn-dark" onclick="this.closest('tr').remove()">삭제</button></td>
+    `;
+    document.getElementById('ingredient-list').appendChild(row);
+    ingredientCount++;
+    amount.value = '';
+  }
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const categorySelect = document.getElementById("category");
+    const selectedDiv = document.getElementById("selectedCategories");
 
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
+    categorySelect.addEventListener("change", function () {
+      const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+      const categoryId = selectedOption.value;
+      const categoryName = selectedOption.text;
 
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
-  </body>
+      const existing = Array.from(selectedDiv.querySelectorAll("input[name='categoryIds']"))
+              .map(input => input.value);
+
+      if (existing.includes(categoryId)) return;
+
+      const badge = document.createElement("span");
+      badge.classList.add("badge", "badge-primary", "m-1", "p-2");
+      badge.dataset.id = categoryId;
+      badge.innerHTML = `
+        ${categoryName}
+        <input type="hidden" name="categoryIds" value="${categoryId}" />
+        <button type="button" class="btn btn-sm btn-light ml-2" onclick="this.parentElement.remove()">X</button>
+      `;
+      selectedDiv.appendChild(badge);
+    });
+  });
+</script>
+<script src="/jquery/jquery.slim.js"></script>
+<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/bootstrap/js/bootstrap.js"></script>
+<script src="/js/management/sb-admin-2.min.js"></script>
+<!--<script src="/js/management/chart-area-demo.js"></script>-->
+<!--<script src="/js/management/chart-pie-demo.js"></script>-->
+</body>
 </html>

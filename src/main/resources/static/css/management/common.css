@@ -215,7 +215,6 @@ input[type="text"] {
 }
 
 .user_info_box input[readonly] {
-
 }
 
 .click_ox {
@@ -283,8 +282,6 @@ input[type="text"] {
 }
 
 .form-group label {
-  width: 70px; /* 怨좎젙 �덈퉬 �ㅼ젙 */
-  text-align: left; /* �쇱そ �뺣젹 */
   font-weight: bold;
 }
 .form-group input {
