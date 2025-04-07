@@ -29,6 +29,6 @@ public interface SurveyResponseRepository extends JpaRepository<SurveyResponse, 
     @Modifying
     @Transactional
     @Query("UPDATE SurveyResponse sr SET sr.responseStatus = com.ezen.propick.survey.enumpackage.ResponseStatus.DELETED WHERE sr.responseId = :responseId")
-    void softDeleteById(@Param("responseId") Integer responseId);
+    void DeleteById(@Param("responseId") Integer responseId);
 
 }

@@ -43,6 +43,6 @@ public class SurveyResponseUserService {
             throw new SecurityException("본인의 응답만 삭제할 수 있습니다.");
         }
 
-        surveyResponseRepository.softDeleteById(responseId);
+        surveyResponseRepository.DeleteById(responseId);
     }
 }

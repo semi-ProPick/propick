@@ -245,7 +245,7 @@ function visualizeResult(data) {
                 r: {
                     min: 0,
                     max: 100,
-                    ticks: { stepSize: 20, display: false }
+                    ticks: { stepSize: 30, display: false }
                 }
             }
         }
