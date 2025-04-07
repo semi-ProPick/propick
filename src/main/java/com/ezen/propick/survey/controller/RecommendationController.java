@@ -7,7 +7,6 @@ import com.ezen.propick.survey.dto.result.SurveyResultInputDTO;
 import com.ezen.propick.survey.engine.ProteinRecommendationEngine;
 import com.ezen.propick.survey.entity.Recommendation;
 import com.ezen.propick.survey.repository.RecommendationRepository;
-import com.ezen.propick.survey.service.RecommendationService;
 import com.ezen.propick.survey.service.SurveyResponseService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +25,6 @@ public class RecommendationController {
     private final RecommendationRepository recommendationRepository;
     private final SurveyResponseService surveyResponseService;
     private final ProteinRecommendationEngine recommendationEngine;
-    private final RecommendationService recommendationService;
 
     @GetMapping("/{surveyResponseId}")
     public ResponseEntity<RecommendationResponseDTO> getRecommendation(
@@ -42,10 +40,9 @@ public class RecommendationController {
 
         // (2) 설문 응답 → 분석 입력 DTO 생성
         SurveyResultInputDTO inputDto = surveyResponseService.getSurveyResultInputDTO(surveyResponseId);
-        SurveyRecommendationResultDTO result = recommendationEngine.generate(inputDto);
-        // (3) 분석 실행
-        Map<String, Integer> healthScores = recommendationService.calculateHealthConditionScores(result.getHealthConcerns());
 
+        // (3) 분석 실행
+        SurveyRecommendationResultDTO result = recommendationEngine.generate(inputDto);
         System.out.println(" 분석 결과 확인:");
         System.out.println("BMI: " + result.getBmi() + ", 상태: " + result.getBmiStatus());
         System.out.println("건강 고민: " + result.getHealthConcerns());
@@ -56,7 +53,7 @@ public class RecommendationController {
         System.out.println("경고 메시지: " + result.getWarningMessages());
         // (4) 프론트로 전달할 결과 DTO 구성
         RecommendationResponseDTO response = new RecommendationResponseDTO(
-                recommendation.getRecommendationId(),
+                recommendation.getRecommendationId(), // ID는 그대로 전달
                 result.getBmi(),
                 result.getBmiStatus(),
                 result.getMinIntakeGram(),
@@ -69,7 +66,7 @@ public class RecommendationController {
                 result.getGender(),
                 result.getAge(),
                 result.getName(),
-                healthScores, // 정규화된 건강 점수
+                result.getHealthConcerns(),
                 result.getProteinRecommendationStats(),
                 result.getTimingRatio()
         );
