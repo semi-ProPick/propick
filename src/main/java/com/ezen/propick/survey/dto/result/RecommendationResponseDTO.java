@@ -1,19 +1,20 @@
 package com.ezen.propick.survey.dto.result;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import java.util.List;
 import java.util.Map;
 
+/* 분석 결과를 사용자에게 전달하는 최종 DTO
+ * 컨트롤러(RecommendationController)가 프론트로 반환하는 구조.
+ */
+
 @Getter
 @AllArgsConstructor
-/*
-* 최종 추천 제품의 구체적인 정보를 담는 DTO
-* 추천 결과 조회 API (/api/recommendations/{surveyResponseId})의 반환값
-* 사용자가 추천받은 제품의 이름, 섭취 권장량, 타이밍, 단백질 유형, 주의사항 등을 최종적으로 확인할 때 사용됩니다.
-* 마이페이지나 결과 페이지에서 추천 제품을 구체적으로 확인할 때 필요합니다.
-* */
+@Builder
 public class RecommendationResponseDTO {
+
     private Integer recommendationId;
 
     private double bmi;
@@ -30,10 +31,12 @@ public class RecommendationResponseDTO {
 
     private String productName;
 
-    // 추가 권장 필드 (옵션)
     private String gender;
     private int age;
+    private String name;
 
-    private Map<String, Integer> healthConditions; // 건강 상태 가중치 (질병명과 점수)
-    Map<String, Integer> recommendedTypeScores;
+    // ✅ 건강 상태, 단백질 유형 비중, 섭취 타이밍 비율 (Chart.js 시각화용)
+    private Map<String, Integer> healthConditions;
+    private Map<String, Integer> recommendedTypeScores;
+    private Map<String, Integer> intakeTimingRatio;
 }

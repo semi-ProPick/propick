@@ -58,9 +58,22 @@ public class UserController {
     }
 
     //회원가입 처리
+    @GetMapping("/join")
+    public String join(Model model) {
+        model.addAttribute("MemberDTO", new MemberDTO()); // Model에 memberDTO 추가
+        return "/main/join";  // join.html 뷰를 반환
+    }
+    //회원가입 처리
     @PostMapping("/join")
-    public String join(@ModelAttribute MemberDTO memberDTO, BindingResult bindingResult) {
+    public String join(@ModelAttribute MemberDTO memberDTO,
+                       @RequestParam(required = false) String redirect,
+                       BindingResult bindingResult) {
         userService.createMember(memberDTO);
+
+        if (redirect != null && !redirect.isBlank()) {
+            return "redirect:/user/login?redirect=" + URLEncoder.encode(redirect, StandardCharsets.UTF_8);
+        }
+
         return "redirect:/user/login";
     }
 

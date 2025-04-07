@@ -471,14 +471,3 @@ a {
   cursor: pointer;
   font-size: 18px;
 }
-
-
-.modify-info {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-top: 20px;
-  border: 1px solid #000;
-  background: white;
-  border-radius: 5px;
-}

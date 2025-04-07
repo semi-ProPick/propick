@@ -29,6 +29,9 @@ public class SurveyQuestions {
     @Column(name ="is_optional", nullable = false)
     private Boolean isOptional = true;
 
+    @Column(name = "question_code")
+    private String questionCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id", nullable = false)
     private Survey surveyId;

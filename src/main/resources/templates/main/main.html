@@ -139,6 +139,18 @@
 <div id="modal">
   <div class="background"></div>
 </div>
+<!-- 로그인 후 자동 리디렉션 처리 -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const redirect = localStorage.getItem("postLoginRedirect");
+    if (redirect) {
+      localStorage.removeItem("postLoginRedirect");
+      console.log("🔁 redirecting to:", redirect);
+      window.location.href = redirect;
+    }
+  });
+</script>
+
 </body>
 <script th:src="@{/js/main/header.js}"></script>
 <script>

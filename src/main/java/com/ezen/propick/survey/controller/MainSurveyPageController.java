@@ -1,10 +1,11 @@
 package com.ezen.propick.survey.controller;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
+@Profile("user")
 @Controller
-public class SurveyPageController {
+public class MainSurveyPageController {
 
     //설문 시작 페이지
     @GetMapping("/survey_start")

@@ -26,6 +26,8 @@ public class Survey {
     @Column(name = "survey_id", updatable = false, nullable = false)
     private Integer surveyId;
 
+
+
     @Column(name ="survey_title",nullable = false, length = 100)
     private String surveyTitle;
 

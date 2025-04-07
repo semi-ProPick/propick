@@ -3,8 +3,14 @@ package com.ezen.propick.user.entity;
 import com.ezen.propick.user.enumpackage.Gender;
 import com.ezen.propick.user.enumpackage.Role;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+import lombok.*;
 
 import java.util.Date;
 
@@ -12,10 +18,10 @@ import java.util.Date;
 //AllArgsConstructor 사용 X : 클래스에 존재하는 모든 필드에 대한 생성자를 자동으로 생성하는데, 인스턴스 멤버의 선언 순서에 영향을 받기 대문에 두 변수의 순서를 바꾸면 생성자의 입력 값 순서도 바뀌게 되어 검출되지 않는 치명적인 오류를 발생시킬 수 있다.
 @Getter
 @Setter
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "user")
 public class User {
     @Id //pk설정
@@ -39,5 +45,5 @@ public class User {
     @Column(name = "user_role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role userRole = Role.User;
-    
+
 }

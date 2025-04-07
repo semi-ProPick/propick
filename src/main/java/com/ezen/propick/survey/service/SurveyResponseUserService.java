@@ -5,6 +5,8 @@ import com.ezen.propick.survey.entity.SurveyResponse;
 import com.ezen.propick.survey.enumpackage.ResponseStatus;
 import com.ezen.propick.survey.repository.RecommendationRepository;
 import com.ezen.propick.survey.repository.SurveyResponseRepository;
+import com.ezen.propick.user.entity.User;
+import com.ezen.propick.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,27 +18,31 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SurveyResponseUserService {
 
+    private final UserRepository userRepository;
     private final SurveyResponseRepository surveyResponseRepository;
-    private final RecommendationRepository recommendationRepository;
 
-    // 사용자 응답 목록 조회
-    public List<SurveyResponseUserDTO> getResponsesByUser(Integer userId) {
-        List<SurveyResponse> responses = surveyResponseRepository.findAllByUserNo_UserNoAndResponseStatus(userId, ResponseStatus.ACTIVE);
+    public List<SurveyResponseUserDTO> getResponsesByUserId(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+
+        List<SurveyResponse> responses = surveyResponseRepository.findByUser(user);
+
         return responses.stream()
                 .map(SurveyResponseUserDTO::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    // 사용자 응답 삭제 (soft delete)
-    @Transactional
-    public void deleteByUser(Integer responseId, Integer userId) {
-        SurveyResponse response = surveyResponseRepository.findById(responseId)
-                .orElseThrow(() -> new IllegalArgumentException("설문 응답을 찾을 수 없습니다."));
+    public void deleteByUserId(Integer responseId, String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
 
-        if (!response.getUserNo().getUserNo().equals(userId)) {
-            throw new IllegalStateException("삭제 권한이 없습니다.");
+        SurveyResponse response = surveyResponseRepository.findById(responseId)
+                .orElseThrow(() -> new IllegalArgumentException("응답 없음"));
+
+        if (!response.getUser().equals(user)) {
+            throw new SecurityException("본인의 응답만 삭제할 수 있습니다.");
         }
 
-        response.setResponseStatus(ResponseStatus.DELETED);
+        surveyResponseRepository.DeleteById(responseId);
     }
 }

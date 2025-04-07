@@ -16,6 +16,8 @@ public class SurveyOptionsDTO {
     private Integer optionId;
 
     private Integer questionId;
+    private String optionCode;
+
 
     @NotBlank(message = "선택지 내용은 필수입니다.")
     @Size(min = 1, max = 255, message = "선택지 내용은 1~255자 이내여야 합니다.")

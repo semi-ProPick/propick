@@ -104,10 +104,6 @@ function validateForm(){
     } else {
         error_birth.style.display="none";
     }
-
-    if (valid) {
-        document.getElementById("joinForm").submit();  // 폼을 실제로 제출
-    }
 }
 
 function toggleCheckboxes(){
@@ -163,3 +159,4 @@ document.getElementById('view3').addEventListener('click', function(){
         this.textContent = '전문 숨기기';
     }
 });
+

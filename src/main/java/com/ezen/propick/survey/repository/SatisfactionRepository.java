@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 /*만족도 저장, 조회*/
 @Repository
 public interface SatisfactionRepository extends JpaRepository<Satisfaction,Integer> {
+    boolean existsByResponse(SurveyResponse response); // 중복 저장 방지용
 
 }
