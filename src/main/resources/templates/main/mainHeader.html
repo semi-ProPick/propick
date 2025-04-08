@@ -9,7 +9,7 @@
   </div>
   <div class="logo"><a th:href="@{/}" class="propick-logo">propick</a></div>
   <div class="user_icon">
-    <a class="logoutBtn" href="/user/login" sec:authorize="!isAuthenticated()">login</a>
+    <a class="logoutBtn" href="/user/login" sec:authorize="!isAuthenticated()" >login</a>
     <form id="logoutBtnBox" sec:authorize="isAuthenticated()" th:action="@{/user/logout}" th:method="post">
       <button class="logoutBtn">logout</button>
     </form>

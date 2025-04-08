@@ -43,6 +43,9 @@ html, body {
   align-items: center;
   gap: 30px;
 }
+.user_icon a {
+  font-size: 20px;
+}
 
 .menu_icon {
   position: relative;
@@ -198,5 +201,11 @@ html, body {
 #logoutBtn{
   border:none;
   background-color: #b5c3b3;
-  font-size: 15px;
+}
+
+.logoutBtn{
+  border: none;
+  background: transparent;
+  font-size: 20px;
+
 }
