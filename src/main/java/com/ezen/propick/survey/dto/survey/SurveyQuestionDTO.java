@@ -1,5 +1,6 @@
 package com.ezen.propick.survey.dto.survey;
 
+import com.ezen.propick.survey.enumpackage.QuestionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,7 +22,9 @@ public class SurveyQuestionDTO {
     @Size(min = 1, max = 255, message = "질문 내용은 1~255자 이내여야 합니다.")
     private String questionText;
 
-    private String questionType;
+    private QuestionType questionType;
+
+    private String questionCode;
 
     private List<SurveyOptionsDTO> options;
 

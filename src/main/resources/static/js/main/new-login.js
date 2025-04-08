@@ -30,3 +30,14 @@ function validateForm(){
 
 
 }
+
+// 설문조사 로그인 페이지에 필요한 코드임
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+
+    const joinLink = document.getElementById("join-link");
+    if (joinLink && redirect) {
+        joinLink.href = `/join.html?redirect=${encodeURIComponent(redirect)}`;
+    }
+});

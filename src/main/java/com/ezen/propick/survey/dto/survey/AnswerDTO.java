@@ -11,5 +11,6 @@ import java.util.List;
 public class AnswerDTO {
     private Integer questionId;
     private List<Integer> selectedOptionIds;
+    private String freeTextAnswer;
 }
 

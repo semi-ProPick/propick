@@ -31,6 +31,9 @@
                 <label for="insert_pwd"><p class="lptext">Password</p></label>
                 <input name="password" class="insert" id="insert_pwd" type="password" placeholder="비밀번호를 입력해주세요.">
                 <p id="error_message2"></p>
+
+                <!--설문 리다이렉트 필여-->
+                <input type="hidden" name="redirect" th:value="${param.redirect}" />
             </div>
 
             <div class="login_box">

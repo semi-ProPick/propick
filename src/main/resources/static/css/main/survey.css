@@ -215,10 +215,7 @@ header {
   display: flex;
 }
 
-#nametext,
-#agetext,
-#heighttext,
-#weighttext {
+.insert input {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -232,7 +229,8 @@ header {
   border-radius: 20px;
 }
 
-.position {
+/* ✅ 위치 텍스트 */
+.insert .position {
   margin-top: 57px;
   margin-left: 11px;
   color: #625f5e;
@@ -341,6 +339,11 @@ header {
   width: 100%
 }
 
+/*건강질문 이미지랑 글씨 리스트 수정할때 여기서 */
+.select_purpose_list img {
+  width: 60px;
+  height: 60px;
+}
 .select_purpose_list {
   height: 60px;
   line-height: 60px;
@@ -353,6 +356,7 @@ header {
   margin-top: 50px;
   cursor: pointer;
   transition: background-color 0.3s;
+  gap: 20px;
 }
 
 .select_purpose_list.selected,
@@ -377,7 +381,7 @@ header {
 .question-title-with-img img {
   width: 80px;
   height: 80px;
-  margin-bottom: 10px; /* 이미지와 텍스트 사이 간격 */
+  margin-bottom: 30px; /* 이미지와 텍스트 사이 간격 */
 }
 
 .question-title-with-img span {
@@ -751,8 +755,8 @@ header {
 .health_conditions_img,
 .protein_type_img,
 .protein_intake_img {
-  width: 380px;
-  height: 380px;
+  width: 360px;
+  height: 360px;
   display: block;
   margin-bottom: 20px;
 }
@@ -762,7 +766,7 @@ header {
 .health-option-box {
   display: flex;
   align-items: center;
-  gap: 20px; /* 이미지와 텍스트 사이 간격 */
+  gap: 30px; /* 이미지와 텍스트 사이 간격 */
 }
 
 .health-option-box img {

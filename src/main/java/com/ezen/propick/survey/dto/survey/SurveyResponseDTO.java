@@ -17,7 +17,7 @@ import java.util.List;
 public class SurveyResponseDTO {
     private Integer responseId;
     private Integer surveyId;
-    private Integer userNo;
+    private String userId;
     private Integer questionId;
 
 

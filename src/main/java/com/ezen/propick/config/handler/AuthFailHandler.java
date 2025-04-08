@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Configuration
@@ -41,9 +42,16 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
             errorMessage = "";
         }
 
+        String redirect = request.getParameter("redirect");
+
+        // 기본 리디렉트 경로 지정
+        if (redirect == null || redirect.isBlank()) {
+            redirect = "/";
+        }
+
         errorMessage = URLEncoder.encode(errorMessage, "UTF-8");
 
-        setDefaultFailureUrl("/user/login?error"+ errorMessage);
+        setDefaultFailureUrl("/user/login?error=true&message=" + errorMessage + "&redirect=" + URLEncoder.encode(redirect, StandardCharsets.UTF_8));
 
         super.onAuthenticationFailure(request, response, exception);
     }

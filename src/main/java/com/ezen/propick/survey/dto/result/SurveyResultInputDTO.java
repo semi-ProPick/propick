@@ -10,7 +10,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Builder
-/*사용자의 설문 응답 데이터를 최종 분석용으로 정리한 DTO
+/* 분석에 필요한 원시 데이터 구조
  * 설문 분석 API (/api/survey-analysis/{responseId})의 반환값으로 제공됩니다.
  * 프론트엔드에서 사용자가 결과 페이지를 볼 때 직접 표시될 내용들입니다.
  * BMI, 추천 단백질 유형, 섭취량, 타이밍, 건강 주의사항 등을 시각화하기 위해 사용됩니다.

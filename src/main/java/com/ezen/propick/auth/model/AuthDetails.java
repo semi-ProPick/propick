@@ -1,7 +1,6 @@
 package com.ezen.propick.auth.model;
 
 import com.ezen.propick.user.dto.LoginDTO;
-import com.ezen.propick.user.dto.MemberDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,6 +60,8 @@ public class AuthDetails implements UserDetails {
         System.out.println("isEnabled");
         return true;  // 계정 활성화 여부를 처리
     }
-
+    public String getUserId() {
+        return loginDTO.getUserId(); // 문자열 ID ("hello123" 같은 로그인 ID)
+    }
 
 }

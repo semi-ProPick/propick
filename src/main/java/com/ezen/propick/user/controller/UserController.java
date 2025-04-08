@@ -21,6 +21,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Profile("user")
@@ -50,7 +52,8 @@ public class UserController {
     }
 
 
-    //     회원가입 페이지를 보여주는 메서드
+
+    //회원가입 처리
     @GetMapping("/join")
     public String join(Model model) {
         model.addAttribute("MemberDTO", new MemberDTO()); // Model에 memberDTO 추가
@@ -59,8 +62,15 @@ public class UserController {
 
     //회원가입 처리
     @PostMapping("/join")
-    public String join(@ModelAttribute MemberDTO memberDTO, BindingResult bindingResult) {
+    public String join(@ModelAttribute MemberDTO memberDTO,
+                       @RequestParam(required = false) String redirect,
+                       BindingResult bindingResult) {
         userService.createMember(memberDTO);
+
+        if (redirect != null && !redirect.isBlank()) {
+            return "redirect:/user/login?redirect=" + URLEncoder.encode(redirect, StandardCharsets.UTF_8);
+        }
+
         return "redirect:/user/login";
     }
 

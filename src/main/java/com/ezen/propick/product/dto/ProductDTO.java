@@ -23,7 +23,7 @@ public class ProductDTO {
     private List<IngredientWithInfoDTO> ingredientDTOs;  // 상세페이지 성분 정보용
     private Integer calories;  // 칼로리
     private Integer servingSize;  // 1회 섭취량
-    private Double proteinAmount; // 단백질 함량
+    private Double proteinAmount;
     private Double proteinPer100g; // 100g 기준 단백질 함량
     private ProductInfo productInfo;  // ProductInfo를 추가
     private LocalDateTime createdAt;  // 상품 등록 시간

@@ -1,5 +1,10 @@
 package com.ezen.propick.survey.enumpackage;
 
 public enum RecommendationTiming {
-    PostWorkout, BeforeBed, Morning
+    아침,
+    점심,
+    저녁,
+    운동후,
+    취침전
+
 }

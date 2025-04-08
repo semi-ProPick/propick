@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class RecommendationSaveRequestDTO {
     private Integer responseId;  // 설문 응답 ID
     private Integer productId;   // 추천된 제품 ID
-    private Integer userNo;      // 사용자 번호
+    private String userId;      // 사용자 번호
     private BigDecimal intakeAmount; // 섭취량 (g)
 
     private String timing;       // PostWorkout / BeforeBed / Morning

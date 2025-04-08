@@ -16,4 +16,6 @@ public class SurveyResponseOptionDTO {
     private SurveyResponse responseId;
 
     private SurveyOptions optionId;
+    private String freeTextAnswer;
+
 }
