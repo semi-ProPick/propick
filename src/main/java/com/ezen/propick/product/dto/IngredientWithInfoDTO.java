@@ -1,22 +1,23 @@
 package com.ezen.propick.product.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class IngredientWithInfoDTO {
+    // 성분 등록, 조회용
 
+    private Integer ingredientId;  //성분 아이디
     private String ingredientName; // 성분명
     private BigDecimal ingredientAmount; // 성분량
     private String ingredientUnit;  // 성분단위
+    private Integer productIngredientId; // 상품의 성분 아이디
 
     // 성분량 + 단위
     public String getIngredientInfo() {
@@ -34,4 +35,6 @@ public class IngredientWithInfoDTO {
         return ingredientAmount.divide(BigDecimal.valueOf(servingSize), 2, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
     }
+
+
 }

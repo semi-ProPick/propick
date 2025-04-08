@@ -1,57 +1,76 @@
 package com.ezen.propick.product.dto;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ProductUpdateDTO {
-    @NotNull(message = "상품 ID는 필수 항목입니다.")
-    private Integer productId;    // 상품 ID (수정할 상품의 ID)
+    // 관리자 상품 수정결과용 dto
 
-    @NotEmpty(message = "상품명은 필수 항목입니다.")
+    private Integer productId;
+
+    @NotBlank(message = "상품명을 입력하세요.")
     private String productName;
 
-    @NotNull(message = "브랜드 ID는 필수 항목입니다.")
-    private Integer brandId;
+    @NotBlank(message = "브랜드명을 입력하세요.")
+    private String brandName;
 
-    @NotEmpty(message = "제품 유형은 필수 항목입니다.")
+    @NotBlank(message = "상품 유형을 입력하세요.")
     private String productType;
 
-    @NotNull(message = "가격은 필수 항목입니다.")
-    @DecimalMin(value = "0.01", message = "가격은 0보다 커야 합니다.")
+    @NotNull(message = "상품 가격을 입력하세요.")
+    @DecimalMin(value = "0.01", message = "상품 가격은 0보다 커야 합니다.")
     private BigDecimal productPrice;
 
-    @NotEmpty(message = "적어도 하나의 카테고리를 선택해야 합니다.")
-    private List<Integer> categoryIds;  // 카테고리 리스트
+    @Size(min = 1, message = "카테고리를 하나 이상 선택해야 합니다.")
+    private List<Integer> categoryIds;
 
-    @NotEmpty(message = "최소 하나의 이미지 URL이 필요합니다.")
-    private List<String> productImages; // 제품 이미지
+    @NotEmpty(message = "이미지는 최소 1개 이상 등록해야 합니다.")
+    private List<ProductImageDTO> productImages;
 
-    @NotEmpty(message = "성분 이름은 필수 항목입니다.")
-    private List<String> ingredientNames;  // 성분 이름 리스트
+    @Size(min = 1, message = "성분을 하나 이상 추가하세요.")
+    @Builder.Default
+    private List<IngredientWithInfoDTO> ingredientDTOs = new ArrayList<>();
 
-    private Integer productInfoId; // 성분 상세정보 ID
+    @Min(value = 0, message = "칼로리는 0 이상이어야 합니다.")
+    private Integer calories;
 
-    public ProductUpdateDTO(Integer productId, String productName, String productType,
-                            BigDecimal productPrice, Integer brandId,
-                            List<Integer> categoryIds, List<String> productImages,
-                            List<String> ingredientNames, Integer productInfoId) {
-        this.productId = productId;
-        this.productName = productName;
-        this.productType = productType;
-        this.productPrice = productPrice;
-        this.brandId = brandId;
-        this.categoryIds = categoryIds;
-        this.productImages = productImages;
-        this.ingredientNames = ingredientNames;
-        this.productInfoId = productInfoId;
+    @Min(value = 0, message = "할인율은 0 이상이어야 합니다.")
+    @Max(value = 100, message = "할인율은 100 이하로 입력하세요.")
+    private Integer discountRate;
+
+    @Min(value = 1, message = "1회 섭취량은 1 이상이어야 합니다.")
+    private Integer servingSize;
+
+
+    private Integer ingredientId;
+    private String ingredientUnit;
+    private String ingredientName;
+    private BigDecimal ingredientAmount;
+    private Integer productIngredientId;  // 각 상품의 연결된 성분들의 아이디
+
+
+    //  내부 클래스에서 생성자 제거!
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class IngredientWithInfoDTO {
+        private Integer ingredientId;
+        private String ingredientName;
+        private String ingredientUnit;
+        private BigDecimal ingredientAmount;
+        private Integer ProductIngredientId;
+
     }
+
+
 }

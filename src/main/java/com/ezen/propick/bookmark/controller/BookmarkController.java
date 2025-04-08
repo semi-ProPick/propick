@@ -38,14 +38,14 @@ public class BookmarkController {
 
     @PostMapping("/add")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> addBookmark(@RequestParam("productId") Integer productId) {
+    public Map<String, Object> addBookmark(@RequestParam("productId") Integer productId) {
         Map<String, Object> response = new HashMap<>();
         String userId = getCurrentUserId();
-
+        System.out.println("POST 요청 - 현재 로그인한 userId: " + userId + ", productId: " + productId);
         if (userId == null) {
             response.put("success", false);
             response.put("error", "로그인이 필요합니다.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            return response;
         }
 
         BookmarkDTO bookmarkDTO = BookmarkDTO.builder()
@@ -59,12 +59,15 @@ public class BookmarkController {
             response.put("success", true);
             response.put("message", "북마크가 추가되었습니다!");
             response.put("bookmark", savedBookmark);
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             response.put("success", false);
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            response.put("error", e.getMessage()); // "이미 추가된 북마크입니다."
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", "북마크 추가에 실패했습니다: " + e.getMessage());
+            System.out.println("북마크 추가 오류: " + e.getMessage());
         }
+        return response;
     }
 
     @DeleteMapping("/remove/{productId}")
@@ -72,7 +75,7 @@ public class BookmarkController {
     public ResponseEntity<Map<String, Object>> removeBookmark(@PathVariable("productId") Integer productId) {
         Map<String, Object> response = new HashMap<>();
         String userId = getCurrentUserId();
-
+        System.out.println("DELETE 요청 - 현재 로그인한 userId: " + userId + ", productId: " + productId);
         if (userId == null) {
             response.put("success", false);
             response.put("error", "로그인이 필요합니다.");
@@ -84,10 +87,16 @@ public class BookmarkController {
             response.put("success", true);
             response.put("message", "북마크가 해제되었습니다!");
             return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            System.out.println("북마크 해제 오류: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
             response.put("success", false);
             response.put("error", "북마크 해제에 실패했습니다: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            System.out.println("북마크 해제 오류: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

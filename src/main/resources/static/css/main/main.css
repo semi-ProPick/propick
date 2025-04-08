@@ -51,6 +51,7 @@ video {
   font-weight: bold;
   text-align: center;
 }
+
 #video_text span {
   color: #ff5c35;
   font-size: 30px;
@@ -100,6 +101,7 @@ video {
   justify-content: space-between;
   margin-top: 30px;
 }
+
 #section2_img li {
   flex: 1;
   display: flex;
@@ -108,6 +110,7 @@ video {
 #section2_img li img:nth-child(1) {
   width: 320px;
 }
+
 #section2_img img {
   max-width: 100%;
   height: auto;
@@ -132,7 +135,7 @@ video {
 }
 #section_wrap3 {
   min-height: 75vh;
-  background-image: url(/images/main/main_bg2.png);
+  background-image: url(/images/main_bg2.png);
   background-size: cover;
   background-position: top center;
   background-repeat: no-repeat;
@@ -172,6 +175,7 @@ video {
   border-bottom-right-radius: 0;
   overflow: hidden;
 }
+
 .contents_wrap h3 {
   font-size: 20px;
   margin-top: 20px;
@@ -223,12 +227,13 @@ video {
   border-radius: 10px;
   font-weight: 500;
 }
+
 .search {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
 }
+
 .search input {
   padding: 18px;
   padding-left: 20px;
@@ -239,6 +244,7 @@ video {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-size: 20px;
 }
+
 .search img {
   margin-left: -40px;
   cursor: pointer;
@@ -273,6 +279,7 @@ video {
   display: flex;
   gap: 20px;
 }
+
 .category_list li {
   padding: 5px 15px;
   background: #d9d9d9;
@@ -281,10 +288,15 @@ video {
   margin-left: 20px;
   font-size: 20px;
 }
+.category_list li a {
+  font-size: 20px;
+}
+
 .category_menu.active {
   background: #ff5722;
   color: #fff;
 }
+
 .category_wrap {
   text-align: center;
   margin-top: 90px;
@@ -300,6 +312,7 @@ video {
   padding: 0;
   list-style: none;
 }
+
 .category_wrap li {
   background: #fff;
   padding: 20px;
@@ -316,6 +329,7 @@ video {
 .category_wrap ul li.active {
   border: 2px solid #ff5c35;
 }
+
 .category_wrap img {
   margin-top: 30px;
   width: 65px;
@@ -324,6 +338,11 @@ video {
 .category_wrap span {
   margin-top: 10px;
   font-size: 30px;
+}
+.category_wrap a {
+  margin-top: 10px;
+  font-size: 30px;
+  font-weight: bold;
 }
 .recomment_wrap {
   display: flex;
@@ -347,6 +366,7 @@ video {
   height: 268px;
   width: 100%;
 }
+
 .survey_btn {
   width: 385px;
   height: 80px;
@@ -361,6 +381,7 @@ video {
   justify-content: center;
   align-items: center;
 }
+
 .products_wrap {
   width: 1000px;
   padding-top: 100px;
@@ -371,11 +392,13 @@ video {
   justify-content: center;
   margin-bottom: 50px;
 }
+
 .products_wrap p,
 span {
   font-size: 20px;
   font-weight: bold;
 }
+
 .product_category {
   display: flex;
   text-align: center;
@@ -388,6 +411,9 @@ span {
   cursor: pointer;
   font-size: 20px;
   font-weight: bold;
+}
+.product_cate a {
+  font-size: 20px;
 }
 .product_cate.active {
   border-bottom: 3px solid #ff5c35 !important;
@@ -418,80 +444,123 @@ span {
 .rank_product {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 40px;
+  margin: 50px 0;
+  padding: 0;
+  list-style: none;
 }
-.rank_product {
-  margin-top: 20px;
-}
+
 .rank_product li {
-  padding: 10px;
+  width: 270px;
+  background-color: #fff;
   border-radius: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 300px;
-  height: 400px;
-  display: flex;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s;
 }
+.rank_product li:hover {
+  transform: translateY(-8px);
+}
+
+/* Top Number Badge */
+.rank_product li::before {
+  content: attr(data-rank);
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  color: white;
+  font-weight: bold;
+  padding: 10px 18px;
+  border-radius: 50%;
+  font-size: 24px;
+  z-index: 10;
+}
+
+/* Product Image */
 .rank_product img {
-  width: 50px;
-  height: 50px;
-}
-.rank_product p {
-  text-align: center;
   width: 100%;
-  margin-top: 15px;
+  height: 230px;
+  object-fit: cover;
+}
+
+/* Product Name */
+.rank_product p {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+  padding: 0 10px;
+}
+
+/* Price Display */
+.rank_product .product-price {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.rank_product .product-price span {
+  font-size: 18px;
+  display: block;
+}
+
+.rank_product .product-price span:nth-child(2) {
+  color: red;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+/* Bookmark Button */
+.rank_product .bookmark-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.rank_product .bookmark-icon i {
+  color: black;
+}
+
+.rank_product .bookmark-icon.bookmarked i {
+  color: yellow;
 }
 .others_product {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
   justify-content: center;
   margin-top: 10px;
 }
-.others_product li,
-.product-item {
-  width: 200px;
-  height: 400px;
+
+.others_product .bookmark-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.others_product li {
+  width: 300px;
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin-top: 30px;
   position: relative;
-  border: 1px solid #ddd;
-  padding: 10px;
-  box-sizing: border-box;
 }
-.others_product img,
-.product-images img {
+.others_product img {
   margin-top: 20px;
-  max-width: 100%;
-  height: auto;
 }
-.others_product p,
-.product-price {
+
+.others_product p {
   margin-top: 10px;
-}
-.bookmark-icon,
-.favorite_star {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  color: #ccc;
-  background: none;
-  border: none;
-  transition: color 0.3s ease;
-}
-.bookmark-icon:hover,
-.favorite_star:hover {
-  color: #ffd700;
-}
-.bookmark-icon.bookmarked,
-.favorite_star.bookmarked {
-  color: #ffd700;
-}
-.favorite_star.not-bookmarked {
-  color: #ccc;
 }
 .search_results_wrap {
   width: 1000px;
@@ -501,6 +570,7 @@ span {
   border-radius: 8px;
   display: none;
 }
+
 .search_results {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -508,6 +578,7 @@ span {
   list-style: none;
   padding: 0;
 }
+
 .search_results li {
   padding: 10px;
   border-radius: 20px;
@@ -516,12 +587,14 @@ span {
   height: 400px;
   display: flex;
 }
+
 .search_results li img {
   width: 100px;
   height: 100px;
   object-fit: cover;
   margin-bottom: 5px;
 }
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -529,6 +602,7 @@ span {
   gap: 10px;
   margin-left: 378px;
 }
+
 .pagination button {
   padding: 8px 12px;
   border: none;
@@ -536,16 +610,17 @@ span {
   cursor: pointer;
   border-radius: 5px;
 }
+
 .pagination button.active {
   background-color: #ff5c35;
   color: #fff;
   font-weight: bold;
 }
+
 .pagination button:disabled {
   background-color: #bbb;
   cursor: not-allowed;
 }
-
 /* 상품 상세 페이지 */
 .product_contents {
   display: flex;
@@ -555,16 +630,20 @@ span {
 }
 .img_left_wrap {
   width: 30%;
-  padding: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   border-radius: 15px;
   height: 400px;
+  overflow: hidden; /* 내부 콘텐츠가 넘치지 않도록 */
+  position: relative; /* 네비게이션 버튼 위치 조정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .txt_right_wrap {
   width: 65%;
   padding: 10px;
 }
-.product_detail ul li {
+.product_detail ul li{
   display: flex;
   font-size: 25px;
 }
@@ -592,13 +671,13 @@ span {
   margin-left: 20px;
   font-size: 30px;
 }
-.nutrition_facts {
+.ingredient_facts {
   margin-top: 45px;
 }
-.nutrition_facts h2 {
+.ingredient_facts h2 {
   text-align: left;
 }
-.nutrition_facts table {
+.ingredient_facts table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -606,17 +685,20 @@ span {
   overflow: hidden;
   border: 2px solid #ff5c35;
 }
-.nutrition_facts th,
-.nutrition_facts td {
+
+.ingredient_facts th,
+.ingredient_facts td {
   padding: 10px;
   text-align: center;
   border: 1px solid #ff5c35;
 }
-.nutrition_facts th {
+
+.ingredient_facts th {
   background-color: #ff5c35;
   color: #fff;
 }
-.nutrition_facts caption {
+
+.ingredient_facts caption {
   font-size: 20px;
   margin-bottom: 10px;
   color: #000;
@@ -634,19 +716,19 @@ span {
   left: 0;
   top: 0;
   z-index: 10;
-  padding: 0 20px;
 }
 .logo {
   font-family: "Pacifico", cursive;
   color: #ff5c35;
+  margin-top: -10px;
 }
-.navibar img {
-  max-width: 100px;
+.navibar {
+  margin-left: 30px;
 }
-.user_icon img {
-  max-width: 25px;
-  margin-top: 5px;
+.user_icon {
+  margin-right: 30px;
 }
+
 .brand_wrap {
   width: 100vw;
   height: 100vh;
@@ -655,25 +737,29 @@ span {
   color: white;
   position: relative;
 }
+
 .content_wrap {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 80%;
 }
+
 .brand_1 {
-  background-image: url("/images/main/brand_1.png");
+  background-image: url("/images/brand_1.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   align-items: center;
 }
+
 .brand_text {
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
 }
+
 .brand_2 {
   background-color: #fbf2e1;
 }
@@ -684,17 +770,20 @@ span {
   height: 100vh;
   color: white;
 }
+
 .brand_image {
   flex: 1;
   width: 50%;
   height: 100%;
 }
+
 .brand_image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top right;
 }
+
 .brand_text2 {
   flex: 1;
   display: flex;
@@ -704,24 +793,29 @@ span {
   text-align: left;
   padding: 50px;
 }
+
 .brand_text2 h2 {
   color: #000;
 }
+
 .brand_text2 span {
   color: #ff5c35;
 }
+
 .brand_text2 ol {
   list-style: none;
   padding: 0;
   margin-top: 70px;
 }
+
 .brand_text2 li {
   font-size: 20px;
   color: #000;
   margin-top: 30px;
 }
+
 .brand_3 {
-  background-image: url("/images/main/brand_3.png");
+  background-image: url("/images/brand_3.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -741,19 +835,24 @@ span {
 .brand_text3 {
   margin-bottom: 20px;
 }
+
 .brand_text3 h2 {
   color: #fff;
 }
+
 .brand_text3 span {
   color: #ff5c35;
 }
+
 .brand_text3 p {
   color: #fff;
   margin-top: 40px;
 }
+
 .brand_text3 span {
   color: #ff5c35;
 }
+
 .circle_image {
   display: flex;
   justify-content: center;
@@ -762,6 +861,35 @@ span {
 }
 
 /* 협업브랜드 페이지 */
+
+.header_wrap {
+  width: 100%;
+  height: 60px;
+  background-color: #b5c3b3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  padding: 0 20px;
+}
+
+.logo {
+  font-family: "Pacifico", cursive;
+  color: #ff5c35;
+}
+
+.navibar img {
+  max-width: 100px;
+}
+
+.user_icon img {
+  max-width: 25px;
+  margin-top: 5px;
+}
+
 .collabo_wrap {
   padding-top: 59px;
   text-align: center;
@@ -776,12 +904,14 @@ span {
   font-size: 50px;
   color: #000;
 }
+
 #point {
   font-size: 60px;
   color: #ff5c35;
   font-weight: 500;
   padding-top: 30px;
 }
+
 .swiper {
   width: 90%;
   margin: auto;
@@ -790,6 +920,7 @@ span {
   position: relative;
   margin-top: 40px;
 }
+
 .swiper-slide {
   display: flex;
   justify-content: center;
@@ -798,13 +929,16 @@ span {
   margin-bottom: 40px;
   transition: transform 0.3s ease-in-out;
 }
+
 .swiper-slide img {
   width: 200px;
   transition: transform 0.3s ease-in-out;
 }
+
 .swiper-slide-active img {
   transform: scale(1.4);
 }
+
 .swiper-button-prev,
 .swiper-button-next {
   color: #000 !important;
@@ -841,6 +975,7 @@ span {
   align-items: center;
   overflow: auto;
 }
+
 .popup-content {
   background: white;
   width: 350px;
@@ -849,22 +984,26 @@ span {
   padding: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
+
 .popup-banner {
   width: 100%;
   border-radius: 10px;
   margin-bottom: 15px;
 }
+
 .event-date {
   font-size: 14px;
   color: #777;
   margin-bottom: 20px;
 }
+
 .popup-buttons {
   display: flex;
   justify-content: space-between;
   border-top: 1px solid #ddd;
   padding-top: 15px;
 }
+
 .btn {
   border: none;
   padding: 10px;
@@ -873,137 +1012,13 @@ span {
   flex: 1;
   background: none;
 }
+
 .btn-primary {
   color: black;
   font-weight: bold;
 }
+
 .btn-secondary {
   color: #777;
   border-right: 1px solid #ddd;
-}
-
-/* 즐겨찾기 페이지 */
-.product_directory {
-  display: flex;
-  flex-direction: row; /* 가로 배치 명시 */
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 0;
-  margin: 0;
-  justify-content: flex-start; /* 왼쪽에서 오른쪽으로 정렬 */
-}
-.product {
-  width: 200px;
-  text-align: center;
-  position: relative;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-.product img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .others_product li,
-  .product-item,
-  .product {
-    width: 45%;
-  }
-}
-@media (max-width: 480px) {
-  .others_product li,
-  .product-item,
-  .product {
-    width: 100%;
-  }
-}
-
-.top3_section {
-  margin: 20px 0;
-  text-align: center;
-}
-
-.top3_section h2 {
-  font-size: 24px;
-  color: #ff5c35;
-  margin-bottom: 20px;
-}
-
-.top3_products {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.top3_product {
-  width: 200px;
-  text-align: center;
-  position: relative;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.top3_product img {
-  max-width: 100%;
-  height: auto;
-}
-
-.rank_badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 16px;
-  color: #ff5c35;
-}
-
-.rank_badge i {
-  color: #ffd700;
-}
-
-.rank_product {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  list-style: none;
-  padding: 0;
-}
-
-.rank_product li {
-  width: 300px; /* 너비를 200px에서 300px로 증가 */
-  text-align: center;
-  position: relative;
-  border: 1px solid #ddd;
-  padding: 15px; /* 패딩을 약간 늘려 여유 공간 확보 */
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.rank_product li img {
-  max-width: 100%; /* 최대 너비를 100%로 유지 */
-  width: 250px; /* 이미지 너비를 250px로 설정하여 더 크게 표시 */
-  height: auto; /* 비율 유지 */
-  margin-bottom: 10px; /* 이미지와 텍스트 사이 간격 추가 */
-}
-
-.rank_product li p {
-  margin: 5px 0;
-  font-size: 16px; /* 텍스트 크기 약간 증가 */
-}
-
-.rank_product li a {
-  text-decoration: none;
-  color: #333;
-}
-
-.rank_product li a:hover {
-  color: #ff5c35;
 }

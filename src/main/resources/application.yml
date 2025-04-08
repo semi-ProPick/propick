@@ -39,7 +39,7 @@ spring:
       use-forwarded-headers: true
       max-http-header-size: 8192
       session:
-        persistent: false
+        persistent: true
 
   logging:
     level:

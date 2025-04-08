@@ -1,54 +1,53 @@
 package com.ezen.propick.product.dto;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import com.ezen.propick.product.entity.Ingredient;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter; // Lombok Setter 추가
+
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProductCreateDTO {
-    // 상품 등록 dto
+    // 관리자 상품 등록용
 
-    @NotEmpty(message = "상품명은 필수 항목입니다.")
-    private String productName;  // 상품명
+    @NotBlank(message = "상품명을 입력하세요.")
+    private String productName;
 
-    @NotNull(message = "브랜드 ID는 필수 항목입니다.")
-    private Integer brandId;  // 브랜드 id
+    @NotBlank(message = "브랜드명을 입력하세요.")
+    private String brandName;
 
-    private String brandName;  // 브랜드 이름 (선택용, 화면에만 표시)
+    @NotBlank(message = "제품 유형을 입력하세요.")
+    private String productType;
 
-    @NotEmpty(message = "제품 유형은 필수 항목입니다.")
-    private String productType;  // 제품 유형
-
-    @NotNull(message = "가격은 필수 항목입니다.")
+    @NotNull(message = "가격을 입력하세요.")
     @DecimalMin(value = "0.01", message = "가격은 0보다 커야 합니다.")
-    private BigDecimal productPrice;  // 제품 가격
+    private BigDecimal productPrice;
 
-//    @NotEmpty(message = "적어도 하나의 카테고리를 선택해야 합니다.")
-//    private List<CategoryDTO> categoryIds;  // 카테고리 리스트
-//
-//    @NotEmpty(message = "최소 하나의 이미지가 필요합니다.")
-//    private List<ProductImageDTO> productImages;  // 제품 이미지
-//
-//    @NotEmpty(message = "성분 이름은 필수 항목입니다.")
-//    private List<String> ingredientNames;  // 성분 이름 리스트
+    @Size(min = 1, message = "카테고리를 하나 이상 선택하세요.")
+    private List<Integer> categoryIds;
 
-    @NotEmpty(message = "적어도 하나의 카테고리를 선택해야 합니다.")
-    private List<Integer> categoryIds;  // 선택된 카테고리 ID 리스트
+    @NotEmpty(message = "이미지는 최소 1개 이상 등록해야 합니다.")
+    private List<String> productImages;
 
-    @NotEmpty(message = "최소 하나의 이미지가 필요합니다.")
-    private List<String> productImages;  // 이미지 URL 리스트
+    @Size(min = 1, message = "성분을 하나 이상 추가하세요.")
+    private List<IngredientWithInfoDTO> ingredientDTOs;
 
-    @NotEmpty(message = "성분 이름은 필수 항목입니다.")
-    private List<String> ingredientNames;  // 성분 이름 리스트
+    @Min(value = 0, message = "칼로리는 0 이상이어야 합니다.")
+    private Integer calories;
 
-    private Integer productId; // 추가
-    private Integer productInfoId; // 추가
+    @Min(value = 0, message = "할인율은 0 이상이어야 합니다.")
+    @Max(value = 100, message = "할인율은 100 이하로 입력하세요.")
+    private Integer discountRate;
 
+    @Min(value = 1, message = "1회 섭취량은 1 이상이어야 합니다.")
+    private Integer servingSize;
 }

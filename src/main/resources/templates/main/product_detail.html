@@ -5,34 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/css/main/main.css" type="text/css" />
   <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <title>상품상세</title>
 </head>
+<style>
+  /* 네비게이션 버튼 크기 & 위치 조정 */
+  .swiper-button-next, .swiper-button-prev {
+    color: white; /* 버튼 색상 */
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+    border-radius: 50%; /* 동그랗게 */
+    width: 50px; /* 버튼 크기 */
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 버튼 아이콘 크기 조정 */
+  .swiper-button-next::after, .swiper-button-prev::after {
+    font-size: 20px; /* 화살표 크기 */
+    color: #fff;
+  }
+
+  /* 버튼 위치 조정 */
+  .swiper-button-next {
+    right: 10px; /* 오른쪽 여백 */
+  }
+  .swiper-button-prev {
+    left: 10px; /* 왼쪽 여백 */
+  }
+  .swiper {
+    width: 100%;
+  }
+
+
+  /* Swiper 컨테이너 크기 조정 */
+  .swiper-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Swiper 개별 이미지 스타일 */
+  .swiper-slide img {
+    width: 100%;
+    height: auto;
+    /*object-fit: contain; !* 이미지가 비율 유지하면서 컨테이너 안에 맞춰짐 *!*/
+    border-radius: 15px;
+  }
+  .swiper-slide {
+    bottom: 60px;
+  }
+
+  /* 네비게이션 버튼 크기 및 위치 조정 */
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: #333; /* 버튼 색상 */
+    width: 40px; /* 버튼 크기 */
+    height: 40px;
+    background: rgba(255, 255, 255, 0.6); /* 반투명 배경 */
+    border-radius: 50%;
+  }
+
+</style>
 <body>
 <div>
   <div id="header" class="header_wrap" th:replace="~{main/mainHeader}"></div>
   <div class="search_wrap">
-    <div class="search">
-      <input type="text" class="seach_input" placeholder="검색" />
+    <form class="search" action="/products/search" method="get">
+      <input type="text" class="seach_input" placeholder="입력" name="keyword" />
       <div class="search_icon">
-        <img src="/images/main/search.png" alt="" />
+        <button type="submit" style="border: none; background: transparent;">
+          <img src="/images/main/search.png" alt="검색" />
+        </button>
       </div>
-    </div>
-    <div class="category_list">
-      <p>카테고리</p>
-      <ul>
-        <li class="category_menu ">전체보기</li>
-        <li class="category_menu">연령대</li>
-        <li class="category_menu">건강고민</li>
-        <li class="category_menu">인기상품</li>
-        <li class="category_menu">비건</li>
-      </ul>
-    </div>
+    </form>
     <div class="product_contents">
       <div class="img_left_wrap">
-        <div th:each="image : ${product.productImages}">
-          <img th:src="@{${image}}" alt="상품 이미지" style="max-width: 100%; height: auto;">
+        <!--  이미지가 1개일 경우 Swiper 없이 -->
+        <div th:unless="${#lists.size(product.productImages) > 1}" class="single-image-container">
+          <img th:src="@{${product.productImages[0]}}" alt="상품 이미지" style="max-width: 100%; height: auto;">
+        </div>
+        <!-- 이미지가 2개 이상이면 Swiper 적용 -->
+        <div th:if="${#lists.size(product.productImages) > 1}" class="swiper-container mySwiper">
+          <div class="swiper-wrapper">
+            <div th:each="image : ${product.productImages}" class="swiper-slide">
+              <img th:src="@{${image}}" alt="상품 이미지">
+            </div>
+          </div>
+          <!-- 네비게이션 버튼 -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
         </div>
       </div>
+
       <div class="txt_right_wrap">
         <div class="txt_info">
           <h1 th:text="${product.productName}">상품명</h1>
@@ -41,49 +106,38 @@
             <li>프로틴 종류 : <p th:text="${product.productType}">상품 유형</p></li>
           </ul>
           <ul>
-            <li>가격 : <p th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')}">></p> 원</li>
-            <li>칼로리 : <p th:text="${product.calories}"></p></li>
+            <!-- 가격 표시 부분 수정 -->
+            <li th:if="${product.discountRate != null && product.discountRate > 0}" class="discounted-price">가격 :
+              <p th:text="${#numbers.formatInteger(product.discountedPrice, 3, 'COMMA')}">할인가격</p> 원
+            </li>
+            <li th:if="${product.discountRate == null || product.discountRate == 0}" class="original-price">가격 :
+              <p th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')}">원가</p> 원
+            </li>
+            <li>칼로리 : <p th:text="${product.calories}"></p> kcal</li>
           </ul>
-          <ul>
-            <!--                        <li th:each="entry : ${product.nutrients}">-->
-            <!--                            <strong th:text="${entry.key}">Nutrient Name</strong>: <span th:text="${entry.value}">Nutrient Value</span>-->
-            <!--                        </li>-->
 
-          </ul>
         </div>
 
-        <div class="nutrition_facts">
+        <div class="ingredient_facts">
           <h2>영양성분표</h2>
           <table>
-            <caption>1회 제공량 당 / 1일 영양성분 기준치에 대한 비율</caption>
+            <caption>1회 섭취량 당 / 1일 영양성분 기준치에 대한 비율</caption>
             <thead>
             <tr>
               <th>영양성분</th>
               <th>성분량</th>
               <th>1회 섭취량</th>
-              <th>단백질 함량</th>
-              <th>총 내용량 당</th>
+              <th>100g 당 함량</th>
             </tr>
             </thead>
             <tbody>
-            <!-- 성분 정보를 반복하는 부분 -->
             <tr th:each="ingredient : ${product.ingredientDTOs}">
               <td th:text="${ingredient.ingredientName}">성분명</td>
               <td th:text="${ingredient.ingredientInfo}">성분량</td>
-            </tr>
-
-            <!-- 나머지 제품 관련 정보는 반복 없이 별도로 처리 -->
-            <tr>
-              <td>1회 섭취량</td>
+              <!-- 1회 섭취량은 product에서 직접 가져오는 값 -->
               <td th:text="${product.servingSize}">1회 섭취량</td>
-            </tr>
-            <tr>
-              <td>단백질 함량</td>
-              <td th:text="${product.proteinAmount}">단백질 함량</td>
-            </tr>
-            <tr>
-              <td>100g 기준 단백질 함량</td>
-              <td th:text="${product.proteinPer100g}">100g 기준 단백질 함량</td>
+              <!-- ingredientPer100g 계산 후 출력 -->
+              <td th:text="${ingredient.calculatePer100g(product.servingSize).stripTrailingZeros().toPlainString() + ' ' + ingredient.ingredientUnit}">100g 기준 성분량</td>
             </tr>
             </tbody>
           </table>
@@ -91,7 +145,9 @@
       </div>
     </div>
   </div>
+</div>
 </body>
 <script src="/js/main/header.js" defer></script>
 <script src="/js/main/product.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </html>
