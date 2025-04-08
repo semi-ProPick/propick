@@ -1,265 +1,270 @@
-
-
-// document.querySelectorAll(".product_cate").forEach((item) => {
-//   item.addEventListener("click", () => {
-//     // 다른 모든 항목에서 active 클래스 제거
-//     document.querySelectorAll(".product_cate").forEach((cate) => {
-//       cate.classList.remove("active");
-//     });
-//
-//     // 클릭한 항목에 active 클래스 추가
-//     item.classList.add("active");
-//   });
-// });
-
 document.addEventListener("DOMContentLoaded", function () {
-  const listItems = document.querySelectorAll(".category_wrap ul li");
+  const searchInput = document.querySelector(".search_input");
+  const productsWrap = document.querySelector(".products_wrap");
+  const searchResultsWrap = document.querySelector(".search_results_wrap");
+  const searchResults = document.querySelector(".search_results");
+  const pagination = document.querySelector(".pagination");
+  const categoryMenus = document.querySelectorAll(".category_menu");
+  const categoryWraps = document.querySelectorAll(".category_wrap ul li");
+  const discountButtons = document.querySelectorAll("a[href='/products?discount=true']");
+  const allMenuItem = document.querySelector(".category_menu.all");
+  const top3ProductsContainer = document.getElementById("top3-product-list");
 
-  listItems.forEach(function (item) {
-    item.addEventListener("click", function () {
-      // 모든 리스트 항목에서 active 클래스 제거
-      listItems.forEach(function (li) {
-        li.classList.remove("active");
+  const itemsPerPage = 6;
+  let currentPage = 1;
+
+  // ✅ 인기 Top 3 상품
+  function renderTop3Products(top3Products) {
+    console.log("Top 3 Products:", top3Products); // 디버깅 로그
+    if (!top3ProductsContainer) return;
+    top3ProductsContainer.innerHTML = "";
+
+    const products = top3Products || [];
+    if (products.length > 0) {
+      products.forEach(product => {
+        const li = document.createElement("li");
+        li.className = "product-item";
+        li.innerHTML = `
+                    <a href="/products/${product.productId}">
+                        <div class="product-images">
+                            <img src="${product.productImages[0]}" alt="상품 이미지">
+                            <p><span>${product.productName}</span></p>
+                        </div>
+                        <div class="product-price">
+                            ${product.discountRate > 0
+            ? `<p>
+                                    <span style="text-decoration: line-through;">${product.productPrice.toLocaleString()}원</span>
+                                    <span style="color: red; font-weight: bold;">${product.discountedPrice.toLocaleString()}원</span>
+                                    <span>(${product.discountRate}% 할인)</span>
+                                </p>`
+            : `<p><span>${product.productPrice.toLocaleString()}원</span></p>`
+        }
+                        </div>
+                    </a>
+                
+                `;
+        top3ProductsContainer.appendChild(li);
       });
-
-      // 클릭된 항목에 active 클래스 추가
-      item.classList.add("active");
-    });
-  });
-});
-
-// document.addEventListener("DOMContentLoaded", function () {
-//   const ageCategory = document.getElementById("age_category"); // '연령별' 카테고리 li
-//   const ageList = document.querySelector(".age_list"); // 'age_list' ul
-//   const otherCategories = document.querySelectorAll(
-//     ".product_cate:not(#age_category)"
-//   ); // '연령별' 제외한 다른 카테고리들
-//   const ageCates = document.querySelectorAll(".age_cate");
-//
-//   // 연령별 클릭 시 age_list 보이기 (숨겨지지 않도록 수정)
-//   ageCategory.addEventListener("click", function () {
-//     // 다른 카테고리 클릭 시 age_list 숨기기
-//     otherCategories.forEach((category) => {
-//       category.classList.remove("active");
-//     });
-//
-//     // 연령별 클릭하면 항상 active 유지
-//     ageList.classList.add("active");
-//   });
-//
-//   // 다른 카테고리 클릭 시, age_list 숨기기
-//   otherCategories.forEach((category) => {
-//     category.addEventListener("click", function () {
-//       ageList.classList.remove("active"); // 연령별이 아닌 카테고리 클릭하면 숨김
-//     });
-//   });
-//
-//   // 연령별 리스트(age_cate) 클릭 시 색상 변경
-//   ageCates.forEach((cate) => {
-//     cate.addEventListener("click", function () {
-//       // 기존 선택된 항목의 active 제거
-//       ageCates.forEach((item) => item.classList.remove("active"));
-//       // 현재 클릭한 항목에 active 추가
-//       cate.classList.add("active");
-//     });
-//   });
-// });
-
-document.addEventListener("DOMContentLoaded", function () {
-  const searchInput = document.querySelector(".seach_input"); // 검색 입력창
-  const productsWrap = document.querySelector(".products_wrap"); // 기존 상품 영역
-  const searchResultsWrap = document.querySelector(".search_results_wrap"); // 검색 결과 영역
-  const searchResults = document.querySelector(".search_results"); // 검색 결과 리스트
-  const pagination = document.querySelector(".pagination"); // 페이지네이션
-  let allProducts = []; // 전체 상품 데이터 저장
-  let currentPage = 1; // 현재 페이지
-  const itemsPerPage = 6; // 한 페이지당 6개 표시
-
-
-  // 검색 이벤트
-  searchInput.addEventListener("input", function () {
-    const query = searchInput.value.trim().toLowerCase();
-
-    // 검색어가 없으면 원래 화면으로 복귀
-    if (query === "") {
-      searchResultsWrap.style.display = "none";
-      productsWrap.style.display = "block";
-      pagination.style.display = "none"; // 페이지네이션 숨기기
-      return;
+      attachBookmarkEvents(); // 이벤트 리스너 재등록
+    } else {
+      top3ProductsContainer.innerHTML = "<li><p>인기 상품이 없습니다.</p></li>";
     }
+  }
 
-    const filteredProducts = allProducts.filter((product) =>
-      product.name.toLowerCase().includes(query)
-    );
+  function refreshTop3Products() {
+    fetch("/products/top3", { credentials: 'include' })
+        .then(res => {
+          console.log("Top 3 fetch response status:", res.status); // 디버깅 로그
+          if (!res.ok) {
+            throw new Error("Top 3 상품을 불러오는 데 실패했습니다: " + res.status);
+          }
+          return res.json();
+        })
+        .then(data => {
+          console.log("Top 3 products data:", data); // 디버깅 로그
+          renderTop3Products(data);
+        })
+        .catch(err => {
+          console.error("Top 3 상품 로드 오류:", err.message);
+          top3ProductsContainer.innerHTML = "<li><p>인기 상품을 불러오는 데 실패했습니다.</p></li>";
+        });
+  }
 
-    currentPage = 1; // 검색 시 페이지 초기화
-    renderProducts(filteredProducts);
-  });
+  // 초기 Top3 렌더링
+  renderTop3Products(top3ProductsFromServer || []); // null 방지
 
-  // 검색 결과 렌더링 함수
+
+  // ✅ 검색 기능
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      const query = searchInput.value.trim().toLowerCase();
+      if (query === "") {
+        searchResultsWrap.style.display = "none";
+        productsWrap.style.display = "block";
+        pagination.style.display = "none";
+        return;
+      }
+
+      const filtered = allProducts.filter(product =>
+          product.productName.toLowerCase().includes(query)
+      );
+
+      currentPage = 1;
+      renderProducts(filtered);
+    });
+  }
+
   function renderProducts(productArray) {
-    searchResults.innerHTML = ""; // 기존 목록 초기화
-    pagination.innerHTML = ""; // 페이지네이션 초기화
+    searchResults.innerHTML = "";
+    pagination.innerHTML = "";
 
     if (productArray.length === 0) {
-      searchResultsWrap.style.display = "block";
-      productsWrap.style.display = "none";
       searchResults.innerHTML = "<p>검색 결과가 없습니다.</p>";
-      pagination.style.display = "none"; // 검색 결과 없을 때 페이지네이션 숨기기
+      productsWrap.style.display = "none";
+      searchResultsWrap.style.display = "block";
+      pagination.style.display = "none";
       return;
     }
 
-    // 페이지네이션 적용
     const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    const paginatedProducts = productArray.slice(start, end);
+    const paginated = productArray.slice(start, start + itemsPerPage);
 
-    paginatedProducts.forEach((product) => {
+    paginated.forEach(product => {
       const li = document.createElement("li");
       li.innerHTML = `
-            <img src="${product.image}" alt="${product.name}" />
-            <p>${product.name}</p>
-          `;
+                <img src="${product.image}" alt="${product.productName}" />
+                <p>${product.productName}</p>
+            `;
       searchResults.appendChild(li);
     });
 
-    // 기존 상품 리스트 숨기고 검색 결과 표시
-    productsWrap.style.display = "none";
     searchResultsWrap.style.display = "block";
-    pagination.style.display = "block"; // 페이지네이션 표시
+    productsWrap.style.display = "none";
+    pagination.style.display = "block";
     renderPagination(productArray);
   }
 
-  // 페이지네이션 생성 함수
   function renderPagination(productArray) {
     pagination.innerHTML = "";
     const totalPages = Math.ceil(productArray.length / itemsPerPage);
 
-    // 페이지네이션 항상 표시되도록 수정
-    pagination.style.display = "block";
+    const createButton = (text, disabled, callback) => {
+      const btn = document.createElement("button");
+      btn.textContent = text;
+      btn.disabled = disabled;
+      btn.addEventListener("click", callback);
+      return btn;
+    };
 
-    const prevButton = document.createElement("button");
-    prevButton.textContent = "이전";
-    prevButton.disabled = currentPage === 1;
-    prevButton.addEventListener("click", () => {
-      if (currentPage > 1) {
-        currentPage--;
-        renderProducts(productArray);
-      }
-    });
+    pagination.appendChild(createButton("이전", currentPage === 1, () => {
+      currentPage--;
+      renderProducts(productArray);
+    }));
 
-    const nextButton = document.createElement("button");
-    nextButton.textContent = "다음";
-    nextButton.disabled = currentPage === totalPages;
-    nextButton.addEventListener("click", () => {
-      if (currentPage < totalPages) {
-        currentPage++;
-        renderProducts(productArray);
-      }
-    });
-
-    pagination.appendChild(prevButton);
     for (let i = 1; i <= totalPages; i++) {
-      const pageButton = document.createElement("button");
-      pageButton.textContent = i;
-      if (i === currentPage) pageButton.classList.add("active");
-      pageButton.addEventListener("click", () => {
+      const btn = createButton(i, false, () => {
         currentPage = i;
         renderProducts(productArray);
       });
-      pagination.appendChild(pageButton);
+      if (i === currentPage) btn.classList.add("active");
+      pagination.appendChild(btn);
     }
-    pagination.appendChild(nextButton);
+
+    pagination.appendChild(createButton("다음", currentPage === totalPages, () => {
+      currentPage++;
+      renderProducts(productArray);
+    }));
   }
-});
 
-// 상품 상세 이미지 swiper
-document.addEventListener("DOMContentLoaded", function () {
-  let swiper = new Swiper(".mySwiper", {
-    slidesPerView: 1,  // 한 번에 하나의 이미지만 보이도록 설정
-    loop: true,  // 무한 루프
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-  });
-})
+  // ✅ 카테고리 필터
+  const allCategoryItems = [...categoryMenus, ...categoryWraps];
 
-document.addEventListener('DOMContentLoaded', function () {
-  const categoryMenus = document.querySelectorAll('.category_menu'); // 상단 카테고리
-  const categoryWraps = document.querySelectorAll('.category_wrap ul li'); // 하단 카테고리
-  const discountButtons = document.querySelectorAll("a[href='/products?discount=true']"); // 할인 버튼 (상단 + 하단)
-  const allMenuItem = document.querySelector(".category_menu.all"); // 전체보기 버튼
-
-  //  모든 카테고리에 클릭 이벤트 추가 (수정: id → dataset.category)
-  [...categoryMenus, ...categoryWraps].forEach(item => {
-    item.addEventListener('click', function () {
+  allCategoryItems.forEach(item => {
+    item.addEventListener("click", event => {
+      event.preventDefault();
+      const category = item.dataset.category;
       activateCategory(item);
-      const selectedCategory = item.dataset.category; // ⬅️ 여기 수정!
-      filterProductsByCategory(selectedCategory);
+      filterProductsByCategory(category);
     });
   });
 
-  // 할인 버튼 클릭 시
   discountButtons.forEach(button => {
     button.parentElement.addEventListener("click", (event) => {
       event.preventDefault();
-      activateDiscountCategory();
+      activateCategory(button.parentElement);
       window.location.href = "/products?discount=true";
     });
   });
 
-  // 전체보기 클릭 시
-  if (allMenuItem) {
-    allMenuItem.addEventListener("click", (event) => {
-      event.preventDefault();
-      activateCategory(allMenuItem);
-      window.location.href = "/products";
-    });
-  }
+  allMenuItem?.addEventListener("click", (event) => {
+    event.preventDefault();
+    activateCategory(allMenuItem);
+    window.location.href = "/products";
+  });
 
-  // 클릭한 카테고리로 이동
   function filterProductsByCategory(categoryId) {
     const params = new URLSearchParams(window.location.search);
     const isDiscount = params.get("discount") === "true";
-
     let url = `/products?category=${categoryId}`;
-    if (isDiscount) {
-      url += "&discount=true";
-    }
-
+    if (isDiscount) url += "&discount=true";
     window.location.href = url;
   }
 
-  // 클릭한 항목 active 적용
-  function activateCategory(selectedItem) {
-    [...categoryMenus, ...categoryWraps].forEach(item => item.classList.remove("active"));
-    selectedItem.classList.add("active");
+  function activateCategory(selected) {
+    allCategoryItems.forEach(item => item.classList.remove("active"));
+    selected.classList.add("active");
   }
 
-  // 할인 버튼 active 적용
-  function activateDiscountCategory() {
-    [...categoryMenus, ...categoryWraps].forEach(item => item.classList.remove("active"));
-    discountButtons.forEach(button => button.parentElement.classList.add("active"));
-  }
-
-  // 페이지 로드시 현재 URL 기준으로 active 적용 (수정: id → data-category)
   const urlParams = new URLSearchParams(window.location.search);
-
   if (urlParams.get("discount") === "true") {
-    activateDiscountCategory();
+    discountButtons.forEach(button => button.parentElement.classList.add("active"));
   }
 
   const selectedCategoryId = urlParams.get("category");
   if (selectedCategoryId) {
-    const categoryElement = document.querySelector(`[data-category="${selectedCategoryId}"]`); // ⬅️ 여기 수정!
-    if (categoryElement) {
-      activateCategory(categoryElement);
-    }
+    const selectedEl = document.querySelector(`[data-category="${selectedCategoryId}"]`);
+    selectedEl && activateCategory(selectedEl);
   }
-});
 
+  // ✅ 북마크 기능
+  function attachBookmarkEvents() {
+    document.querySelectorAll(".bookmark-icon").forEach(button => {
+      // 기존 이벤트 리스너 제거 (중복 방지)
+      button.removeEventListener("click", button._bookmarkHandler);
+      button._bookmarkHandler = function (event) {
+        event.preventDefault();
+        const productId = this.getAttribute("data-product-id");
+        let isBookmarked = this.classList.contains("bookmarked");
+
+        const url = isBookmarked ? `/bookmark/remove/${productId}` : "/bookmark/add";
+        const method = isBookmarked ? "DELETE" : "POST";
+
+        const options = {
+          method,
+          credentials: 'include'
+        };
+
+        if (!isBookmarked) {
+          options.headers = { "Content-Type": "application/x-www-form-urlencoded" };
+          options.body = `productId=${productId}`;
+        }
+
+        console.log(`Sending ${method} request to ${url} for productId=${productId}, isBookmarked=${isBookmarked}`);
+
+        fetch(url, options)
+            .then(res => {
+              console.log("Response status:", res.status);
+              if (!res.ok) {
+                return res.json().then(data => { throw new Error(data.error || "요청 실패: " + res.status); });
+              }
+              return res.json();
+            })
+            .then(data => {
+              console.log("Response data:", data);
+              if (data.success) {
+                this.classList.toggle("bookmarked", !isBookmarked);
+                refreshTop3Products();
+              } else {
+                if (data.error === "이미 추가된 북마크입니다.") {
+                  this.classList.add("bookmarked");
+                  isBookmarked = true;
+                  alert(data.error);
+                } else if (data.error === "로그인이 필요합니다.") {
+                  alert(data.error);
+                  window.location.href = "/user/login";
+                } else {
+                  alert(data.error || "북마크 처리 실패");
+                }
+              }
+            })
+            .catch(err => {
+              console.error("북마크 오류:", err.message);
+              alert("북마크 처리 중 오류 발생: " + err.message);
+            });
+      };
+      button.addEventListener("click", button._bookmarkHandler);
+    });
+  }
+
+  attachBookmarkEvents();
+});

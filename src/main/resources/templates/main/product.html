@@ -5,11 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/css/main/main.css" type="text/css" />
   <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <title>상품</title>
+  <style>
+    .bookmark-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .bookmark-icon i {
+      color: black;
+    }
+    .bookmark-icon.bookmarked i {
+      color: yellow;
+    }
+  </style>
+  <script th:inline="javascript">
+    const allProducts = /*[[${products}]]*/ [];
+    const top3ProductsFromServer = /*[[${top3Products}]]*/ [] || [];
+  </script>
 </head>
 <body>
 <div id="header" th:replace="~{main/mainHeader}"></div>
 <div id="wrap">
+
+  <!-- 검색 및 카테고리 -->
   <div class="search_wrap">
     <p>전체상품</p>
     <form class="search" action="/products/search" method="get">
@@ -22,12 +43,10 @@
     </form>
     <div class="category_list">
       <ul>
-        <li class="category_menu all" th:classappend="${categoryId == null and discount == null} ? ' active'">
-          전체보기
-        </li>
-        <li class="category_menu">인기상품</li>
+        <li class="category_menu all" th:classappend="${categoryId == null and discount == null} ? ' active'">전체보기</li>
         <li class="category_menu">
-          <a href="/products?discount=true" th:classappend="${discount == true ? ' active' : ''}">할인</a></li>
+          <a href="/products?discount=true" th:classappend="${discount == true ? ' active' : ''}">할인</a>
+        </li>
       </ul>
     </div>
     <div class="category_wrap">
@@ -59,6 +78,8 @@
       </ul>
     </div>
   </div>
+
+  <!-- 추천 및 설문조사 -->
   <div class="recomment_wrap">
     <img src="/images/main/mark.png" alt="" />
     <p>내 몸에 꼭 맞는 프로틴 추천받기</p>
@@ -69,46 +90,19 @@
       <a href="/templates/main/survey_start.html">설문조사 하러가기</a>
     </div>
   </div>
-  <!-- 카테고리별 상품 보여지는 -->
+
+  <!-- 인기 상품 TOP 3 -->
   <div class="products_wrap">
     <p>인기 프로틴 <span class="footer_point">TOP 3</span></p>
-<!--    <ul class="product_category">-->
-<!--      <li class="product_cate active" id="all_category">전체</li>-->
-<!--      <li class="product_cate" id="age_category">연령별</li>-->
-<!--      <li class="product_cate" id="health_category">건강고민별</li>-->
-<!--      <li class="product_cate" id="vegan_category">비건</li>-->
-<!--      <li class="product_cate" id="diet_category">다이어트</li>-->
-<!--      <li class="product_cate" id="discount_category">-->
-<!--        <a href="/products?discount=true">할인</a>-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--    <ul class="age_list">-->
-<!--      <li class="age_cate active">10~20대</li>-->
-<!--      <li class="age_cate">30대</li>-->
-<!--      <li class="age_cate">40대</li>-->
-<!--      <li class="age_cate">50대</li>-->
-<!--      <li class="age_cate">60대</li>-->
-<!--    </ul>-->
     <div class="filtered_products">
-      <ul class="rank_product">
-        <li>
-          <img src="/images/main/rank1.png" alt="" />
-          <p>마이프로틴</p>
-        </li>
-        <li>
-          <img src="/images/main/rank2.png" alt="" />
-          <p>상품명</p>
-        </li>
-        <li>
-          <img src="/images/main/rank3.png" alt="" />
-          <p>상품명</p>
-        </li>
+      <ul class="rank_product" id="top3-product-list">
+        <!-- JavaScript로 동적으로 렌더링됨 -->
       </ul>
+
+      <!-- 전체 상품 목록 -->
       <ul class="others_product" id="product_list">
-        <li th:each="product : ${products}">
+        <li th:each="product : ${products}" class="product-item">
           <a th:href="@{/products/{id}(id=${product.productId})}">
-            <!-- 이미지 반복 출력 -->
-            <!-- 이미지 출력 (첫 번째 이미지만) -->
             <div class="product-images">
               <img th:if="${not #lists.isEmpty(product.productImages)}"
                    th:src="@{${product.productImages[0]}}"
@@ -116,34 +110,37 @@
                    style="max-width: 100%; height: auto;">
               <p><span th:text="${product.productName}">상품명</span></p>
             </div>
-
-            <!-- 가격 표시 -->
             <div class="product-price">
-              <!-- 할인율이 있을 경우 -->
               <p th:if="${product.discountRate > 0}">
-                <span style="text-decoration: line-through; font-size: 15px;" th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
-                <span style="color: red; font-weight: bold;" th:text="${#numbers.formatInteger(product.discountedPrice, 3, 'COMMA')} + '원'" ></span>
-                <span style="font-size: 15px;" th:text="'(' + ${product.discountRate} + '% 할인)'"></span>
+                <span style="text-decoration: line-through;" th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
+                <span style="color: red; font-weight: bold;" th:text="${#numbers.formatInteger(product.discountedPrice, 3, 'COMMA')} + '원'"></span>
+                <span th:text="'(' + ${product.discountRate} + '% 할인)'"></span>
               </p>
-
-              <!-- 할인율이 없을 경우 -->
               <p th:unless="${product.discountRate > 0}">
                 <span th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
               </p>
             </div>
           </a>
+          <button class="bookmark-icon" th:data-product-id="${product.productId}" th:classappend="${product.bookmarked} ? 'bookmarked' : ''">
+            <i class="fas fa-bookmark"></i>
+          </button>
+        </li>
+        <li th:if="${products == null or #lists.size(products) == 0}">
+          <p>상품이 없습니다.</p>
         </li>
       </ul>
     </div>
   </div>
+
+  <!-- 검색 결과 및 페이지네이션 -->
   <div class="search_results_wrap">
-    <ul class="search_results">
-      <li></li>
-    </ul>
+    <ul class="search_results"></ul>
     <div class="pagination"></div>
   </div>
 </div>
+
+<!-- 스크립트 -->
+<script src="/js/main/header.js" defer></script>
+<script src="/js/main/product.js" defer></script>
 </body>
-<script src="/js/main/header.js"></script>
-<script src="/js/main/product.js"></script>
 </html>

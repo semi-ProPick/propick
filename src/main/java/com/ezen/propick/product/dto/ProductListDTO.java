@@ -1,6 +1,5 @@
 package com.ezen.propick.product.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ProductListDTO {
-    // 상품 목록 결과용 dto
+    // 상품 목록 결과용 DTO
 
     private Integer productId;     // 상품 아이디
     private String productName;    // 상품명
@@ -22,10 +21,11 @@ public class ProductListDTO {
     private BigDecimal productPrice;  // 가격
     private List<String> productImages;  // 상품 이미지
     private Integer discountRate;  // 할인율
-
+    private boolean bookmarked;    // 북마크 여부
     private BigDecimal discountedPrice; // 할인된 가격
     private LocalDateTime productCreatedAt; // 등록 시간
     private List<String> categories; // 카테고리명 리스트
+    private Integer bookmarkCount;  // 북마크 수 (추가된 필드)
 
     // 생성자
     public ProductListDTO(Integer productId, String productName, String brandName,
@@ -41,18 +41,15 @@ public class ProductListDTO {
         this.discountedPrice = calculateDiscountedPrice(productPrice, discountRate);
         this.productCreatedAt = productCreatedAt;
         this.categories = categories;
+        this.bookmarkCount = 0; // 기본값으로 0 설정
     }
 
     // 상품의 원래 가격과 할인율을 받아서 최종 할인된 가격으로 반환하는 메서드
     private BigDecimal calculateDiscountedPrice(BigDecimal productPrice, Integer discountRate) {
-
-        // 가격이나 할인율이 null이거나, 할인율이 0이면 원래 가격으로 반환
         if (productPrice == null || discountRate == null || discountRate == 0) {
             return productPrice;
         }
         BigDecimal discountAmount = productPrice.multiply(BigDecimal.valueOf(discountRate).divide(BigDecimal.valueOf(100)));
-        // 할인율을 100으로 나누고 원래 가격을 곱하는 계산식
         return productPrice.subtract(discountAmount);
     }
-
 }

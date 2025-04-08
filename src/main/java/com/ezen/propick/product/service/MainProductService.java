@@ -25,37 +25,42 @@ public class MainProductService {
     private final ProductInfoRepository productInfoRepository;
     private final ProductIngredientDetailRepository productIngredientDetailRepository;
 
-    // 전체 상품 목록 조회
-//    public List<ProductListDTO> getAllProducts() {
-//        List<Product> products = productRepository.findAll();  // DB에서 모든 상품 조회
-//
-//        // 상품 목록을 DTO로 변환
-//        return products.stream().map(product -> {
-//            Integer discountRate = (product.getProductInfo() != null && product.getProductInfo().getDiscountRate() != null)
-//                    ? product.getProductInfo().getDiscountRate() : 0;
-//
-//            // 카테고리명 리스트 조회
-//            List<String> categoryNames = product.getProductCategories().stream()
-//                    .map(productcate -> productcate.getCategory().getCategoryName())
-//                    .collect(Collectors.toList());
-//
-//
-//            return new ProductListDTO(
-//                    product.getProductId(),
-//                    product.getProductName(),
-//                    product.getBrand().getBrandName(),
-//                    product.getProductType(),
-//                    product.getProductPrice(),
-//                    discountRate,
-//                    productImageRepository.findByProduct(product).stream()
-//                            .map(ProductImage::getImageUrl)
-//                            .collect(Collectors.toList()),
-//                    product.getProductCreatedAt(),
-//                    categoryNames
-//            );
-//        }).collect(Collectors.toList());
-//
-//    }
+
+
+    // Product를 ProductListDTO로 변환하는 메서드
+    public ProductListDTO convertToProductListDTO(Product product) {
+        if (product == null) {
+            return null;
+        }
+
+        // 할인율 가져오기 (ProductInfo에서 조회, 없으면 0)
+        Integer discountRate = (product.getProductInfo() != null) ? product.getProductInfo().getDiscountRate() : 0;
+
+        // 상품 이미지 URL 리스트 가져오기
+        List<String> imageUrls = product.getProductImages().stream()
+                .map(ProductImage::getImageUrl)
+                .collect(Collectors.toList());
+
+        // 카테고리 이름 리스트 가져오기
+        List<String> categoryNames = product.getProductCategories() != null ?
+                product.getProductCategories().stream()
+                        .map(pc -> pc.getCategory().getCategoryName())
+                        .collect(Collectors.toList()) :
+                Collections.emptyList();
+
+        // ProductListDTO 생성
+        return new ProductListDTO(
+                product.getProductId(),
+                product.getProductName(),
+                product.getBrand() != null ? product.getBrand().getBrandName() : "브랜드 없음",
+                product.getProductType(),
+                product.getProductPrice(),
+                discountRate,
+                imageUrls,
+                product.getProductCreatedAt(), // 등록 시간 추가
+                categoryNames // 카테고리 이름 리스트 추가
+        );
+    }
 
     // 할인이 적용된 상품들 중 카테고리 별로 조회
     public List<ProductListDTO> getDiscountedCategoryProducts(Integer categoryId, Boolean discount) {
@@ -252,4 +257,3 @@ public class MainProductService {
         }).collect(Collectors.toList());
     }
 }
-

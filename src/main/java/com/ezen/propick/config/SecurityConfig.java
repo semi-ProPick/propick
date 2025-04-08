@@ -47,8 +47,9 @@ public class SecurityConfig {
                     "/api/survey-responses/**",
                     "/api/recommendations/**",
                     "/api/satisfaction/**",
-                    "/survey_mypage"
-
+                    "/survey_mypage",
+                    "/bookmark/add",
+                    "/bookmark/remove/**"
             ).permitAll();
 
             auth.anyRequest().authenticated();  // 모든 요청은 인증을 요구

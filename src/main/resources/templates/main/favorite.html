@@ -1,53 +1,105 @@
 <!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/mypage.css" type="text/css" />
-    <link rel="stylesheet" href="css/header.css" type="text/css" />
-    <title>즐겨찾기</title>
-  </head>
-  <body>
-    <div id="header"></div>
-    <div class="big_container">
-      <div class="middle_container">
-        <div class="favorite_title">
-          <img
-            id="favorite_img"
-            src="images/favorite.png"
-            alt="즐겨찾기 이미지"
-          />
-          <p id="favorite_title_text">즐겨찾기</p>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" th:href="@{/css/main/mypage.css}" type="text/css" />
+  <link rel="stylesheet" th:href="@{/css/main/header.css}" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <title>즐겨찾기</title>
+  <style>
+    .favorite_star {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .favorite_star i {
+      color: yellow; /* 북마크된 상태 색상 */
+    }
+  </style>
+</head>
+<body>
+<header id="header" class="header_wrap" th:replace="~{main/mainHeader}"></header>
+<div class="big_container">
+  <div class="middle_container">
+    <div class="favorite_title">
+      <img id="favorite_img" src="/images/main/favorite.png" alt="즐겨찾기 이미지" />
+      <p id="favorite_title_text">즐겨찾기</p>
+    </div>
+
+    <div class="small_title">
+      <p>즐겨찾는 상품</p>
+    </div>
+
+    <div class="my_favorite_product">
+      <div class="product_directory">
+        <!-- 북마크 리스트가 있을 경우 -->
+        <div class="product" th:each="product : ${bookmarkedProducts}" th:if="${bookmarkedProducts != null and #lists.size(bookmarkedProducts) > 0}" th:id="'product_' + ${product.productId}">
+          <!-- 북마크 제거 버튼 -->
+          <button class="favorite_star" th:data-product-id="${product.productId}" onclick="removeBookmark(this)">
+            <i class="fas fa-bookmark"></i> <!-- 북마크된 상태 -->
+          </button>
+          <!-- 상품 이미지가 있을 경우 첫 번째 이미지를 표시 -->
+          <img th:if="${product.productImages != null and #lists.size(product.productImages) > 0}"
+               th:src="${product.productImages[0]}" alt="상품 이미지" />
+          <img th:unless="${product.productImages != null and #lists.size(product.productImages) > 0}"
+               src="/images/default_image.png" alt="기본 이미지" />
+          <!-- 상품 이름과 브랜드 표시 -->
+          <p th:text="${product.productName} + ' (' + ${product.brandName} + ')'"></p>
+          <!-- 상품 가격 표시 -->
+          <p th:if="${product.discountedPrice != null}" th:text="'할인가: ' + ${product.discountedPrice} + '원'"></p>
+          <p th:unless="${product.discountedPrice != null}" th:text="'가격: ' + ${product.productPrice} + '원'"></p>
         </div>
-
-        <div class="small_title">
-          <p>즐겨찾는 상품</p>
-        </div>
-
-        <div class="my_favorite_product">
-          <div class="product_directory">
-            <div class="product" id="product_1">
-              <div class="favorite_star">
-                <img src="images/Star 1.png" alt="Star" />
-              </div>
-              <img src="images/다운로드 1.png" alt="마이프로틴" />
-              <p>임팩트 웨이 프로틴</p>
-            </div>
-
-            <div class="product" id="product_2">
-              <div class="favorite_star">
-                <img src="images/Star 1.png" alt="Star" />
-              </div>
-              <img src="images/다운로드 1.png" alt="마이프로틴" />
-              <p>임팩트 웨이 프로틴</p>
-            </div>
-            <div class="product" id=""></div>
-            <div class="product" id=""></div>
-          </div>
+        <!-- 북마크 리스트가 없을 경우 -->
+        <div th:if="${bookmarkedProducts == null or #lists.size(bookmarkedProducts) == 0}">
+          <p>즐겨찾기한 상품이 없습니다.</p>
         </div>
       </div>
     </div>
-  </body>
-  <script src="/js/header.js" defer></script>
+  </div>
+</div>
+<script th:src="@{/js/main/header.js}" defer></script>
+<script>
+  function removeBookmark(button) {
+    const productId = button.getAttribute('data-product-id');
+    const productElement = document.getElementById('product_' + productId);
+
+    if (!productId) {
+      alert('제품 ID가 없습니다.');
+      return;
+    }
+
+    fetch(`/bookmark/remove/${productId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('요청이 실패했습니다: ' + response.status);
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.success) {
+                productElement.remove();
+                alert(data.message || '북마크가 해제되었습니다.');
+              } else {
+                alert(data.error || '북마크 제거에 실패했습니다.');
+                if (data.error === '로그인이 필요합니다.') {
+                  window.location.href = '/user/login';
+                }
+              }
+            })
+            .catch(error => {
+              console.error('북마크 제거 실패:', error);
+              alert('북마크 제거 중 오류가 발생했습니다: ' + error.message);
+            });
+  }
+</script>
+</body>
 </html>
