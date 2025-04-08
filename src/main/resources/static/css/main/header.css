@@ -175,6 +175,19 @@ html, body {
   background: transparent;
 }
 
+.popup-banner {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  cursor: pointer; /* 마우스 포인터를 손 모양으로 변경 */
+  transition: all 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+.popup-banner:hover {
+  opacity: 0.9; /* 호버 시 약간 투명해짐 */
+  transform: scale(1.02); /* 호버 시 살짝 커짐 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 추가 */
+}
 #logoutBtnBox{
   height: 100%;
   display: flex;
@@ -182,7 +195,7 @@ html, body {
   align-items: center;
 
 }
-.logoutBtn{
+#logoutBtn{
   border:none;
   background-color: #b5c3b3;
   font-size: 15px;

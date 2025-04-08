@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" th:href="@{/css/main/main.css}" type="text/css" />
   <link rel="stylesheet" th:href="@{/css/main/header.css}" type="text/css" />
   <title>main</title>
+  <style>
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
 <div id="wrap">
@@ -123,15 +126,16 @@
   </footer>
 </div>
 <!-- 이벤트 팝업 -->
-<div class="popup">
+<div class="popup" id="eventPopup">
   <div class="popup-content">
     <a th:href="@{/popup/event}">
       <img th:src="@{/images/main/popup.png}" alt="이벤트 배너" class="popup-banner" />
-    </a>    <h3>한정수량 타임특가 이벤트</h3>
+    </a>
+    <h3>한정수량 타임특가 이벤트</h3>
     <p class="event-date">2023-06-01 ~ 별도공지</p>
     <div class="popup-buttons">
-      <button class="btn btn-secondary">오늘 보지 않기</button>
-      <button class="btn btn-primary">팝업 닫기</button>
+      <button class="btn btn-secondary" onclick="dontShowToday()">오늘 보지 않기</button>
+      <button class="btn btn-primary" onclick="closePopup()">팝업 닫기</button>
     </div>
   </div>
 </div>
@@ -142,10 +146,40 @@
 </body>
 <script th:src="@{/js/main/header.js}"></script>
 <script>
-  const closeBtn = document.querySelector(".btn-primary");
-  const popup = document.querySelector(".popup");
-  closeBtn.addEventListener("click", function () {
-    popup.style.display = "none";
+  // 페이지 로드 시 팝업 표시 여부 확인
+  document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('eventPopup');
+    const dontShowToday = localStorage.getItem('dontShowToday_eventPopup');
+    const today = new Date().toISOString().split('T')[0]; // 오늘 날짜 (YYYY-MM-DD)
+
+    // 디버깅용 로그 추가
+    console.log('dontShowToday:', dontShowToday);
+    console.log('today:', today);
+
+    // localStorage에 저장된 값이 있고, 오늘 날짜와 일치하면 팝업 숨기기
+    if (dontShowToday && dontShowToday === today) {
+      popup.classList.add('hidden');
+    } else {
+      popup.classList.remove('hidden'); // 오늘 보지 않기 설정이 없으면 팝업 표시
+    }
   });
+
+  // 오늘 하루 보지 않기 버튼 클릭 시
+  function dontShowToday() {
+    const today = new Date().toISOString().split('T')[0]; // 오늘 날짜 (YYYY-MM-DD)
+    localStorage.setItem('dontShowToday_eventPopup', today);
+    const popup = document.getElementById('eventPopup');
+    popup.classList.add('hidden');
+    console.log('오늘 하루 보지 않기 설정됨:', today); // 디버깅 로그
+  }
+
+  // 팝업 닫기 버튼 클릭 시
+  function closePopup() {
+    const popup = document.getElementById('eventPopup');
+    popup.classList.add('hidden');
+    console.log('팝업 닫힘'); // 디버깅 로그
+    // localStorage에 별도로 상태를 저장하지 않음
+    // 따라서 새로고침 시 팝업이 다시 표시됨
+  }
 </script>
 </html>
