@@ -61,7 +61,7 @@ public class SecurityConfig {
             login.successHandler((request, response, authentication) -> {
                 String redirect = request.getParameter("redirect");
                 if (redirect == null || redirect.isBlank()) {
-                    redirect = "/";  // 기본 이동 경로
+                    redirect = "/";  // 기본 이동 경로A
                 }
                 response.sendRedirect(redirect);  // 로그인 성공 후 리디렉트
             });

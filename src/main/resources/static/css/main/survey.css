@@ -366,10 +366,10 @@ header {
 }
 .select_purpose_list,
 .select_health_list{
-    background-color: #fff;
-    color: #666;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
+  background-color: #fff;
+  color: #666;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 .question-title-with-img {
   display: flex;
