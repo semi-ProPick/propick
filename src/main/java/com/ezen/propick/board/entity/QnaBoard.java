@@ -38,7 +38,7 @@ public class QnaBoard {
     private boolean lock_status;
 
     @Column(name = ("q_n_a_private_key"))
-    private int private_key;
+    private String private_key;
 
     @Column(name = ("post_filename"))
     private String filename;
@@ -70,7 +70,9 @@ public class QnaBoard {
         }
     }
 
-    public QnaBoard(String title, String contents, boolean lock_status, int private_key) {
+    public QnaBoard(String title, String contents, boolean lock_status, String
+
+            private_key) {
         this.title=title;
         this.contents=contents;
         this.lock_status=lock_status;
