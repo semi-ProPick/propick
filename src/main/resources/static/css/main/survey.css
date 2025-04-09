@@ -129,6 +129,33 @@ header {
   font-weight: bold;
 
 }
+.health-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.bar-wrapper {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.bar-label {
+  width: 100px;
+  font-weight: bold;
+}
+
+.bar {
+  flex: 1;
+  background-color: #8e61cf;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  text-align: right;
+}
 
 .sub_text {
   font-size: 15px;

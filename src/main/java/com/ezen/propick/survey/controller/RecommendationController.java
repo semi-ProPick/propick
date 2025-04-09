@@ -7,6 +7,7 @@ import com.ezen.propick.survey.dto.result.SurveyResultInputDTO;
 import com.ezen.propick.survey.engine.ProteinRecommendationEngine;
 import com.ezen.propick.survey.entity.Recommendation;
 import com.ezen.propick.survey.repository.RecommendationRepository;
+import com.ezen.propick.survey.service.RecommendationService;
 import com.ezen.propick.survey.service.SurveyResponseService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,8 @@ public class RecommendationController {
     private final RecommendationRepository recommendationRepository;
     private final SurveyResponseService surveyResponseService;
     private final ProteinRecommendationEngine recommendationEngine;
+    private final RecommendationService recommendationService;
+
 
     @GetMapping("/{surveyResponseId}")
     public ResponseEntity<RecommendationResponseDTO> getRecommendation(
@@ -40,9 +43,12 @@ public class RecommendationController {
 
         // (2) 설문 응답 → 분석 입력 DTO 생성
         SurveyResultInputDTO inputDto = surveyResponseService.getSurveyResultInputDTO(surveyResponseId);
+        SurveyRecommendationResultDTO result = recommendationEngine.generate(inputDto);
+
+        Map<String, Integer> healthScores = recommendationService.calculateHealthConditionScores(result.getHealthConcerns());
 
         // (3) 분석 실행
-        SurveyRecommendationResultDTO result = recommendationEngine.generate(inputDto);
+
         System.out.println(" 분석 결과 확인:");
         System.out.println("BMI: " + result.getBmi() + ", 상태: " + result.getBmiStatus());
         System.out.println("건강 고민: " + result.getHealthConcerns());
@@ -66,7 +72,7 @@ public class RecommendationController {
                 result.getGender(),
                 result.getAge(),
                 result.getName(),
-                result.getHealthConcerns(),
+                healthScores,
                 result.getProteinRecommendationStats(),
                 result.getTimingRatio()
         );
