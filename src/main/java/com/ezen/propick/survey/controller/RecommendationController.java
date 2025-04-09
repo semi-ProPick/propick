@@ -1,6 +1,7 @@
 package com.ezen.propick.survey.controller;
 
 import com.ezen.propick.auth.model.AuthDetails;
+import com.ezen.propick.product.dto.ProductListDTO;
 import com.ezen.propick.survey.dto.result.RecommendationResponseDTO;
 import com.ezen.propick.survey.dto.result.SurveyRecommendationResultDTO;
 import com.ezen.propick.survey.dto.result.SurveyResultInputDTO;
@@ -45,6 +46,8 @@ public class RecommendationController {
         SurveyResultInputDTO inputDto = surveyResponseService.getSurveyResultInputDTO(surveyResponseId);
         SurveyRecommendationResultDTO result = recommendationEngine.generate(inputDto);
 
+        List<ProductListDTO> matchedProducts = recommendationService.findProductsByRecommendedTypes(result.getRecommendedTypes(), userId);
+
         Map<String, Integer> healthScores = recommendationService.calculateHealthConditionScores(result.getHealthConcerns());
 
         // (3) 분석 실행
@@ -74,7 +77,8 @@ public class RecommendationController {
                 result.getName(),
                 healthScores,
                 result.getProteinRecommendationStats(),
-                result.getTimingRatio()
+                result.getTimingRatio(),
+                matchedProducts
         );
 
         return ResponseEntity.ok(response);

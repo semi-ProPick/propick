@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="/css/main/survey.css" type="text/css" />
 <link rel="stylesheet" href="/css/main/header.css" type="text/css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 <title>설문 결과</title>
 </head>
 <body>
@@ -44,7 +46,7 @@
                 <div class="chart_container">
                     <!-- 건강상태 데이터 분석 부분 -->
                     <div class="health_conditions">
-                        <canvas id="health_conditions_chart" class="health_conditions_img"></canvas>
+                        <canvas id="health_conditions_chart" width="360" height="360"></canvas>
                         <ul id="warnings" class="warning_list">
                             <!-- JS에서 동적으로 li로 채움 -->
                         </ul>
@@ -81,13 +83,10 @@
 
             <div class="protein_list">
                 <h2>추천 프로틴</h2>
-                <div id="productName" class="product_name_box"></div>
+                <ul id="recommendedProductList" class="others_product"></ul>
             </div>
         
 
-        <div id="favorite_button">
-            <button>추천 제품 즐겨찾기 담기</button>
-        </div>
     </div>
 
     <div class="popup_bg">
