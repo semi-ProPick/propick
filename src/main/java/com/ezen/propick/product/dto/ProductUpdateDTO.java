@@ -50,7 +50,6 @@ public class ProductUpdateDTO {
     @Min(value = 1, message = "1회 섭취량은 1 이상이어야 합니다.")
     private Integer servingSize;
 
-
     private Integer ingredientId;
     private String ingredientUnit;
     private String ingredientName;
@@ -58,7 +57,6 @@ public class ProductUpdateDTO {
     private Integer productIngredientId;  // 각 상품의 연결된 성분들의 아이디
 
 
-    //  내부 클래스에서 생성자 제거!
     @Getter
     @Setter
     @NoArgsConstructor
@@ -71,7 +69,5 @@ public class ProductUpdateDTO {
         private Integer ProductIngredientId;
 
     }
-
-
     }
 

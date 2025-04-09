@@ -23,6 +23,7 @@ public class ProductSearchDTO {
 
     private Integer discountRate;  // 할인율
     private BigDecimal discountedPrice; // 할인된 가격
+    private boolean bookmarked;    // 북마크 여부
 
 
     // 할인된 가격 계산

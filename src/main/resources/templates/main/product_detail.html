@@ -150,4 +150,21 @@
   <script src="/js/main/header.js" defer></script>
   <script src="/js/main/product.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    // 상품 상세 이미지 swiper
+    document.addEventListener("DOMContentLoaded", function () {
+        let swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,  // 한 번에 하나의 이미지만 보이도록 설정
+            loop: true,  // 무한 루프
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+        });
+    })
+</script>
 </html>

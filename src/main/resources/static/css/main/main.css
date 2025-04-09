@@ -232,6 +232,7 @@ video {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 }
 
 .search input {
@@ -452,7 +453,7 @@ span {
 }
 
 .rank_product li {
-  width: 270px;
+  width: 300px;
   background-color: #fff;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -481,7 +482,7 @@ span {
 /* Product Image */
 .rank_product img {
   width: 100%;
-  height: 230px;
+  height: auto;
   object-fit: cover;
 }
 
@@ -1042,4 +1043,8 @@ span {
 .btn-secondary {
   color: #777;
   border-right: 1px solid #ddd;
+}
+
+.rank_product .bookmark-icon {
+  display: none;
 }

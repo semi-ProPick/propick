@@ -114,7 +114,7 @@
               <p th:if="${product.discountRate > 0}">
                 <span style="text-decoration: line-through;" th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
                 <span style="color: red; font-weight: bold;" th:text="${#numbers.formatInteger(product.discountedPrice, 3, 'COMMA')} + '원'"></span>
-                <span th:text="'(' + ${product.discountRate} + '% 할인)'"></span>
+                <span style="font-size: 15px;" th:text="'(' + ${product.discountRate} + '% 할인)'"></span>
               </p>
               <p th:unless="${product.discountRate > 0}">
                 <span th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')} + '원'"></span>
