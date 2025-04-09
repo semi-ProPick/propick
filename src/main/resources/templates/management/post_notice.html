@@ -38,7 +38,7 @@
 
                     <div class="container-fluid" id = "notice-list">
                         <h1>게시물 관리 - 공지사항</h1>
-                        <form action="/fna/write" method="get">
+                        <form action="/notice/write" method="get">
                             <button type="submit" class="btn btn-primary" id="qaRegisterBtn">등록</button>
                         </form>
                         <div class="card-body">
@@ -104,12 +104,10 @@
 
         </div>
             </div>
-                <!-- 푸터 -->
-                <div id="footer" th:replace="~{management/footer}"></div>
             </div>
-
         </div>
-
+                <!-- 푸터 -->
+        <div id="footer" th:replace="~{management/footer}"></div>
 
         <div id="logout_modal" th:replace="~{management/logoutModal}"></div>
 

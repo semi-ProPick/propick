@@ -12,10 +12,10 @@ spring:
       hibernate:
         format_sql: true
 
-  profiles:
-    active: user   # 기본 프로파일 설정
 #  profiles:
-#    active: admin
+#    active: user   # 기본 프로파일 설정
+  profiles:
+    active: admin
   web:
     resources:
       static-locations: >
