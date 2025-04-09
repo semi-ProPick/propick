@@ -26,4 +26,9 @@ public class MainController {
     public String mypage() {
         return "/main/mypage";
     }
+
+    @GetMapping("/event")
+    public String eventPage() {
+        return "main/event";
+    }
 }
