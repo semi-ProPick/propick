@@ -90,17 +90,23 @@ public class ProductController {
         return "main/product_detail";
     }
 
-    // 검색창에서 검색 요청
+    // 검색창에 입력하고 검색 버튼 눌렀을 때 요청
     @GetMapping("/products/search")
-    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+    public String getProductName(@RequestParam(value = "keyword", required = false) String keyword,  // 검색어가 없어도 요청 가능 (required = false)
+                                 Model model) { // 뷰에 데이터를 넘겨주기 위해 모델 사용
+
+        // 검색 결과를 담을 DTO 리스트 선언
         List<ProductSearchDTO> products;
+
+        // 검색어가 없거나 공백만 있는 경우 → 결과는 빈 리스트로 초기화
         if (keyword == null || keyword.trim().isEmpty()) {
             products = new ArrayList<>();
-        } else {
-            products = mainProductService.getProductBySearchKeyword(keyword);
+        } else {  // 검색어가 존재하면 → 서비스 메서드 getProductBySearchKeyword() 호출해서 결과 조회
+            products = mainProductService.getProductBySearchKeyword(keyword); // 검색
         }
-        model.addAttribute("products", products);
-        return "main/product";
+
+        model.addAttribute("products", products);  //검색 결과를 모델에 담아서 뷰에 전달
+        return "main/product"; // 검색 결과를 main/product 페이지로 전달
     }
 
     @GetMapping("/products/top3")

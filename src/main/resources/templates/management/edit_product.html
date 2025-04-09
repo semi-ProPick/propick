@@ -221,6 +221,8 @@
     }
   });
 
+  let ingredientCount = 0;
+
   // 성분명, 성분량, 성분단위 추가 , 삭제
   function addIngredient() {
     const select = document.getElementById('ingredientName');
@@ -262,7 +264,7 @@
     <td>${unit.value}
       <input type="hidden" name="ingredientDTOs[${ingredientCount}].ingredientUnit" value="${unit.value}">
     </td>
-    <td><button type="button" onclick="this.parentElement.parentElement.remove()">삭제</button></td>
+    <td><button type="button" class="btn btn-dark" onclick="this.parentElement.parentElement.remove()">삭제</button></td>
   `;
     tbody.appendChild(row);
 

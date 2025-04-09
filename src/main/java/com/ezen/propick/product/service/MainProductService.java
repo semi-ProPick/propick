@@ -1,5 +1,6 @@
 package com.ezen.propick.product.service;
 
+import com.ezen.propick.bookmark.repository.BookmarkRepository;
 import com.ezen.propick.product.dto.IngredientWithInfoDTO;
 import com.ezen.propick.product.dto.ProductDTO;
 import com.ezen.propick.product.dto.ProductListDTO;
@@ -24,7 +25,7 @@ public class MainProductService {
     private final ProductImageRepository productImageRepository;
     private final ProductInfoRepository productInfoRepository;
     private final ProductIngredientDetailRepository productIngredientDetailRepository;
-
+    private final BookmarkRepository bookmarkRepository;
 
 
     // Product를 ProductListDTO로 변환하는 메서드
@@ -215,6 +216,52 @@ public class MainProductService {
 
 
     // 검색
+//    public List<ProductSearchDTO> getProductBySearchKeyword(String keyword, Integer userId) {
+//        // 상품명
+//        List<Product> productsByName = productRepository.findByProductNameContaining(keyword);
+//        // 브랜드명
+//        List<Product> productsByBrand = productRepository.findByBrandNameContaining(keyword);
+//        // 프로틴 유형
+//        List<Product> productsByType = productRepository.findByProductTypeContaining(keyword);
+//
+//        // 성분명
+//        List<Product> productByIngredient = productRepository.findByIngredientNameContaining(keyword);
+//
+//        Set<Product> mergedProducts = new HashSet<>();
+//
+//        mergedProducts.addAll(productsByName);
+//        mergedProducts.addAll(productsByBrand);
+//        mergedProducts.addAll(productsByType);
+//        mergedProducts.addAll(productByIngredient);
+//
+//        return mergedProducts.stream().map(product -> {
+//            List<String> imageUrls = product.getProductImages()
+//                    .stream()
+//                    .map(ProductImage::getImageUrl)
+//                    .collect(Collectors.toList());
+//
+//            // 북마크 상태 조회
+//            boolean isBookmarked = bookmarkRepository.existsByProductIdAndUserId(product.getProductId(), userId);
+//
+//            // ProductSearchDTO 생성
+//            ProductSearchDTO productSearchDTO = new ProductSearchDTO(
+//                    product.getProductId(),
+//                    product.getProductName(),
+//                    product.getProductPrice(),
+//                    imageUrls,
+//                    product.getBrand().getBrandName(),
+//                    product.getProductInfo().getDiscountRate(),  // 할인율
+//                    null, // 할인된 가격은 null로 초기화
+//                    isBookmarked
+//
+//            );
+//
+//            // 할인된 가격 계산
+//            productSearchDTO.calculateDiscountedPrice();
+//
+//            return productSearchDTO;
+//        }).collect(Collectors.toList());
+//    }
     public List<ProductSearchDTO> getProductBySearchKeyword(String keyword) {
         // 상품명
         List<Product> productsByName = productRepository.findByProductNameContaining(keyword);
@@ -222,12 +269,10 @@ public class MainProductService {
         List<Product> productsByBrand = productRepository.findByBrandNameContaining(keyword);
         // 프로틴 유형
         List<Product> productsByType = productRepository.findByProductTypeContaining(keyword);
-
         // 성분명
         List<Product> productByIngredient = productRepository.findByIngredientNameContaining(keyword);
 
         Set<Product> mergedProducts = new HashSet<>();
-
         mergedProducts.addAll(productsByName);
         mergedProducts.addAll(productsByBrand);
         mergedProducts.addAll(productsByType);
@@ -239,15 +284,20 @@ public class MainProductService {
                     .map(ProductImage::getImageUrl)
                     .collect(Collectors.toList());
 
-            // ProductSearchDTO 생성
+            // null 체크를 포함한 브랜드명과 할인율 가져오기
+            String brandName = (product.getBrand() != null) ? product.getBrand().getBrandName() : "브랜드 없음";
+            Integer discountRate = (product.getProductInfo() != null) ? product.getProductInfo().getDiscountRate() : 0;
+
+            // ProductSearchDTO 생성 (8개 인수 모두 제공)
             ProductSearchDTO productSearchDTO = new ProductSearchDTO(
-                    product.getProductId(),
-                    product.getProductName(),
-                    product.getProductPrice(),
-                    imageUrls,
-                    product.getBrand().getBrandName(),
-                    product.getProductInfo().getDiscountRate(),  // 할인율
-                    null // 할인된 가격은 null로 초기화
+                    product.getProductId(),           // productId
+                    product.getProductName(),         // productName
+                    product.getProductPrice(),        // productPrice
+                    imageUrls,                        // productImages
+                    brandName,                        // brandName
+                    discountRate,                     // discountRate
+                    null,                             // discountedPrice (초기값 null)
+                    false                             // bookmarked (기본값 false)
             );
 
             // 할인된 가격 계산

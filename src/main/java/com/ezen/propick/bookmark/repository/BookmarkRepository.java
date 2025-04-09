@@ -27,4 +27,6 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Integer> {
             "GROUP BY b.product.productId " +
             "ORDER BY bookmarkCount DESC")
     List<Object[]> findTopBookmarkedProducts(Pageable pageable);
+
+
 }
