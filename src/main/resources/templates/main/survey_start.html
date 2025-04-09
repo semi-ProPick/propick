@@ -1,65 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/main/survey_mypage.css" type="text/css" />
-    <link rel="stylesheet" href="/css/main/survey.css" type="text/css" />
-    <title>설문시작</title>
-  </head>
-  <body>
-    <div id="wrap">
-      <div class="content_wrap">
-        <div class="close_btn2">
-          <img src="/images/main/close.png" alt="" />
-        </div>
-        <div class="rounded_div"></div>
-        <div id="start_btn">
-          <p><a href="/survey">AI 프로틴 추천 시작</a></p>
-        </div>
-        <p id="anno">질병의 진단 및 치료는 전문적인 의료기관을 이용하세요.</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/main/survey_mypage.css" type="text/css" />
+  <link rel="stylesheet" href="/css/main/survey.css" type="text/css" />
+  <title>설문시작</title>
+</head>
+<body>
+<div id="wrap">
+  <div class="content_wrap">
+    <div class="close_btn2">
+      <img src="/images/main/close.png" alt="" />
+    </div>
+    <div class="rounded_div">
+      <img src="/images/main/startimg.jpg" alt="설문 이미지" class="rounded_img" />
+      <div class="rounded_text_wrap">
+        <p class="main_text">개인 맞춤형 프로틴 추천을 시작해보세요!</p>
+        <p class="sub_text">당신의 건강 상태에 맞춘 단백질 제품을 프로픽이 분석해 추천합니다.</p>
       </div>
     </div>
-    <!-- 설문 중도 종료 했을 때 -->
-    <div class="popup_bg">
-      <div class="survey_end_wrap">
-        <p>지금 설문을 종료 하시겠어요?</p>
-        <span>설문을 종료하면 프로픽으로 이동합니다.</span>
-        <div class="btn_wrap">
-          <div class="end_btn">종료</div>
-          <div class="keep_btn">계속 설문하기</div>
-        </div>
-      </div>
+    <div id="start_btn">
+      <p><a href="/survey">AI 프로틴 추천 시작</a></p>
     </div>
-  </body>
-  <script src="/js/main/survey.js" ></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-  // 요소 가져오기
-  const closeBtn2 = document.querySelector(".close_btn2");
-  const popupBg = document.querySelector(".popup_bg");
-  const endBtn = document.querySelector(".end_btn");
-  const keepBtn = document.querySelector(".keep_btn");
+    <p id="anno">질병의 진단 및 치료는 전문적인 의료기관을 이용하세요.</p>
+  </div>
+</div>
+<!-- 설문 중도 종료 했을 때 -->
+<div class="popup_bg">
+  <div class="survey_end_wrap">
+    <p>지금 설문을 종료 하시겠어요?</p>
+    <span>설문을 종료하면 프로픽으로 이동합니다.</span>
+    <div class="btn_wrap">
+      <div class="end_btn">종료</div>
+      <div class="keep_btn">계속 설문하기</div>
+    </div>
+  </div>
+</div>
+</body>
+<script src="/js/main/survey.js" ></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // 요소 가져오기
+    const closeBtn2 = document.querySelector(".close_btn2");
+    const popupBg = document.querySelector(".popup_bg");
+    const endBtn = document.querySelector(".end_btn");
+    const keepBtn = document.querySelector(".keep_btn");
 
-  // close 버튼 클릭 시 팝업 보이기/숨기기 (토글)
-  closeBtn2.addEventListener("click", function () {
-    if (popupBg.classList.contains("active")) {
+    // close 버튼 클릭 시 팝업 보이기/숨기기 (토글)
+    closeBtn2.addEventListener("click", function () {
+      if (popupBg.classList.contains("active")) {
+        popupBg.classList.remove("active");
+      } else {
+        popupBg.classList.add("active");
+      }
+    });
+
+
+    // 종료 버튼 클릭 시 페이지 이동
+    endBtn.addEventListener("click", function () {
+      window.location = "/";
+    });
+
+    // 계속 설문하기 버튼 클릭 시 팝업 닫기
+    keepBtn.addEventListener("click", function () {
       popupBg.classList.remove("active");
-    } else {
-      popupBg.classList.add("active");
-    }
+    });
   });
-
-
-  // 종료 버튼 클릭 시 페이지 이동
-  endBtn.addEventListener("click", function () {
-    window.location = "/main";
-  });
-
-  // 계속 설문하기 버튼 클릭 시 팝업 닫기
-  keepBtn.addEventListener("click", function () {
-    popupBg.classList.remove("active");
-  });
-});
-  </script>
+</script>
 </html>

@@ -172,4 +172,14 @@ public class UserController {
 
         return ResponseEntity.ok("회원 탈퇴 완료 및 로그아웃 완료");
     }
+    @GetMapping("/me")
+    @ResponseBody
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal AuthDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body("로그인 필요");
+        }
+        return ResponseEntity.ok(userDetails.getUsername());
+    }
+
+
 }

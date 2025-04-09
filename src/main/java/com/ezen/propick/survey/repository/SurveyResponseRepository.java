@@ -16,7 +16,8 @@ import java.util.Optional;
 @Repository
 public interface SurveyResponseRepository extends JpaRepository<SurveyResponse, Integer> {
     List<SurveyResponse> findAllByUser_UserIdAndResponseStatus(String userId, ResponseStatus responseStatus);
-    List<SurveyResponse> findByUser(User user);
+    List<SurveyResponse> findByUserAndResponseStatus(User user, ResponseStatus status);
+
 
 
     @Query("SELECT sr FROM SurveyResponse sr " +

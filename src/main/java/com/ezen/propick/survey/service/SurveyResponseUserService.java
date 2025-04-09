@@ -25,13 +25,14 @@ public class SurveyResponseUserService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
 
-        List<SurveyResponse> responses = surveyResponseRepository.findByUser(user);
+        List<SurveyResponse> responses = surveyResponseRepository.findByUserAndResponseStatus(user, ResponseStatus.ACTIVE);
+
 
         return responses.stream()
                 .map(SurveyResponseUserDTO::fromEntity)
                 .toList();
     }
-
+    @Transactional
     public void deleteByUserId(Integer responseId, String userId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));

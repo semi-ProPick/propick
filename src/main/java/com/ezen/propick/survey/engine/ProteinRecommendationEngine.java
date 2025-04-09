@@ -16,15 +16,20 @@ public class ProteinRecommendationEngine {
         double bmi = calculateBMI(input.getHeightCm(), input.getWeightKg());
         String bmiStatus = classifyBMI(bmi);
 
-        List<String> level1 = filterByPriority(new ArrayList<>(input.getHealthConcerns().keySet()), 1);
-        List<String> level2 = filterByPriority(new ArrayList<>(input.getHealthConcerns().keySet()), 2);
-        List<String> level3 = filterByPriority(new ArrayList<>(input.getHealthConcerns().keySet()), 3);
+        List<String> allConcerns = new ArrayList<>(input.getHealthConcerns().keySet());
+        if (input.getPurpose() != null && !input.getPurpose().isBlank()) {
+            allConcerns.add(input.getPurpose());
+        }
+        List<String> level1 = filterByPriority(allConcerns, input.getPurpose(), 1);
+        List<String> level2 = filterByPriority(allConcerns, input.getPurpose(), 2);
+        List<String> level3 = filterByPriority(allConcerns, input.getPurpose(), 3);
+
 
         double[] intake = calculateProteinIntake(input.getPurpose(), input.getWorkoutFreq(), input.getWeightKg(), level1, level2, input.getAge());
 
         List<String> recommendedTypes = getRecommendedProtein(level1, level2, level3, input.getAge());
-        List<String> avoidTypes = getAvoidProtein(level1, level2, level3, input.getAge());
-
+        List<String> avoidTypes = getAvoidProtein(level1, level2, input.getAge());
+        recommendedTypes.removeIf(avoidTypes::contains);
         String timing = getIntakeTiming(input, level1, level2, level3, input.getAge());
         Map<String, Integer> timingRatio = calculateTimingRatio(input, level1, level2, level3, input.getAge());
 
@@ -72,32 +77,32 @@ public class ProteinRecommendationEngine {
             min = 1.2; max = 1.6;
         } else {
             switch (purpose) {
-                case "MUSCLE" -> {
-                    switch (freq) {
-                        case "LOW" -> { min = 1.6; max = 1.8; }
-                        case "MID" -> { min = 1.8; max = 2.0; }
-                        case "HIGH" -> { min = 2.0; max = 2.2; }
-                        default -> { min = 1.6; max = 2.0; }
-                    }
-                }
-                case "PROTEIN_SUPPORT" -> {
-                    min = 1.0; max = 1.5;
-                }
-                case "DIET" -> {
-                    min = 1.2; max = 1.6;
-                }
-                case "MEAL" -> {
-                    min = 1.2; max = 2.0;
-                }
+                case "MUSCLE" -> { min = 1.6; max = 2.0; }
+                case "PROTEIN_SUPPORT" -> { min = 1.0; max = 1.5; }
+                case "DIET" -> { min = 1.2; max = 1.6; }
+                case "MEAL" -> { min = 1.2; max = 2.0; }
+            }
+
+            switch (freq) {
+                case "LOW" -> { max -= 0.2; }
+                case "MID" -> { min += 0.1; max += 0.1; }
+                case "HIGH" -> { min += 0.2; max += 0.2; }
             }
         }
 
-        if (age >= 65) {
-            min = Math.max(min - 0.2, 0.8);
-            max = Math.max(max - 0.2, 1.2);
-        } else if (age <= 12) {
-            min = Math.min(min * 0.6, 1.2);
-            max = Math.min(max * 0.6, 1.4);
+        if (!level1.contains("KIDNEY")) {
+            if (age <= 12) {
+                // 유아/어린이: 전체 섭취량 제한
+                min = Math.min(min * 0.5, 1.0);
+                max = Math.min(max * 0.5, 1.2);
+            } else if (age <= 18) {
+                // 청소년 성장기: max 증가 가능
+                max = Math.min(max * 1.2, 2.4);
+            } else if (age >= 65) {
+                // 고령자: max 제한, 소화 부담 고려
+                min = Math.max(min - 0.2, 0.8);
+                max = Math.min(max - 0.2, 1.2);
+            }
         }
 
         return new double[] {
@@ -106,12 +111,17 @@ public class ProteinRecommendationEngine {
         };
     }
 
-    private List<String> filterByPriority(List<String> concerns, int level) {
+    private List<String> filterByPriority(List<String> concerns, String purpose, int level) {
         List<String> level1 = List.of("KIDNEY", "LIVER", "CARDIO");
         List<String> level2 = List.of("CONSTIPATION", "TIRED", "SLEEP", "DIARRHEA", "LACTOSE", "ACNE", "ALLERGY", "DIGESTION", "ARTHRITIS");
-        List<String> level3 = List.of("MUSCLE", "DIET", "MEAL");
+        List<String> level3 = List.of("MUSCLE", "DIET", "MEAL", "PROTEIN_SUPPORT");
 
-        return concerns.stream()
+        List<String> fullList = new ArrayList<>(concerns);
+        if (purpose != null && !purpose.isBlank()) {
+            fullList.add(purpose);
+        }
+
+        return fullList.stream()
                 .filter(c -> switch (level) {
                     case 1 -> level1.contains(c);
                     case 2 -> level2.contains(c);
@@ -122,6 +132,7 @@ public class ProteinRecommendationEngine {
 
     private List<String> getRecommendedProtein(List<String> l1, List<String> l2, List<String> l3, int age) {
         Set<String> result = new LinkedHashSet<>();
+
         if (l1.contains("KIDNEY")) result.add("WPI");
         if (l1.contains("LIVER")) result.addAll(List.of("WPI", "ISP"));
         if (l2.contains("LACTOSE")) result.addAll(List.of("WPI", "WPH"));
@@ -133,13 +144,14 @@ public class ProteinRecommendationEngine {
         if (l3.contains("MUSCLE")) result.addAll(List.of("WPI", "WPH"));
         if (l3.contains("MEAL")) result.addAll(List.of("ISP", "CASEIN"));
 
+        // 연령에 따른 추천 단백질 추가
         if (age >= 65) result.add("WPH");
         if (age <= 12) result.add("ISP");
 
         return new ArrayList<>(result);
     }
 
-    private List<String> getAvoidProtein(List<String> l1, List<String> l2, List<String> l3, int age) {
+    private List<String> getAvoidProtein(List<String> l1, List<String> l2, int age) {
         Set<String> result = new LinkedHashSet<>();
         if (l1.contains("LIVER")) result.add("WPH");
         if (l2.contains("LACTOSE")) result.add("WPC");
@@ -238,6 +250,7 @@ public class ProteinRecommendationEngine {
         if (l2.contains("SLEEP")) msg.add("취침 3시간 전 이후 단백질 섭취는 피해주세요.");
         if (l2.contains("DIARRHEA")) msg.add("WPC 등 유당 함유 단백질을 피해주세요.");
         if (l2.contains("DIGESTION")) msg.add("소화 흡수 속도가 빠른 WPH 형태를 추천합니다.");
+        if(l2.contains("ALLERGY")) msg.add("ISP가 포함된 제품을 피하세요");
         if (age >= 65) msg.add("고령자의 경우 소화 흡수가 쉬운 WPH 형태의 단백질을 권장합니다.");
         if (age <= 12) msg.add("어린이의 경우 성인의 절반 정도의 단백질 섭취가 적절합니다. ISP 등 소화 부담이 적은 제품을 추천합니다.");
         return msg;
@@ -262,6 +275,10 @@ public class ProteinRecommendationEngine {
             increment(result, "WPI");
             increment(result, "ISP");
         }
+        if (l2.contains("ALLERGY")) {
+            increment(result, "WPC");
+            increment(result, "WPI");
+        }
         if (l2.contains("CONSTIPATION")) {
             increment(result, "WPH");
             increment(result, "ISP");
@@ -270,7 +287,9 @@ public class ProteinRecommendationEngine {
             increment(result, "WPH");
             increment(result, "WPI");
         }
-        if (l2.contains("TIRED")) increment(result, "WPH");
+        if (l2.contains("TIRED")) {
+            increment(result, "WPH");
+        }
         if (l3.contains("MUSCLE")) {
             increment(result, "WPI");
             increment(result, "WPH");
@@ -281,10 +300,12 @@ public class ProteinRecommendationEngine {
         }
         if (age >= 65) increment(result, "WPH");
         if (age <= 12) increment(result, "ISP");
+
         return result;
     }
 
     private void increment(Map<String, Integer> map, String protein) {
         map.put(protein, map.getOrDefault(protein, 0) + 1);
     }
+
 }

@@ -56,6 +56,7 @@ header {
   padding-left: 40px;
 }
 
+
 .contents_title {
   margin-right: 40px;
 }
@@ -76,8 +77,13 @@ header {
 .header_line > ul > li {
   width: 260px;
   height: 7px;
-  background-color: #ff5c35;
+  background-color: #d9d9d9;
   margin-top: 40px;
+}
+
+.header_line > ul > li.active{
+  background-color: #ff5c35;
+
 }
 .header_line_first {
   margin-left: 0px;
@@ -100,6 +106,64 @@ header {
   margin-left: 40px;
   margin-bottom: 120px;
 }
+.rounded_img {
+  width: 610px;
+  height: 410px;
+  display: flex;
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 65px;
+}
+
+.rounded_text_wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 65px;
+}
+
+.main_text {
+  font-size: 20px;
+  font-weight: bold;
+
+}
+.health-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.bar-wrapper {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.bar-label {
+  width: 100px;
+  font-weight: bold;
+}
+
+.bar {
+  flex: 1;
+  background-color: #8e61cf;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  text-align: right;
+}
+
+.sub_text {
+  font-size: 15px;
+  color: #666;
+  font-weight: normal;
+}
+
+
 .content_wrap {
   width: 700px;
   height: 100%;
@@ -366,10 +430,10 @@ header {
 }
 .select_purpose_list,
 .select_health_list{
-    background-color: #fff;
-    color: #666;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
+  background-color: #fff;
+  color: #666;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 .question-title-with-img {
   display: flex;
@@ -752,7 +816,6 @@ header {
 }
 
 
-.health_conditions_img,
 .protein_type_img,
 .protein_intake_img {
   width: 360px;
