@@ -8,14 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const keepBtn = document.querySelector(".keep_btn");
     const deleteConfirmBtn = document.querySelector(".end_btn");
 
-    // ✅ 추천받기 버튼 클릭 이벤트는 여기서 등록!
+
     const recommendBtn = document.querySelector(".recommend_btn");
     if (recommendBtn) {
         recommendBtn.addEventListener("click", () => {
             window.location.href = "/survey_start.html";
         });
     }
-// ✅ API 호출
+
     fetch("/api/survey-responses/my_survey")
         .then(res => {
             if (!res.ok) {
@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("설문 목록 로딩 실패:", err);
         });
 
-    // ✅ 리스트 렌더링 함수
     function renderSurveyList(data) {
         data.forEach(item => {
             const li = document.createElement("li");
@@ -56,10 +55,9 @@ document.addEventListener("DOMContentLoaded", () => {
             surveyList.appendChild(li);
         });
 
-        addSurveyEventListeners(); // ✅ 렌더링 후 이벤트 등록
+        addSurveyEventListeners();
     }
 
-    // ✅ 이벤트 등록 함수
     function addSurveyEventListeners() {
         selectAll.addEventListener("change", () => {
             document.querySelectorAll(".survey_checkbox").forEach(cb => {

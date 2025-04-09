@@ -1,4 +1,5 @@
-console.log("✅ result.js loaded. current page:", window.location.pathname);
+console.log(" result.js loaded. current page:", window.location.pathname);
+
 function updateUserInfo({ gender, age, bmi, bmiStatus }) {
     const infoText = document.getElementById("user_info_text");
     const genderText = gender === "FEMALE" ? "여성" : gender === "MALE" ? "남성" : "기타";
@@ -8,170 +9,6 @@ function updateUserInfo({ gender, age, bmi, bmiStatus }) {
     }
 }
 
-
-
-document.addEventListener("DOMContentLoaded", async () => {
-    let surveyResponseId = localStorage.getItem("surveyResponseId");
-    console.log(" surveyResponseId:", surveyResponseId);
-    const savedData = localStorage.getItem("surveyData");
-    const parsedData = savedData ? JSON.parse(savedData) : null;
-
-    // ✅ 1. 로컬스토리지 + 로그인 완료 후 → 자동 전송
-    if (savedData && !surveyResponseId) {
-        try {
-            const res = await fetch("/api/survey-responses", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: savedData,
-            });
-
-            if (res.ok) {
-                const resultData = await res.json();
-                console.log("추천 결과:", resultData);
-                console.log("healthConditions:", resultData.healthConditions);
-                console.log("recommendedTypeScores:", resultData.recommendedTypeScores);
-                console.log("intakeTimingRatio:", resultData.intakeTimingRatio);
-                surveyResponseId = resultData.responseId;
-                localStorage.setItem("surveyResponseId", surveyResponseId);
-                localStorage.removeItem("surveyData");
-                console.log("설문 저장 완료:", surveyResponseId);
-            } else {
-                alert("설문 저장 실패");
-                return;
-            }
-        } catch (err) {
-            console.error("설문 저장 중 오류:", err);
-            return;
-        }
-    }
-    // ✅ 2. 백엔드 세션 기반 임시 데이터 복원 시도
-    // ✅ 세션 복원 시도
-    if (!surveyResponseId) {
-        try {
-            const sessionRes = await fetch("/api/temp-survey", {
-                credentials: "include"
-            });
-
-            if (sessionRes.ok && sessionRes.status !== 204) {
-                const sessionData = await sessionRes.json();
-
-                const res = await fetch("/api/survey-responses", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify(sessionData)
-                });
-
-                if (res.ok) {
-                    const result = await res.json();
-                    surveyResponseId = result.responseId;
-                    localStorage.setItem("surveyResponseId", surveyResponseId);
-                    console.log("세션에서 설문 복원 후 저장 완료:", surveyResponseId);
-                } else {
-                    alert("세션 복원 설문 저장 실패");
-                    return;
-                }
-            } else {
-                console.log("세션에서 복원할 설문 데이터 없음");
-            }
-        } catch (err) {
-            console.error("세션 설문 복원 중 오류:", err);
-        }
-    }
-
-// ✅ 추천 호출 전에 필수 체크
-    if (!surveyResponseId) {
-        alert("설문 결과를 불러올 수 없습니다. 다시 설문을 진행해주세요.");
-        return;
-    }
-    // ✅ 3. 추천 결과 데이터 불러오기 및 화면 렌더링
-    try {
-        const res = await fetch(`/api/recommendations/${surveyResponseId}`);
-        if (res.ok) {
-            const resultData = await res.json();
-
-            const userName = resultData.name || localStorage.getItem("userName") || "고객";
-            document.getElementById("user_result_title").innerHTML = `${userName}님의 <br /> 프로틴 추천 결과`;
-
-            // 사용자 정보 업데이트
-            updateUserInfo({
-                gender: resultData.gender,
-                age: resultData.age,
-                bmi: resultData.bmi,
-                bmiStatus: resultData.bmiStatus
-            });
-
-            // 결과 시각화
-            visualizeResult(resultData);
-        } else {
-            alert("추천 결과를 불러오는 데 실패했습니다.");
-        }
-    } catch (err) {
-        console.error("추천 결과 호출 오류:", err);
-        alert("오류가 발생했습니다. 다시 시도해주세요.");
-    }
-
-
-
-    // [4] 만족도 팝업 처리
-    const closeBtn = document.querySelector(".close_btn3");
-    const popupSatisfaction = document.querySelector(".popup_bg");
-    if (closeBtn && popupSatisfaction) {
-        closeBtn.addEventListener("click", () => {
-            popupSatisfaction.classList.add("active");
-        });
-    }
-
-    // [5] 별점 클릭 이벤트
-    let selectedRating = 0;
-
-    document.querySelectorAll(".star").forEach(star => {
-        star.addEventListener("click", () => {
-            selectedRating = parseInt(star.dataset.value);
-
-            // ⭐ 기존 selected → filled로 클래스 변경
-            document.querySelectorAll(".star").forEach(s => {
-                s.classList.remove("filled");
-                if (parseInt(s.dataset.value) <= selectedRating) {
-                    s.classList.add("filled");
-                }
-            });
-
-            console.log("⭐ 선택된 별점:", selectedRating);
-        });
-    });
-    // [6] 만족도 제출
-    document.querySelector('.end_btn').addEventListener('click', async () => {
-        const score = selectedRating;
-        const responseId = localStorage.getItem("surveyResponseId");
-        const surveyId = 1;
-
-        if (!score || !responseId) {
-            alert("만족도를 선택하거나 응답 ID가 없습니다.");
-            return;
-        }
-
-        const dto = {
-            surveyId: parseInt(surveyId),
-            responseId: parseInt(responseId),
-            satisfactionScore: score
-        };
-
-        try {
-            await fetch("/api/satisfaction", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dto)
-            });
-            alert("설문이 저장되었습니다!");
-            window.location.href = "/";
-        } catch (err) {
-            alert("저장 중 오류가 발생했습니다.");
-            console.error(err);
-        }
-    });
-});
 
 
 
@@ -308,7 +145,7 @@ function visualizeResult(data) {
         }
     });
 
-    // 텍스트 데이터 렌더링
+
     document.getElementById('timing').innerText = `• ${data.intakeTiming}`;
     document.getElementById('intakeAmount').innerText = `• ${data.minIntakeGram}g ~ ${data.maxIntakeGram}g`;
     document.getElementById('recommendedProtein').innerText = `• 추천 단백질: ${data.recommendedTypes.join(', ')}`;
@@ -328,3 +165,154 @@ function visualizeResult(data) {
         warningsList.appendChild(li);
     });
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+    let surveyResponseId = localStorage.getItem("surveyResponseId");
+    console.log("surveyResponseId:", surveyResponseId);
+    const savedData = localStorage.getItem("surveyData");
+
+    // 1. 로그인 후 설문 자동 저장
+    if (savedData && !surveyResponseId) {
+        try {
+            const res = await fetch("/api/survey-responses", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: savedData,
+            });
+
+            if (res.ok) {
+                const resultData = await res.json();
+                surveyResponseId = resultData.responseId;
+                localStorage.setItem("surveyResponseId", surveyResponseId);
+                localStorage.removeItem("surveyData");
+                console.log("설문 저장 완료:", surveyResponseId);
+            } else {
+                alert("설문 저장 실패");
+                return;
+            }
+        } catch (err) {
+            console.error("설문 저장 중 오류:", err);
+            return;
+        }
+    }
+
+    // 2. 세션 복원 시도
+    if (!surveyResponseId) {
+        try {
+            const sessionRes = await fetch("/api/temp-survey", {
+                credentials: "include"
+            });
+
+            if (sessionRes.ok && sessionRes.status !== 204) {
+                const sessionData = await sessionRes.json();
+
+                const res = await fetch("/api/survey-responses", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(sessionData)
+                });
+
+                if (res.ok) {
+                    const result = await res.json();
+                    surveyResponseId = result.responseId;
+                    localStorage.setItem("surveyResponseId", surveyResponseId);
+                    console.log("세션 복원 성공:", surveyResponseId);
+                } else {
+                    alert("세션 복원 설문 저장 실패");
+                    return;
+                }
+            } else {
+                console.log("세션 설문 없음");
+            }
+        } catch (err) {
+            console.error("세션 복원 오류:", err);
+        }
+    }
+
+    // 추천 결과 호출
+    if (!surveyResponseId) {
+        alert("설문 결과를 불러올 수 없습니다. 다시 설문을 진행해주세요.");
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/recommendations/${surveyResponseId}`);
+        if (res.ok) {
+            const resultData = await res.json();
+
+            const userName = resultData.name || localStorage.getItem("userName") || "고객";
+            document.getElementById("user_result_title").innerHTML = `${userName}님의 <br /> 프로틴 추천 결과`;
+
+            updateUserInfo({
+                gender: resultData.gender,
+                age: resultData.age,
+                bmi: resultData.bmi,
+                bmiStatus: resultData.bmiStatus
+            });
+
+            visualizeResult(resultData);
+        } else {
+            alert("추천 결과 불러오기 실패");
+        }
+    } catch (err) {
+        console.error("추천 호출 오류:", err);
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+    }
+
+    // 만족도 팝업
+    const closeBtn = document.querySelector(".close_btn3");
+    const popupSatisfaction = document.querySelector(".popup_bg");
+    if (closeBtn && popupSatisfaction) {
+        closeBtn.addEventListener("click", () => {
+            popupSatisfaction.classList.add("active");
+        });
+    }
+
+    // 별점 클릭
+    let selectedRating = 0;
+    document.querySelectorAll(".star").forEach(star => {
+        star.addEventListener("click", () => {
+            selectedRating = parseInt(star.dataset.value);
+            document.querySelectorAll(".star").forEach(s => {
+                s.classList.remove("filled");
+                if (parseInt(s.dataset.value) <= selectedRating) {
+                    s.classList.add("filled");
+                }
+            });
+            console.log("⭐ 선택된 별점:", selectedRating);
+        });
+    });
+
+    // 만족도 제출
+    document.querySelector('.end_btn').addEventListener('click', async () => {
+        const score = selectedRating;
+        const responseId = localStorage.getItem("surveyResponseId");
+        const surveyId = 1;
+
+        if (!score || !responseId) {
+            alert("만족도를 선택하거나 응답 ID가 없습니다.");
+            return;
+        }
+
+        const dto = {
+            surveyId: parseInt(surveyId),
+            responseId: parseInt(responseId),
+            satisfactionScore: score
+        };
+
+        try {
+            await fetch("/api/satisfaction", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dto)
+            });
+            alert("설문이 저장되었습니다!");
+            window.location.href = "/";
+        } catch (err) {
+            alert("저장 중 오류가 발생했습니다.");
+            console.error(err);
+        }
+    });
+});
