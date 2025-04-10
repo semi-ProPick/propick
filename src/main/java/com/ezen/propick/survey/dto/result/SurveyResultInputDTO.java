@@ -1,5 +1,6 @@
 package com.ezen.propick.survey.dto.result;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

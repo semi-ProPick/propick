@@ -55,28 +55,27 @@ public class SurveyResponseController {
             return ResponseEntity.ok(new SurveyResponseIdDTO(responseId));
         }
 
-
-        // [2] 마이페이지 - 설문 응답 목록
-        @GetMapping("/my_survey")
-        public ResponseEntity<List<SurveyResponseUserDTO>> getMySurveyResponses(
-                @AuthenticationPrincipal AuthDetails userDetails
-        ) {
-            if (userDetails == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 🔒 인증 실패 시 401 반환
-            }
-
-            String userId = userDetails.getUserId();
-            return ResponseEntity.ok(surveyResponseUserService.getResponsesByUserId(userId));
+    // [2] 마이페이지 - 설문 응답 목록
+    @GetMapping("/my_survey")
+    public ResponseEntity<List<SurveyResponseUserDTO>> getMySurveyResponses(
+            @AuthenticationPrincipal AuthDetails userDetails
+    ) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 🔒 인증 실패 시 401 반환
         }
 
-        // [3] 마이페이지 - 설문 응답 삭제
-        @DeleteMapping("/my_survey/{responseId}")
-        public ResponseEntity<Void> deleteMyResponse(
-                @PathVariable Integer responseId,
-                @AuthenticationPrincipal AuthDetails userDetails
-        ) {
-            String userId = userDetails.getUserId();
-            surveyResponseUserService.deleteByUserId(responseId, userId);
-            return ResponseEntity.noContent().build();
-        }
+        String userId = userDetails.getUserId();
+        return ResponseEntity.ok(surveyResponseUserService.getResponsesByUserId(userId));
     }
+
+    // [3] 마이페이지 - 설문 응답 삭제
+    @DeleteMapping("/my_survey/{responseId}")
+    public ResponseEntity<Void> deleteMyResponse(
+            @PathVariable Integer responseId,
+            @AuthenticationPrincipal AuthDetails userDetails
+    ) {
+        String userId = userDetails.getUserId();
+        surveyResponseUserService.deleteByUserId(responseId, userId);
+        return ResponseEntity.noContent().build();
+    }
+}

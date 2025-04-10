@@ -1,5 +1,6 @@
 package com.ezen.propick.survey.dto.result;
 
+import com.ezen.propick.product.dto.ProductListDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,4 +40,7 @@ public class RecommendationResponseDTO {
     private Map<String, Integer> healthConditions;
     private Map<String, Integer> recommendedTypeScores;
     private Map<String, Integer> intakeTimingRatio;
+    private List<ProductListDTO> matchedProducts;
+
+
 }

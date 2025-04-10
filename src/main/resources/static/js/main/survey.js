@@ -355,28 +355,46 @@ function collectSurveyAnswers() {
 
     return { surveyId: 1, answers };
 }
-document.getElementById("submit_btn").addEventListener("click", async () => {
-    const inputData = collectSurveyAnswers();
+["submit_btn", "submit_btn2"].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+        btn.addEventListener("click", async () => {
+            const inputData = collectSurveyAnswers();
 
-    // ✅ [1] localStorage 저장 (프론트 백업용)
-    localStorage.setItem("surveyData", JSON.stringify(inputData));
-    localStorage.removeItem("surveyResponseId");
+            localStorage.setItem("surveyData", JSON.stringify(inputData));
+            localStorage.removeItem("surveyResponseId");
 
-    // ✅ [2] 백엔드 세션 저장 (임시 저장)
-    try {
-        await fetch("/api/temp-survey", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(inputData)
+            try {
+                await fetch("/api/temp-survey", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(inputData)
+                });
+                console.log("✅ 세션에 설문 응답 임시 저장 성공");
+            } catch (err) {
+                console.error(" 세션 저장 실패:", err);
+            }
+
+            // 로그인 상태 확인
+
+            try {
+                const res = await fetch("/user/me", {
+                    credentials: 'include'
+                });
+                if (res.ok) {
+                    window.location.href = "/survey_result";
+                } else {
+                    window.location.href = "/user/login?redirect=/survey_result";
+                }
+            } catch (err) {
+                console.error("로그인 상태 확인 실패:", err);
+                window.location.href = "/user/login?redirect=/survey_result";
+            }
+
         });
-        console.log("✅ 세션에 설문 응답 임시 저장 성공");
-    } catch (err) {
-        console.error(" 세션 저장 실패:", err);
     }
-
-    // ✅ [3] 로그인 후 결과 페이지로 이동
-    window.location.href = "/user/login?redirect=/survey_result";
 });
+
 
 // 페이지 로딩 시 설문 구조 및 option 매핑 초기화
 window.addEventListener("DOMContentLoaded", async () => {

@@ -1,7 +1,10 @@
 package com.ezen.propick.survey.service;
 
+import com.ezen.propick.bookmark.service.BookmarkService;
+import com.ezen.propick.product.dto.ProductListDTO;
 import com.ezen.propick.product.entity.Product;
 import com.ezen.propick.product.repository.ProductRepository;
+import com.ezen.propick.product.service.MainProductService;
 import com.ezen.propick.survey.engine.ProteinRecommendationEngine;
 import com.ezen.propick.survey.entity.Recommendation;
 import com.ezen.propick.survey.entity.SurveyResponse;
@@ -12,7 +15,9 @@ import com.ezen.propick.survey.repository.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +26,8 @@ public class RecommendationService {
     private final RecommendationRepository recommendationRepository;
     private final SurveyResponseRepository responseRepository;
     private final ProductRepository productRepository;
-
+    private final MainProductService mainProductService;
+    private final BookmarkService bookmarkService;
     /**
      * ✅ 최소 정보만 저장하는 추천 저장 로직
      * @param surveyResponseId 설문 응답 ID
@@ -54,6 +60,16 @@ public class RecommendationService {
 
 
         return recommendationRepository.save(recommendation);
+    }
+    public List<ProductListDTO> findProductsByRecommendedTypes(List<String> recommendedTypes, String userId) {
+        List<Product> allProducts = productRepository.findAll();
+
+        List<ProductListDTO> recommended = allProducts.stream()
+                .filter(p -> recommendedTypes.contains(p.getProductType()))
+                .map(mainProductService::convertToProductListDTO)
+                .collect(Collectors.toList());
+
+        return bookmarkService.getProductsWithBookmarkStatus(userId, recommended);
     }
 
     /**
