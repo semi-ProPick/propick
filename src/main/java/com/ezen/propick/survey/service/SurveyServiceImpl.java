@@ -28,9 +28,9 @@ public class SurveyServiceImpl implements SurveyService {
                 .orElseThrow(() -> new IllegalArgumentException("설문을 찾을 수 없습니다."));
 
         //상위 질문만 필터링
+        // 건강고민 하위 질문(9-15)제외 후 설문 상위 질문 DTO 변환
         List<Integer> excludedDetailQuestionIds = List.of(9, 10, 11, 12, 13, 14, 15);
 
-        // 설문에 속한 질문 리스트 중에서 제외할 질문을 필터링하고, DTO로 변환
         List<SurveyQuestionDTO> questionDTOs = survey.getQuestions().stream()
                 .filter(q -> !excludedDetailQuestionIds.contains(q.getQuestionId()))
                 .map(this::convertToQuestionDTO)
@@ -48,7 +48,8 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
 
-    // SurveyQuestions 엔티티를 SurveyQuestionDTO로 변환하는 메서드
+    // 선택지(childOptions)를 재귀적으로 순회하여 트리 구조의 선택지 생성
+    // 프론트에서는 이 구조를 기반으로 상위 선택지 → 하위 선택지 렌더링 구성
     private SurveyQuestionDTO convertToQuestionDTO(SurveyQuestions question) {
         // 질문에 속한 선택지를 DTO로 변환
         List<SurveyOptionsDTO> optionDTOs = question.getOptions().stream()
@@ -68,18 +69,17 @@ public class SurveyServiceImpl implements SurveyService {
 
     //SurveyOptions 엔티티를 SurveyOptionsDTO로 변환하는 메서드 (재귀적으로 처리)
     private SurveyOptionsDTO convertToOptionDTO(SurveyOptions option) {
-        // 선택지에 속한 하위 선택지(자식 선택지)를 재귀적으로 변환
+
         List<SurveyOptionsDTO> childDTOs = option.getChildOptions().stream()
-                .map(this::convertToOptionDTO) // 재귀 호출을 통해 계층적인 구조를 유지
+                .map(this::convertToOptionDTO)
                 .collect(Collectors.toList());
 
-        // SurveyOptionsDTO 빌더 패턴을 사용하여 변환된 선택지 객체 반환
         return SurveyOptionsDTO.builder()
                 .optionId(option.getOptionId())
                 .questionId(option.getQuestionId().getQuestionId())
                 .optionText(option.getOptionText())
-                .parentOptionId(option.getParentOption() != null ? option.getParentOption().getOptionId() : null) // 부모 선택지 ID (없으면 null)
-                .childOptions(childDTOs) // 자식 선택지 리스트 추가
+                .parentOptionId(option.getParentOption() != null ? option.getParentOption().getOptionId() : null)
+                .childOptions(childDTOs)
                 .build();
     }
 }

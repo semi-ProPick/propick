@@ -396,7 +396,7 @@ function collectSurveyAnswers() {
 });
 
 
-// 페이지 로딩 시 설문 구조 및 option 매핑 초기화
+
 window.addEventListener("DOMContentLoaded", async () => {
     try {
         const res = await fetch("/api/surveys/1");
